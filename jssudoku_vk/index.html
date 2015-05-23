@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<meta charset="utf-8">
+<TITLE>Судоку</TITLE>
+<SCRIPT type="text/javascript" language="JavaScript" src="main.js"></SCRIPT>
+</HEAD>
+<BODY onload="resize()" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
+<div id="popup_overlay" style='position: absolute; top:0px; left:0px; background-color: lightgrey; z-index:10; opacity:0.5;display:none' onclick="hidePopup()">
+</div>
+<div id="popup" style='position: fixed; top:50%; left:50%; z-index:11; display:none;'>
+<script type="text/javascript" language="JavaScript">
+document.write('<table border = 1 style="border:solid;background-color: #E0EEE0; border-radius:10px">')
+		for (var i = 0; i < 3; i++) {
+			document.write('<tr align = "center">')
+			for (var j = 0; j < 3; j++) {
+				var digit = i*3 + j + 1
+				document.write('<td style="border:solid 1px" height = "75" width = "75" onclick="enterDigit(' + digit + ')"><b>' + digit + '</b></td>')
+			}
+			document.write('</tr>')
+		}
+	document.write('<tr align = "center"><td style="border:solid 1px" height="75" onclick="enterDigit(0)"><b>Сброс</b></td><td style="border:solid 1px" height="75" colspan=2 onclick="hidePopup()"><b>Отмена</b></td></tr>')
+document.write('</table>')
+</script>
+</div>
+<div id="info" style='position: fixed; z-index:12; display:none; width:200px; height:80px; border:5px solid #B4CDCD; background-color: #D1EEEE; border-radius:10px; text-align:center;line-height: 80px;'>
+You win!
+</div>
+<div id="all" style = 'position: absolute; top:0px; left:25px'>
+<br>
+<table width="445">
+<tr>
+	<td>
+		<b>Сложность:</b><br>
+		<select name="difficulty" onchange ="difficultLevel=this.options[selectedIndex].value">
+			<option value="22">Элементарно</option>
+			<option value="32">Легко</option>
+			<option selected value="42">Норма</option>
+			<option value="52" >Трудно</option>
+			<option value="58">Ультра (рискнете?)</option>
+		</select><br><br>
+	</td>
+	<td style = "vertical-align: bottom" align="right">
+		<input type="button" id="hint" style="width: 10em" value="Подсказка" onClick="hint()"><br>
+		&nbspОсталось подсказок: <span id="hintsSpan"></span>
+	</td>
+	</tr>
+<tr>
+	<td><input type="button" value="Новая игра" onClick="init(); redraw()"></td>
+	<td style = "vertical-align: bottom" align="right">Прошло времени: <span id="timer">00:00</span><br></td>
+</tr>
+</table>
+<script type="text/javascript" language="JavaScript">
+document.write('<table id = "mainTable" border = "1" height = "450" width = "450">')
+		init();//init data
+		var i,j
+		for(i = 0; i < 9; i++) {
+			document.write('<tr align = "center">')
+			for(j = 0; j < 9; j++) {
+				document.write('<td')
+				if (i%3 == 2 && j%3 == 2)
+					document.write(' style = "border-right:2px solid #000000; border-bottom:2px solid #000000"')
+				else if (j%3 == 2)
+					document.write(' style = "border-right:2px solid #000000"')
+				else if (i%3 == 2)
+					document.write(' style = "border-bottom:2px solid #000000"')
+				document.write(' height = "45" width = "45" id = td' + i+j + ' onClick="handleClick(this)"><b>' + data[i][j] + '</b></td>')
+			}
+			document.write('</tr>')	
+		}
+document.write('</table><br><br>')
+</script>
+</div>
+</BODY>
+</HTML>
