@@ -89,6 +89,13 @@ function init_game() {
 	walls = new Array(81)
 	for (var i = 0; i < 81; i++)
 		walls[i] = 0
+	for (var i = 0; i < bombs.length; i++) { //remove old bombs image
+		if (bombs[i]) {
+			var element = document.getElementById('bomb' + bombs[i].id)
+			element.parentNode.removeChild(element)
+		}
+	}
+	bombs = []
 	if (bomberman) { //remove old bomberman image
 		var element = document.getElementById('bomberman' + bomberman.id)
 		element.parentNode.removeChild(element)
@@ -96,7 +103,7 @@ function init_game() {
 	bomberman = new Bomberman(0, 0, 0, 5, 0, 0)
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
-	bombermanTimer = setInterval('bomberman.AI()', 100)
+	bombermanTimer = setInterval('bomberman.AI()', game_delay)
 }
 
 function wrongDigit(index, digit) {

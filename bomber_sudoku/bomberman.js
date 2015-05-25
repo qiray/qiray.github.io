@@ -1,4 +1,6 @@
 
+var game_delay = 100
+
 var bomberman //bomberman unit
 var bombermanTimer
 var walls = []
@@ -53,9 +55,9 @@ Bomberman.prototype.generateWay = function () {
 	var d = 0
 	var finish_found = 0
 	for (var i = 0; i < 81; i++)
-		lengths[i] = -1
+		lengths[i] = walls[i] ? 10000 : -1
 	lengths[this.x + 9*this.y] = d
-	while (!finish_found) { //TODO: add walls
+	while (!finish_found && list_next.length) {
 		list = list_next
 		list_next = []
 		d++
@@ -65,7 +67,7 @@ Bomberman.prototype.generateWay = function () {
 			var x = list[i].x, y = list[i].y
 			var tmp = [{x: x - 1, y: y}, {x: x + 1, y: y}, {x: x, y: y - 1}, {x: x, y: y + 1}]
 			for (var j in tmp) {
-				if (tmp[j].x < 0 || tmp[j].x > 8 || tmp[j].y < 0 || tmp[j].y > 8 || lengths[tmp[j].x + 9*tmp[j].y] != -1) //TODO: add walls
+				if (tmp[j].x < 0 || tmp[j].x > 8 || tmp[j].y < 0 || tmp[j].y > 8 || lengths[tmp[j].x + 9*tmp[j].y] >= 0)
 					continue
 				list_next.push(tmp[j])
 				lengths[tmp[j].x + 9*tmp[j].y] = d
@@ -84,12 +86,15 @@ Bomberman.prototype.generateWay = function () {
 	}
 	console.log(str)*/
 	if (finish_found) {
+		d = lengths[this.targetx + 9*this.targety] 
 		var current = {x: this.targetx, y: this.targety}
 		this.way.push(current)
 		while (current.x != this.x || current.y != this.y) {
 			var x = current.x, y = current.y
 			var tmp = [{x: x - 1, y: y}, {x: x + 1, y: y}, {x: x, y: y - 1}, {x: x, y: y + 1}]
 			for (var j in tmp) {
+				if (tmp[j].x < 0 || tmp[j].x > 8 || tmp[j].y < 0 || tmp[j].y > 8 || lengths[tmp[j].x + 9*tmp[j].y] < 0)
+					continue
 				if (lengths[tmp[j].x + 9*tmp[j].y] == d - 1) {
 					current = {x: tmp[j].x, y: tmp[j].y}
 					this.way.push(current)
@@ -111,6 +116,7 @@ Bomberman.prototype.checkDirection = function () {
 		this.way = []
 		this.x = this.targetx
 		this.y = this.targety
+		this.plantBomb(2000)
 		return
 	}
 	if (this.wayIndex >= this.way.length - 2)
@@ -169,6 +175,10 @@ Bomberman.prototype.setTarget = function(targetx, targety) {
 Bomberman.prototype.draw = function() {
 	this.image.style.left = this.drawx
 	this.image.style.top = this.drawy
+}
+
+Bomberman.prototype.plantBomb = function(timer) {
+	bombs.push(new Bomb(bombs.length, this.x, this.y, timer))
 }
 
 Bomberman.prototype.AI = function() {
