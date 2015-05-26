@@ -110,7 +110,8 @@ function init_game() {
 	document.getElementById("timerRange").value = document.getElementById('timerSpan').innerHTML = defaultBombTimer
 	document.getElementById("powerRange").value = document.getElementById('powerSpan').innerHTML = defaultBombPower
 	document.getElementById('wallCheck').checked = false
-	
+	startStop = 1
+	document.getElementById('startStopButton').value = 'Стоп'
 }
 
 function victory() {
@@ -120,7 +121,8 @@ function victory() {
 }
 
 function game_cycle() {
-	bomberman.AI()
+	if (startStop)
+		bomberman.AI()
 	for (var i = 0; i < bombs.length; i++) {
 		if (!bombs[i])
 			continue
@@ -130,7 +132,7 @@ function game_cycle() {
 
 //TODO: remove these test functions
 
-var mouseWall = 0
+var mouseWall = 0, startStop = 1
 
 function setSpeed() {
 	if (bomberman)
@@ -153,4 +155,9 @@ function switchMouseWall() {
 		mouseWall = 1
 	else
 		mouseWall = 0
+}
+
+function switchStartStop() {
+	startStop = startStop == 0 ? 1 : 0
+	document.getElementById('startStopButton').value = startStop == 1 ? 'Стоп' : 'Старт'
 }
