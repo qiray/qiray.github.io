@@ -15,13 +15,6 @@ var directions = {
 	wait: 0,
 }
 
-function coordsIndexOf(list, x, y) {
-	for (var i in list)
-		if (list[i].x == x && list[i].y == y)
-			return i
-	return -1
-}
-
 function Bomberman(id, x, y, speed, targetx, targety) {
 	this.id = id
 	this.x = x
