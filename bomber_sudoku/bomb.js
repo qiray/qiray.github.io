@@ -82,6 +82,7 @@ function destroyCell(x, y) {
 	if (data[y][x] != '&nbsp')
 		remainingCells++
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = '&nbsp'
+	initialData[9*y + x] = false
 	for (var i = 0; i < bombs.length; i++)
 		if (bombs[i] && bombs[i].x == x && bombs[i].y == y && bombs[i].timer > 0) { //explode another bombs
 			bombs[i].timer = 0

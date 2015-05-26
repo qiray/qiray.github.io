@@ -69,24 +69,27 @@ function newGame() {
 function init_sudoku() {
 	var i, j
 	for(i = 0; i < 9; i++) {
-		data[i] = new Array(9)
-		trueData[i] = new Array(9)
+		if (!data[i])
+			data[i] = new Array(9)
+		if (!trueData[i])
+			trueData[i] = new Array(9)
 		for(j = 0; j < 9; j++) {
 			data[i][j] = trueData[i][j] = initData[i][j] //copy initial array
 			initialData[i+j*9] = true //array for initial digits
 		}
 	}
+}
+
+function init_game() {
+	init_sudoku()
 	remainingCells = 0
 	newGame() //generate new field
 	hints = Math.floor((81 - difficultLevel)/15) //init number of max hints
 	if (difficultLevel >= ultra)
 		hints = 0
-	document.getElementById('hintsSpan').innerHTML = hints
-}
-
-function init_game() {
-	init_sudoku()
-	walls = new Array(81)
+	document.getElementById('hintsSpan').innerHTML = hints	
+	if (!walls)
+		walls = new Array(81)
 	for (var i = 0; i < 81; i++)
 		walls[i] = 0
 	for (var i = 0; i < bombs.length; i++) //remove old bombs image
@@ -101,6 +104,7 @@ function init_game() {
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
 	bombermanTimer = setInterval('game_cycle()', game_delay)
+	redraw()
 	//TODO: remove
 	document.getElementById("speedRange").value = document.getElementById('speedSpan').innerHTML = bomberman.speed
 	document.getElementById("timerRange").value = document.getElementById('timerSpan').innerHTML = defaultBombTimer
