@@ -159,6 +159,7 @@ Bomberman.prototype.setTarget = function(targetx, targety) {
 	this.targetx = targetx
 	this.targety = targety
 	console.log(targetx + ' ' + targety)
+	document.getElementById('coordsToMove').innerHTML = 'x = '  + targetx + ', y = ' + targety
 	if (targetx == this.x && targety == this.y) {
 		this.direction = directions.wait
 		this.way = []
