@@ -10,7 +10,7 @@ function transposing() {
 }
 
 function genRandom(obj) {
-	obj.square = Math.floor(Math.random() * 3);
+	obj.square = Math.floor(Math.random() * 3)
 	obj.n1 = Math.floor(Math.random() * 3), obj.n2 = Math.floor(Math.random() * 3)
 	while (obj.n1 == obj.n2)
 		obj.n2 = Math.floor(Math.random() * 3)

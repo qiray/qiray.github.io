@@ -5,6 +5,8 @@ var bomberman //bomberman unit
 var bombermanTimer
 var walls = []
 
+var defaultBombPower = 2, defaultBombTimer = 3000
+
 var directions = {
 	up: -9,
 	right: 1,
@@ -30,6 +32,8 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.direction = directions.wait //default
 	this.targetx = targetx
 	this.targety = targety
+	this.cantFindWay = 0
+	this.waitTimer = 0
 	this.way = []
 	this.wayIndex = 0
 	this.setDirection()
@@ -40,6 +44,7 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.image.style.position = 'absolute'
 	this.image.style.left = this.drawx
 	this.image.style.top = this.drawy
+	this.image.style.zIndex = 9
 	document.getElementById('all').appendChild(this.image)
 }
 
@@ -78,13 +83,6 @@ Bomberman.prototype.generateWay = function () {
 			}
 		}
 	}
-	/*var str = ''
-	for (var i = 0; i < 9; i++) {
-		str += '\n'
-		for (var j = 0; j < 9; j++)
-			str += lengths[j + 9*i] + '\t'
-	}
-	console.log(str)*/
 	if (finish_found) {
 		d = lengths[this.targetx + 9*this.targety] 
 		var current = {x: this.targetx, y: this.targety}
@@ -116,7 +114,7 @@ Bomberman.prototype.checkDirection = function () {
 		this.way = []
 		this.x = this.targetx
 		this.y = this.targety
-		this.plantBomb(2000)
+		this.plantBomb(defaultBombPower, defaultBombTimer)
 		return
 	}
 	if (this.wayIndex >= this.way.length - 2)
@@ -168,7 +166,14 @@ Bomberman.prototype.setTarget = function(targetx, targety) {
 	this.targetx = targetx
 	this.targety = targety
 	console.log(targetx + ' ' + targety)
+	if (targetx == this.x && targety == this.y) {
+		this.direction = directions.wait
+		this.way = []
+		return
+	}
 	this.way = this.generateWay()
+	if (this.way.length == 0)
+		this.cantFindWay++
 	this.setDirection()
 }
 
@@ -177,13 +182,25 @@ Bomberman.prototype.draw = function() {
 	this.image.style.top = this.drawy
 }
 
-Bomberman.prototype.plantBomb = function(timer) {
-	bombs.push(new Bomb(bombs.length, this.x, this.y, timer))
+Bomberman.prototype.plantBomb = function(power, timer) {
+	var i 
+	for (i = 0; i < bombs.length; i++)
+		if (!bombs[i])
+			break
+	bombs[i] = new Bomb(i, this.x, this.y, power, timer)
 }
 
 Bomberman.prototype.AI = function() {
-	if (this.direction == directions.wait && this.way.length == 0)
+	if (this.cantFindWay == 1 && this.waitTimer == 0) {
+		this.waitTimer = 10
+		this.cantFindWay = 0
+	}
+	if (this.waitTimer <= 0 && this.direction == directions.wait && this.way.length == 0) {
 		this.setTarget(Math.floor(Math.random()*8), Math.floor(Math.random()*8))
+		this.waitTimer = 0
+	} else {
+		this.waitTimer--
+	}
 	this.move()
 	this.draw()
 }

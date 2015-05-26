@@ -20,7 +20,7 @@ function tryToSolve(tempData, y, x) { //Try to find correct digit for tempData[i
 
 function solveSudoku(tempData, remain) { //return true if field tempData can be solved (also fill tempData with correct digits) else return false
 	while(1) {
-		var prevRemain = remain; //save previous number of remaining cells
+		var prevRemain = remain //save previous number of remaining cells
 		for (var i = 0; i < 9; i++)
 			for (var j = 0; j < 9; j++)
 				if (tempData[i][j] == "&nbsp") {

@@ -89,12 +89,9 @@ function init_game() {
 	walls = new Array(81)
 	for (var i = 0; i < 81; i++)
 		walls[i] = 0
-	for (var i = 0; i < bombs.length; i++) { //remove old bombs image
-		if (bombs[i]) {
-			var element = document.getElementById('bomb' + bombs[i].id)
-			element.parentNode.removeChild(element)
-		}
-	}
+	for (var i = 0; i < bombs.length; i++) //remove old bombs image
+		if (bombs[i])
+			bombs[i].destroy()
 	bombs = []
 	if (bomberman) { //remove old bomberman image
 		var element = document.getElementById('bomberman' + bomberman.id)
@@ -103,7 +100,13 @@ function init_game() {
 	bomberman = new Bomberman(0, 0, 0, 5, 0, 0)
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
-	bombermanTimer = setInterval('bomberman.AI()', game_delay)
+	bombermanTimer = setInterval('game_cycle()', game_delay)
+	//TODO: remove
+	document.getElementById("speedRange").value = document.getElementById('speedSpan').innerHTML = bomberman.speed
+	document.getElementById("timerRange").value = document.getElementById('timerSpan').innerHTML = defaultBombTimer
+	document.getElementById("powerRange").value = document.getElementById('powerSpan').innerHTML = defaultBombPower
+	document.getElementById('wallCheck').checked = false
+	
 }
 
 function wrongDigit(index, digit) {
@@ -179,6 +182,10 @@ function enterDigit(digit) {
 
 function handleClick(obj) {
 	var index = parseInt(parseInt(obj.id[2]*9) + parseInt(obj.id[3])), flag = false
+	if (mouseWall) { //TODO: remove after test
+		setWall(parseInt(obj.id[3]), parseInt(obj.id[2]))
+		return
+	}
 	if (!initialData[index]) {//Don't allow to modify initial digits.
 		currentIndex = index
 		showPopup()
@@ -217,4 +224,40 @@ function victory() {
 	startTimer = 0
 	document.getElementById('info').style.lineHeight = '40px'
 	showInfo("Вы выиграли! <br>Ваше время - " + gameTimerToString())
+}
+
+function game_cycle() {
+	bomberman.AI()
+	for (var i = 0; i < bombs.length; i++) {
+		if (!bombs[i])
+			continue
+		bombs[i].process()
+	}
+}
+
+//TODO: remove these test functions
+
+var mouseWall = 0
+
+function setSpeed() {
+	if (bomberman)
+		bomberman.speed = parseInt(document.getElementById("speedRange").value)
+	document.getElementById('speedSpan').innerHTML = bomberman.speed
+}
+
+function setPower() {
+	defaultBombPower = parseInt(document.getElementById("powerRange").value)
+	document.getElementById('powerSpan').innerHTML = defaultBombPower
+}
+
+function setTimer() {
+	defaultBombTimer = parseInt(document.getElementById("timerRange").value)
+	document.getElementById('timerSpan').innerHTML = defaultBombTimer
+}
+
+function switchMouseWall() {
+	if (document.getElementById('wallCheck').checked)
+		mouseWall = 1
+	else
+		mouseWall = 0
 }
