@@ -84,6 +84,8 @@ function init_game() {
 	init_sudoku()
 	remainingCells = 0
 	newGame() //generate new field
+	if (difficultLevel == medium && document.getElementById('difficultySelect').selectedIndex != 2)
+		document.getElementById('difficultySelect').selectedIndex = 2
 	hints = Math.floor((81 - difficultLevel)/15) //init number of max hints
 	if (difficultLevel >= ultra)
 		hints = 0
@@ -160,4 +162,24 @@ function switchMouseWall() {
 function switchStartStop() {
 	startStop = startStop == 0 ? 1 : 0
 	document.getElementById('startStopButton').value = startStop == 1 ? 'Стоп' : 'Старт'
+}
+
+function showSolution() {
+	var text = ''
+	var remain = remainingCells
+	var tempData = new Array (9)
+	for (var i = 0; i < 9; i++) {
+		tempData[i] = new Array (9)
+		for (var j = 0; j < 9; j++)
+			tempData[i][j] = data[i][j]
+	}
+	if (solveSudoku(tempData, remain, 1)) {
+		for (var i = 0; i < 9; i++) {
+			for (var j = 0; j < 9; j++)
+				text += tempData[i][j] + ' '
+			text += '\n'
+		}
+	} else
+		text = 'Не могу решить.'
+	alert (text)
 }

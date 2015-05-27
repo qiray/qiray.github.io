@@ -15,6 +15,17 @@ var directions = {
 	wait: 0,
 }
 
+function roundTheWorld(coords) {
+	if (coords.x < 0)
+		coords.x += 9
+	if (coords.y < 0)
+		coords.y += 9
+	if (coords.x > 8)
+		coords.x -= 9
+	if (coords.y > 8)
+		coords.y -= 9
+}
+
 function Bomberman(id, x, y, speed, targetx, targety) {
 	this.id = id
 	this.x = x
@@ -65,7 +76,8 @@ Bomberman.prototype.generateWay = function () {
 			var x = list[i].x, y = list[i].y
 			var tmp = [{x: x - 1, y: y}, {x: x + 1, y: y}, {x: x, y: y - 1}, {x: x, y: y + 1}]
 			for (var j in tmp) {
-				if (tmp[j].x < 0 || tmp[j].x > 8 || tmp[j].y < 0 || tmp[j].y > 8 || lengths[tmp[j].x + 9*tmp[j].y] >= 0)
+				roundTheWorld(tmp[j])
+				if (lengths[tmp[j].x + 9*tmp[j].y] >= 0)
 					continue
 				list_next.push(tmp[j])
 				lengths[tmp[j].x + 9*tmp[j].y] = d
@@ -84,7 +96,8 @@ Bomberman.prototype.generateWay = function () {
 			var x = current.x, y = current.y
 			var tmp = [{x: x - 1, y: y}, {x: x + 1, y: y}, {x: x, y: y - 1}, {x: x, y: y + 1}]
 			for (var j in tmp) {
-				if (tmp[j].x < 0 || tmp[j].x > 8 || tmp[j].y < 0 || tmp[j].y > 8 || lengths[tmp[j].x + 9*tmp[j].y] < 0)
+				roundTheWorld(tmp[j])
+				if (lengths[tmp[j].x + 9*tmp[j].y] < 0)
 					continue
 				if (lengths[tmp[j].x + 9*tmp[j].y] == d - 1) {
 					current = {x: tmp[j].x, y: tmp[j].y}
@@ -100,6 +113,15 @@ Bomberman.prototype.generateWay = function () {
 }
 
 Bomberman.prototype.checkDirection = function () {
+	if (this.drawx < document.getElementById('mainTable').offsetLeft - 22)
+		this.drawx = document.getElementById('td' + this.y + 8).offsetLeft + document.getElementById('mainTable').offsetLeft + 22
+	if (this.drawy < document.getElementById('mainTable').offsetTop - 22)
+		this.drawy = document.getElementById('td' + 8 + this.x).offsetTop + document.getElementById('mainTable').offsetTop + 22
+	if (this.drawx > document.getElementById('mainTable').offsetLeft + document.getElementById('td' + this.y + 8).offsetLeft + 22)
+		this.drawx = document.getElementById('mainTable').offsetLeft - 22
+	if (this.drawy > document.getElementById('mainTable').offsetTop + document.getElementById('td' + 8 + this.x).offsetTop + 22)
+		this.drawy = document.getElementById('mainTable').offsetTop - 22
+		
 	var targetDrawX = document.getElementById('td' + this.targety + this.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
 	var targetDrawY = document.getElementById('td' + this.targety + this.targetx).offsetTop + document.getElementById('mainTable').offsetTop
 	if (Math.abs(this.drawx - targetDrawX) <= this.speed/2 && Math.abs(this.drawy - targetDrawY) <= this.speed/2) { //target reached
@@ -116,13 +138,11 @@ Bomberman.prototype.checkDirection = function () {
 	var nexty = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetTop + document.getElementById('mainTable').offsetTop
 	if (Math.abs(this.drawx - nextx) <= this.speed/2 && Math.abs(this.drawy - nexty) <= this.speed/2) {
 		this.wayIndex++
-		var xdiff = this.way[this.wayIndex + 1].x - this.way[this.wayIndex].x
-		var ydiff = this.way[this.wayIndex + 1].y - this.way[this.wayIndex].y
+		this.calcDirection()
 		this.x = this.way[this.wayIndex].x
 		this.y = this.way[this.wayIndex].y
 		this.drawx = nextx
 		this.drawy = nexty
-		this.direction = xdiff + 9*ydiff //TODO: change texture
 	}
 }
 
@@ -146,12 +166,18 @@ Bomberman.prototype.move = function () {
 	}
 }
 
+Bomberman.prototype.calcDirection = function() {
+	var xdiff = this.way[this.wayIndex + 1].x - this.way[this.wayIndex].x
+	var ydiff = this.way[this.wayIndex + 1].y - this.way[this.wayIndex].y
+	xdiff = xdiff == 8 ? -1 : xdiff == -8 ? 1 : xdiff
+	ydiff = ydiff == 8 ? -1 : ydiff == -8 ? 1 : ydiff
+	this.direction = xdiff + 9*ydiff //TODO: change texture
+}
+
 Bomberman.prototype.setDirection = function() {
 	if (this.way.length == 0)
 		return
-	var xdiff = this.way[this.wayIndex + 1].x - this.way[this.wayIndex].x
-	var ydiff = this.way[this.wayIndex + 1].y - this.way[this.wayIndex].y
-	this.direction = xdiff + 9*ydiff
+	this.calcDirection()
 }
 
 Bomberman.prototype.setTarget = function(targetx, targety) {

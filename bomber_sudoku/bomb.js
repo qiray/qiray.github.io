@@ -32,14 +32,18 @@ Bomb.prototype.destroy = function() {
 	var element = document.getElementById('bomb' + this.id)
 	element.parentNode.removeChild(element)
 	for (var i = this.x - this.power; i <= this.x + this.power; i++) {
-		if (i < 0 || i > 8 || walls[9*this.y + i])
+		var coords = {x: i, y: this.y}
+		roundTheWorld(coords)
+		if (walls[9*this.y + coords.x])
 			continue
-		document.getElementById('td' + this.y + i).removeAttribute('background') //remove explosions
+		document.getElementById('td' + this.y + coords.x).removeAttribute('background') //remove explosions
 	}
 	for (var i = this.y - this.power; i <= this.y + this.power; i++) {
-		if (i < 0 || i > 8 || walls[9*i + this.x])
+		var coords = {x: this.x, y: i}
+		roundTheWorld(coords)
+		if (walls[9*coords.y + this.x])
 			continue
-		document.getElementById('td' + i + this.x).removeAttribute('background') //remove explosions
+		document.getElementById('td' + coords.y + this.x).removeAttribute('background') //remove explosions
 	}
 	bombs[this.id] = undefined
 }
@@ -52,22 +56,22 @@ Bomb.prototype.explode = function() {
 	}
 	if (this.powerTact != this.power) {
 		for (var i = this.x - this.powerTact; i <= this.x + this.powerTact; i += 2*this.powerTact) {
-			if (i < 0 || i > 8)
-				continue
-			if (walls[9*this.y + i] || (this.explosionWallFlag & (i < this.x ? 1 : i > this.x ? 2 : 0))) {
+			var coords = {x: i, y: this.y}
+			roundTheWorld(coords)
+			if (walls[9*this.y + coords.x] || (this.explosionWallFlag & (i < this.x ? 1 : i > this.x ? 2 : 0))) {
 				this.explosionWallFlag |=  i < this.x ? 1 : i > this.x ? 2 : 0 //if there is a wall then stop wave in this direction
 				continue
 			}
-			destroyCell(i, this.y)
+			destroyCell(coords.x, this.y)
 		}
 		for (var i = this.y - this.powerTact; i <= this.y + this.powerTact; i += 2*this.powerTact) {
-			if (i < 0 || i > 8)
-				continue
-			if (walls[9*i + this.x] || (this.explosionWallFlag & (i < this.y ? 4 : i > this.y ? 8 : 0))) {
+			var coords = {x: this.x, y: i}
+			roundTheWorld(coords)
+			if (walls[9*coords.y + this.x] || (this.explosionWallFlag & (i < this.y ? 4 : i > this.y ? 8 : 0))) {
 				this.explosionWallFlag |=  i < this.y ? 4 : i > this.y ? 8 : 0
 				continue
 			}
-			destroyCell(this.x, i)
+			destroyCell(this.x, coords.y)
 		}
 		this.powerTact++
 	} else {
