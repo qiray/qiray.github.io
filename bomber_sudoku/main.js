@@ -98,6 +98,11 @@ function init_game() {
 		if (bombs[i])
 			bombs[i].destroy()
 	bombs = []
+	squareWalls = new Array (9)
+	colWalls = new Array (9)
+	rowWalls = new Array (9)
+	for (var i = 0; i < 9; i++)
+		squareWalls[i] = colWalls[i] = rowWalls[i] = 0
 	if (bomberman) { //remove old bomberman image
 		var element = document.getElementById('bomberman' + bomberman.id)
 		element.parentNode.removeChild(element)
@@ -111,6 +116,7 @@ function init_game() {
 	document.getElementById("speedRange").value = document.getElementById('speedSpan').innerHTML = bomberman.speed
 	document.getElementById("timerRange").value = document.getElementById('timerSpan').innerHTML = defaultBombTimer
 	document.getElementById("powerRange").value = document.getElementById('powerSpan').innerHTML = defaultBombPower
+	document.getElementById("wallRange").value = document.getElementById('wallSpan').innerHTML = wallsToBuild
 	document.getElementById('wallCheck').checked = false
 	startStop = 1
 	document.getElementById('startStopButton').value = 'Стоп'
@@ -122,6 +128,14 @@ function victory() {
 	showInfo("Вы выиграли! <br>Ваше время - " + gameTimerToString())
 }
 
+function redraw() {
+	for(var i = 0; i < 9; i++)
+		for(var j = 0; j < 9; j++)
+			document.getElementById('td' + i+j).innerHTML = "<b>" + data[i][j] + "</b>"
+}
+
+//Game with bomberman logic
+
 function game_cycle() {
 	if (startStop)
 		bomberman.AI()
@@ -129,6 +143,59 @@ function game_cycle() {
 		if (!bombs[i])
 			continue
 		bombs[i].process()
+	}
+}
+
+function setWall(x, y) {
+	walls[y*9 + x] = 1
+	document.getElementById('td' + y + x).setAttribute('background', 'images/wall.jpg')
+}
+
+function setNWalls(wallsToBuild, starty, startx, maxY, maxX) {
+	var temp = 0, inc = 0
+	while (temp != wallsToBuild && inc < 50) {
+		var wallY = starty + Math.floor(Math.random()*maxY)
+		var wallX = startx + Math.floor(Math.random()*maxX)
+		if (!walls[9*wallY + wallX]) {
+			setWall(wallX, wallY)
+			temp++
+		}
+		inc++
+	}
+}
+
+function checkFilling(y, x) {
+	var sum = 0
+	var col =  Math.floor(x/3), row = Math.floor(y/3)
+	if (!squareWalls[row*3 + col]) {
+		for (var i = col*3; i < col*3 + 3; i++)
+			for (var j = row*3; j < row*3 + 3; j++)
+				if (data[j][i] != '&nbsp')
+					sum++
+		if (sum == 9) { //square is filled
+			squareWalls[row*3 + col] = 1
+			setNWalls(wallsToBuild, row*3, col*3, 3, 3)
+		}
+	}
+	sum = 0
+	if (!rowWalls[y]) {
+		for (var i = 0; i < 9; i++)
+			if (data[y][i] != '&nbsp')
+				sum++
+		if (sum == 9) { //row is filled
+			rowWalls[y] = 1
+			setNWalls(wallsToBuild, y, 0, 0, 9)
+		}
+	}
+	sum = 0
+	if (!colWalls[x]) {
+		for (var i = 0; i < 9; i++)
+			if (data[i][x] != '&nbsp')
+				sum++
+		if (sum == 9) { //col is filled
+			colWalls[x] = 1
+			setNWalls(wallsToBuild, 0, x, 9, 0)
+		}
 	}
 }
 
@@ -152,6 +219,11 @@ function setTimer() {
 	document.getElementById('timerSpan').innerHTML = defaultBombTimer
 }
 
+function setWallRange() {
+	wallsToBuild = parseInt(document.getElementById("wallRange").value)
+	document.getElementById('wallSpan').innerHTML = wallsToBuild
+}
+
 function switchMouseWall() {
 	if (document.getElementById('wallCheck').checked)
 		mouseWall = 1
@@ -173,7 +245,7 @@ function showSolution() {
 		for (var j = 0; j < 9; j++)
 			tempData[i][j] = data[i][j]
 	}
-	if (solveSudoku(tempData, remain, 1)) {
+	if (solveSudoku(tempData, remain, 1, undefined)) {
 		for (var i = 0; i < 9; i++) {
 			for (var j = 0; j < 9; j++)
 				text += tempData[i][j] + ' '

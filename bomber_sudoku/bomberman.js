@@ -4,6 +4,8 @@ var game_delay = 100
 var bomberman //bomberman unit
 var bombermanTimer
 var walls = []
+var squareWalls = [], colWalls = [], rowWalls = []
+var wallsToBuild = 3
 
 var defaultBombPower = 2, defaultBombTimer = 3000
 
@@ -223,9 +225,4 @@ Bomberman.prototype.AI = function() {
 	}
 	this.move()
 	this.draw()
-}
-
-function setWall(x, y) {
-	walls[y*9 + x] = 1
-	document.getElementById('td' + y + x).setAttribute('background', 'images/wall.jpg')
 }

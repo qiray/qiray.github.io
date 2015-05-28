@@ -26,11 +26,14 @@ function enterDigit(digit) {
 		data[y][x] = document.getElementById('td' + y + x).innerHTML = digit
 	}
 	hidePopup()
+	checkFilling(y, x)
 	if (remainingCells == 0) //victory checking
 		victory()
 }
 
 function handleClick(obj) {
+	if (startTimer == 0)
+		return	
 	var index = parseInt(parseInt(obj.id[2]*9) + parseInt(obj.id[3])), flag = false
 	if (mouseWall) { //TODO: remove after test
 		setWall(parseInt(obj.id[3]), parseInt(obj.id[2]))
@@ -65,7 +68,7 @@ function showInfo(text) {
 	var info = document.getElementById('info')
 	info.style.display = 'block'
 	info.innerHTML = text
-	if (text.search('You win!') == -1) //restore line height for short texts (not victory text)
+	if (startTimer != 0) //restore line height for short texts (not victory text)
 		info.style.lineHeight = '80px'
 }
 
@@ -78,11 +81,13 @@ function showPopup() {
 function hidePopup() {
 	document.getElementById('popup_overlay').style.display = 'none'
 	document.getElementById('popup').style.display = 'none'
-	document.getElementById('info').style.display = 'none'	
+	document.getElementById('info').style.display = 'none'
 	popupVisible = 0
 }
 
 function hint() {
+	if (remainingCells == 0 || startTimer == 0)
+		return
 	document.getElementById('hint').blur()
 	if (hints == 0) {
 		showInfo("Больше нет подсказок")
@@ -100,12 +105,7 @@ function hint() {
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
 	document.getElementById('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
 	showInfo("Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
+	checkFilling(y, x)
 	if (--remainingCells == 0) //victory checking
 		victory()
-}
-
-function redraw() {
-	for(var i = 0; i < 9; i++)
-		for(var j = 0; j < 9; j++)
-			document.getElementById('td' + i+j).innerHTML = "<b>" + data[i][j] + "</b>"
 }

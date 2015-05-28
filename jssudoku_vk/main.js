@@ -234,7 +234,7 @@ function showInfo(text) {
 	var info = document.getElementById('info')
 	info.style.display = 'block'
 	info.innerHTML = text
-	if (text.search('You win!') == -1) //restore line height for short texts (not victory text)
+	if (startTimer != 0) //restore line height for short texts (not victory text)
 		info.style.lineHeight = '80px'
 }
 
@@ -283,6 +283,8 @@ function enterDigit(digit) {
 }
 
 function handleClick(obj) {
+	if (startTimer == 0)
+		return
 	var index = parseInt(parseInt(obj.id[2]*9) + parseInt(obj.id[3])), flag = false
 	if (!initialData[index]) {//Don't allow to modify initial digits.
 		currentIndex = index
@@ -298,6 +300,8 @@ function redraw() {
 
 function hint() {
 	document.getElementById('hint').blur()
+	if (remainingCells == 0 || startTimer == 0)
+		return
 	if (hints == 0) {
 		showInfo("Больше нет подсказок")
 		return
