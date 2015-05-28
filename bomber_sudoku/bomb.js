@@ -19,6 +19,7 @@ function Bomb(id, x, y, power, timer) {
 	this.image.style.left = this.drawx
 	this.image.style.top = this.drawy
 	this.image.style.zIndex = 8
+	this.image.onclick = function () { clickObject(y, x) }
 	document.getElementById('all').appendChild(this.image)
 }
 

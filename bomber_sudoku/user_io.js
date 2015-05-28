@@ -31,6 +31,14 @@ function enterDigit(digit) {
 		victory()
 }
 
+function clickObject (y, x) {
+	var index = y*9 + x		
+	if (!initialData[index]) {//Don't allow to modify initial digits.
+		currentIndex = index
+		showPopup()
+	} 
+}
+
 function handleClick(obj) {
 	if (startTimer == 0)
 		return	

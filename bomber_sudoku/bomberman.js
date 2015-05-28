@@ -51,7 +51,17 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.image.style.left = this.drawx
 	this.image.style.top = this.drawy
 	this.image.style.zIndex = 9
+	this.image.onclick = function () { clickObject (y, x) }
 	document.getElementById('all').appendChild(this.image)
+	this.target = new Image(45, 45)
+	this.target.src = 'images/target.png' //TODO: load textures
+	this.target.id = 'target' + id
+	this.target.style.position = 'absolute'
+	this.target.style.left = document.getElementById('td' + this.targety + this.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
+	this.target.style.top = document.getElementById('td' + this.targety + this.targetx).offsetTop + document.getElementById('mainTable').offsetTop
+	this.target.onclick = function() { }
+	this.target.style.zIndex = 8
+	document.getElementById('all').appendChild(this.target)	
 }
 
 Bomberman.prototype.generateWay = function () {
@@ -125,12 +135,12 @@ Bomberman.prototype.checkDirection = function () {
 		this.drawy = document.getElementById('mainTable').offsetTop - 22
 		
 	var targetDrawX = document.getElementById('td' + this.targety + this.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
-	var targetDrawY = document.getElementById('td' + this.targety + this.targetx).offsetTop + document.getElementById('mainTable').offsetTop
+	var targetDrawY = document.getElementById('td' + this.targety + this.targetx).offsetTop + document.getElementById('mainTable').offsetTop		
 	if (Math.abs(this.drawx - targetDrawX) <= this.speed/2 && Math.abs(this.drawy - targetDrawY) <= this.speed/2) { //target reached
 		this.direction = directions.wait
 		this.way = []
 		this.x = this.targetx
-		this.y = this.targety
+		this.y = this.targety	
 		this.plantBomb(defaultBombPower, defaultBombTimer)
 		return
 	}
@@ -138,6 +148,18 @@ Bomberman.prototype.checkDirection = function () {
 		return
 	var nextx = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetLeft + document.getElementById('mainTable').offsetLeft
 	var nexty = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetTop + document.getElementById('mainTable').offsetTop
+	
+	var drawx = this.drawx - document.getElementById('mainTable').offsetLeft, drawy = this.drawy - document.getElementById('mainTable').offsetTop
+	this.image.onclick = function () {
+		if (drawx < 0 || drawx > document.getElementById('td' + 8 + 8).offsetLeft || drawy < 0 || drawy > document.getElementById('td' + 8 + 8).offsetTop)
+			return
+		var coords = {x : 0, y : 0}
+		coords.x = (drawx + 22)/45 //TODO: test
+		coords.y = (drawy + 22)/45
+		console.log(coords.x, coords.y)
+		clickObject(Math.floor(coords.y), Math.floor(coords.x))
+	}
+
 	if (Math.abs(this.drawx - nextx) <= this.speed/2 && Math.abs(this.drawy - nexty) <= this.speed/2) {
 		this.wayIndex++
 		this.calcDirection()
@@ -187,6 +209,10 @@ Bomberman.prototype.setTarget = function(targetx, targety) {
 	this.targetx = targetx
 	this.targety = targety
 	console.log(targetx + ' ' + targety)
+	document.getElementById('target' + this.id).style.left = document.getElementById('td' + this.targety + this.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
+	document.getElementById('target' + this.id).style.top = document.getElementById('td' + this.targety + this.targetx).offsetTop + document.getElementById('mainTable').offsetTop
+	var y = this.targety, x = this.targetx
+	document.getElementById('target' + this.id).onclick = function () { clickObject (y, x) }
 	document.getElementById('coordsToMove').innerHTML = 'x = '  + targetx + ', y = ' + targety
 	if (targetx == this.x && targety == this.y) {
 		this.direction = directions.wait

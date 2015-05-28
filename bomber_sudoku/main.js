@@ -106,6 +106,8 @@ function init_game() {
 	if (bomberman) { //remove old bomberman image
 		var element = document.getElementById('bomberman' + bomberman.id)
 		element.parentNode.removeChild(element)
+		var element = document.getElementById('target' + bomberman.id)
+		element.parentNode.removeChild(element)	
 	}
 	bomberman = new Bomberman(0, 0, 0, 5, 0, 0)
 	if (bombermanTimer)
@@ -197,6 +199,7 @@ function checkFilling(y, x) {
 			setNWalls(wallsToBuild, 0, x, 9, 0)
 		}
 	}
+	//bomberman.generateWay()
 }
 
 //TODO: remove these test functions
