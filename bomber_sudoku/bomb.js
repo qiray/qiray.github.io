@@ -1,5 +1,6 @@
 
 var bombs = []
+var ExplosionImg, explosionImageText = 'images/explosion.jpg'
 
 function Bomb(id, x, y, power, timer) {
 	this.id = id
@@ -12,7 +13,7 @@ function Bomb(id, x, y, power, timer) {
 	this.drawx = document.getElementById('td' + y+x).offsetLeft + document.getElementById('mainTable').offsetLeft
 	this.drawy = document.getElementById('td' + y+x).offsetTop + document.getElementById('mainTable').offsetTop
 	
-	this.image = new Image(45, 45)
+	this.image = new Image(cellSize, cellSize)
 	this.image.src = 'images/bomb.png'
 	this.image.id = 'bomb' + id
 	this.image.style.position = 'absolute'
@@ -21,6 +22,10 @@ function Bomb(id, x, y, power, timer) {
 	this.image.style.zIndex = 8
 	this.image.onclick = function () { clickObject(y, x) }
 	document.getElementById('all').appendChild(this.image)
+	if (!ExplosionImg) { //preload explosion image
+		ExplosionImg = new Image(cellSize, cellSize)
+		ExplosionImg.src = explosionImageText
+	}
 }
 
 Bomb.prototype.process = function() {
@@ -83,7 +88,7 @@ Bomb.prototype.explode = function() {
 function destroyCell(x, y) {
 	if (walls[9*y + x])
 		return
-	document.getElementById('td' + y + x).setAttribute('background', 'images/explosion.jpg')
+	document.getElementById('td' + y + x).setAttribute('background', explosionImageText)
 	if (data[y][x] != '&nbsp')
 		remainingCells++
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = '&nbsp'

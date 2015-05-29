@@ -14,6 +14,7 @@ var popupVisible = 0 //1 when a popup window is visible
 var hints = 0 //number of hints
 var gameTimer = 0 //timer value
 var startTimer = 0 //1 when we start gameTimer
+var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = Math.floor(1.1*cellSize)
 
 function gameTimerToString() {
 	var hours = Math.floor(gameTimer/3600)
@@ -21,26 +22,17 @@ function gameTimerToString() {
 	if (minutes.length == 1)
 		minutes = "0" + minutes
 	if (seconds.length == 1)
-		seconds = "0" + seconds		
+		seconds = "0" + seconds
 	return (hours == 0 ? '' : hours + ':') + minutes + ':' + seconds
 }
 
 window.setInterval("if (startTimer) {gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString()}", 1000) //
 
 function resize() {
-	var divAll = document.getElementById('all'), size = divAll.clientHeight
-	divAll.style.left = window.innerWidth/2 - divAll.clientWidth/2
-	divAll.style.top = window.innerHeight > size ? window.innerHeight/2 - size/2 : 0
+	var divAll = document.getElementById('all'), size = document.getElementById('all').clientHeight
 	var overlay = document.getElementById('popup_overlay')
-	overlay.style.width = window.innerWidth
+	overlay.style.width = window.innerWidth - 10
 	overlay.style.height = window.innerHeight > size ? window.innerHeight : size
-	var popup = document.getElementById('popup'), height = popup.clientHeight == 0 ? 300 : popup.clientHeight
-	popup.style.left = window.innerWidth/2 - (popup.clientWidth == 0 ? 112 : popup.clientWidth/2)
-	popup.style.top = window.innerHeight > height ? window.innerHeight/2 - height/2 : 0
-	var info = document.getElementById('info')
-	height = info.clientHeight == 0 ? 200 : info.clientHeight
-	info.style.left = window.innerWidth/2- (info.clientWidth == 0 ? 100 : info.clientWidth/2)
-	info.style.top = window.innerHeight > height ? window.innerHeight/2 - height/2 : 0
 }
 
 function newGame() {
@@ -103,12 +95,8 @@ function init_game() {
 	rowWalls = new Array (9)
 	for (var i = 0; i < 9; i++)
 		squareWalls[i] = colWalls[i] = rowWalls[i] = 0
-	if (bomberman) { //remove old bomberman image
-		var element = document.getElementById('bomberman' + bomberman.id)
-		element.parentNode.removeChild(element)
-		var element = document.getElementById('target' + bomberman.id)
-		element.parentNode.removeChild(element)	
-	}
+	if (bomberman && !bomberman.destroyed) //remove old bomberman data
+		bomberman.destroy()
 	bomberman = new Bomberman(0, 0, 0, 5, 0, 0)
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
@@ -199,7 +187,6 @@ function checkFilling(y, x) {
 			setNWalls(wallsToBuild, 0, x, 9, 0)
 		}
 	}
-	//bomberman.generateWay()
 }
 
 //TODO: remove these test functions

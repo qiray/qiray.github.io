@@ -12,10 +12,10 @@
 </HEAD>
 <BODY onload="resize(); init_game()" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
 
-<div id="popup_overlay" style='position: absolute; top:0px; left:0px; background-color: lightgrey; z-index:10; opacity:0.5;display:none' onclick="hidePopup()">
+<div id="popup_overlay" style='position: absolute; top:0px; left:0px; width: 450px; height: 600px; background-color: lightgrey; z-index:10; opacity:0.5;display:none' onclick="hidePopup()">
 </div>
 
-<div id="popup" style='position: fixed; top:50%; left:50%; z-index:11; display:none;'>
+<div id="popup" style='position: fixed; top:50%; left:50%; margin-top: -150px; margin-left: -125px; z-index:11; display:none;'>
 <script type="text/javascript" language="JavaScript">
 document.write('<table border = 1 style="border:solid;background-color: #E0EEE0; border-radius:10px">')
 		for (var i = 0; i < 3; i++) {
@@ -31,10 +31,10 @@ document.write('</table>')
 </script>
 </div>
 
-<div id="info" style='position: fixed; z-index:12; display:none; width:200px; height:80px; border:5px solid #B4CDCD; background-color: #D1EEEE; border-radius:10px; text-align:center;line-height: 80px;'>
+<div id="info" style='position: fixed; z-index:12; display:none; width:200px; height:80px; top:50%; left:50%; margin-top: -40px; margin-left: -100px; border:5px solid #B4CDCD; background-color: #D1EEEE; border-radius:10px; text-align:center;line-height: 80px;'>
 You win!
 </div>
-<div id="all" style = 'position: absolute; top:0px; left:25px'>
+<div id="all" style = 'position: absolute; top:0px; left:50%; margin-left: -225px; width: 450px;'>
 <br>
 <table width="445">
 <tr>
@@ -67,7 +67,7 @@ You win!
 Ставить стены мышкой: <input type = 'checkbox' id = 'wallCheck' onchange = 'switchMouseWall()'><br>
 <input type = 'button' id = 'startStopButton' value = 'Стоп' onclick = 'switchStartStop()'> Сюда он идет: <span id = 'coordsToMove'>x = 0, y = 0</span>
 <script type="text/javascript" language="JavaScript">
-document.write('<table id = "mainTable" border = "1" height = "450" width = "450" style = "position: relative">')
+document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 + '" width = "' + cellSize*10 + '" style = "position: relative">')
 		init_sudoku();//init data
 		var i,j
 		for(i = 0; i < 9; i++) {
@@ -80,7 +80,7 @@ document.write('<table id = "mainTable" border = "1" height = "450" width = "450
 					document.write(' style = "border-right:2px solid #000000"')
 				else if (i%3 == 2)
 					document.write(' style = "border-bottom:2px solid #000000"')
-				document.write(' height = "45" width = "45" id = td' + i+j + ' onClick="handleClick(this)"><b>' + data[i][j] + '</b></td>')
+				document.write(' height = "' + cellSize + '" width = "' + cellSize + '" id = td' + i+j + ' onClick="handleClick(this)"><b>' + data[i][j] + '</b></td>')
 			}
 			document.write('</tr>')	
 		}

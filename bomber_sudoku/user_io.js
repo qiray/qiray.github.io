@@ -102,13 +102,14 @@ function hint() {
 		return
 	}
 	document.getElementById('hintsSpan').innerHTML = --hints
-	var index = Math.floor(Math.random() * 81)
-	while (1) {
-		if (initialData[index] || data[Math.floor(index/9)][index%9] != "&nbsp") 
-			index = Math.floor(Math.random() * 81)
-		else	
-			break
-	}
+	var index = 0, list = []
+	for (var i = 0; i < 9; i++) //y
+		for (var j = 0; j < 9; j++) { //x
+			index = 9*i + j
+			if (!initialData[index] && data[i][j] == "&nbsp") 
+				list.push(index)
+		}
+	index = Math.floor(Math.random() * list.length)
 	var x = index%9, y = Math.floor(index/9)
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
 	document.getElementById('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
