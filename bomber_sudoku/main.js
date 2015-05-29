@@ -97,7 +97,7 @@ function init_game() {
 		squareWalls[i] = colWalls[i] = rowWalls[i] = 0
 	if (bomberman && !bomberman.destroyed) //remove old bomberman data
 		bomberman.destroy()
-	bomberman = new Bomberman(0, 0, 0, 5, 0, 0)
+	bomberman = new Bomberman(0, 0, 0, 1, 0, 0)
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
 	bombermanTimer = setInterval('game_cycle()', game_delay)
@@ -127,6 +127,8 @@ function redraw() {
 //Game with bomberman logic
 
 function game_cycle() {
+	if (startTimer == 0)
+		return
 	if (startStop)
 		bomberman.AI()
 	for (var i = 0; i < bombs.length; i++) {

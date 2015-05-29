@@ -60,12 +60,12 @@ You win!
 </table>
 <!--TODO: remove these test objects -->
 <input type = 'button' value = 'Показать решение' onclick = 'showSolution()'><br>
-Скорость: <input type="range" min="1" max="10" id="speedRange" oninput="setSpeed()" value="5"><span id = 'speedSpan'>0</span><br>
+Скорость: <input type="range" min="1" max="10" id="speedRange" oninput="setSpeed()" value="1"><span id = 'speedSpan'>0</span><br>
 Мощность бомб: <input type="range" min="1" max="8" id="powerRange" oninput="setPower()" value="2"><span id = 'powerSpan'>0</span><br>
 Таймер бомб: <input type="range" min="1000" max="10000" step = '100' id="timerRange" oninput="setTimer()" value="3000"><span id = 'timerSpan'>0</span><br>
 Стен в награду: <input type="range" min="0" max="9" id="wallRange" oninput="setWallRange()" value="3"><span id = 'wallSpan'>3</span><br>
 Ставить стены мышкой: <input type = 'checkbox' id = 'wallCheck' onchange = 'switchMouseWall()'><br>
-<input type = 'button' id = 'startStopButton' value = 'Стоп' onclick = 'switchStartStop()'> Сюда он идет: <span id = 'coordsToMove'>x = 0, y = 0</span>
+<input type = 'button' id = 'startStopButton' value = 'Стоп' onclick = 'switchStartStop()'>
 <script type="text/javascript" language="JavaScript">
 document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 + '" width = "' + cellSize*10 + '" style = "position: relative">')
 		init_sudoku();//init data
