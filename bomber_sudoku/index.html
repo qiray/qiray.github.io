@@ -40,17 +40,19 @@ You win!
 <tr>
 	<td>
 		<b>Сложность:</b><br>
-		<select name="difficulty" id = 'difficultySelect' onchange ="difficultLevel=this.options[selectedIndex].value">
-			<option value="22">Элементарно</option>
-			<option value="32">Легко</option>
-			<option selected value="42">Норма</option>
-			<option value="52" >Трудно</option>
-			<option value="58">Ультра (рискнете?)</option>
-		</select><br><br>
+		<script type="text/javascript" language="JavaScript">
+			var text = '<select name= "difficulty" id = "difficultySelect" onchange = "difficultLevel=parseInt(this.options[selectedIndex].value)">' +
+					'<option value="' + trivial + '">Элементарно</option>' + 
+					'<option value="' + easy + '">Легко</option>' +
+					'<option selected value="' + medium + '">Норма</option>' +
+					'<option value="' + hard + '">Трудно</option>' +
+					'<option value="' + ultra + '">Ультра (рискнете?)</option>' +
+				'</select><br><br>'
+			document.write(text)			
+		</script>
 	</td>
-	<td style = "vertical-align: bottom" align="right">
-		<input type="button" id="hint" style="width: 10em" value="Подсказка" onClick="hint()"><br>
-		&nbspОсталось подсказок: <span id="hintsSpan"></span>
+	<td align="right">
+		<input type="button" id="hint" style="width: 10em" value="Подсказки" onClick="showHints()">
 	</td>
 	</tr>
 <tr>
@@ -86,6 +88,29 @@ document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 +
 		}
 document.write('</table><br><br>')
 </script>
+</div> <!--TODO: make menu -->
+<div id="mainMenu" style = 'display:none; position: absolute; top:25px; left:50%; margin-left: -225px; width: 450px; height: 400px; background-color: rgba(255, 255, 255, 0.5); border-radius: 10px; z-index: 20'>
+	<table width = "450">
+		<tr align = "center">
+			<td><br>Bombersudoku <script type="text/javascript" language="JavaScript">document.write(version)</script><br>&nbsp</td>
+		</tr>
+		<tr align = "center">
+			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Новая игра" onclick = ""></td>
+		</tr>
+		<tr align = "center">
+			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Уровень сложности" onclick = ""></td>
+		</tr>
+		<tr align = "center">
+			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Правила" onclick = ""></td>
+		</tr>
+		<tr align = "center">
+			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Пустая кнопка для красоты" onclick = ""></td>
+		</tr>
+		<tr align = "center">
+			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Об игре" onclick = ""></td>
+		</tr>
+	</table>
 </div>
 </BODY>
 </HTML>
+

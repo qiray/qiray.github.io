@@ -18,7 +18,7 @@ function enterDigit(digit) {
 	}
 	else {
 		if (wrongDigit(currentIndex, digit)) {
-			showInfo("Неверная цифра!")
+			showInfo(200, 80, '80px', "Неверная цифра!")
 			return
 		}
 		if (data[y][x] == '&nbsp')
@@ -69,15 +69,18 @@ function wrongDigit(index, digit) {
 	return false
 }
 
-function showInfo(text) {
+function showInfo(width, height, fontSize, text) {
 	popupVisible = 1
 	document.getElementById('popup_overlay').style.display = 'block'
 	document.getElementById('popup').style.display = 'none'
 	var info = document.getElementById('info')
+	info.style.width = width
+	info.style.height = height
+	info.style.lineHeight = fontSize
+	info.style.marginTop = -height/2
+	info.style.marginLeft = -width/2
+	info.innerHTML = text	
 	info.style.display = 'block'
-	info.innerHTML = text
-	if (startTimer != 0) //restore line height for short texts (not victory text)
-		info.style.lineHeight = '80px'
 }
 
 function showPopup() {
@@ -93,15 +96,15 @@ function hidePopup() {
 	popupVisible = 0
 }
 
-function hint() {
+function oneDigitHint() {
 	if (remainingCells == 0 || startTimer == 0)
 		return
 	document.getElementById('hint').blur()
-	if (hints == 0) {
-		showInfo("Больше нет подсказок")
+	if (oneDigitHints == 0) {
+		showInfo(200, 80, '80px', "Больше нет подсказок")
 		return
 	}
-	document.getElementById('hintsSpan').innerHTML = --hints
+	oneDigitHints--
 	var index = 0, list = []
 	for (var i = 0; i < 9; i++) //y
 		for (var j = 0; j < 9; j++) { //x
@@ -113,8 +116,54 @@ function hint() {
 	var x = index%9, y = Math.floor(index/9)
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
 	document.getElementById('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
-	showInfo("Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
+	showInfo(200, 80, '80px', "Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
 	checkFilling(y, x)
 	if (--remainingCells == 0) //victory checking
 		victory()
 }
+
+function stopBomberHint(time) {
+	if (stopBomberHints == 0) {
+		showInfo(200, 80, '80px', "Больше нет подсказок")
+		return
+	}
+	stopBomberHints--
+	bomberman.waitTimer = time*1000/game_delay
+	hidePopup()
+}
+
+function checkSolvability() { //awesome word
+	if (checkSolvabilityHints == 0) {
+		showInfo(200, 80, '80px', "Больше нет подсказок")
+		return
+	}
+	checkSolvabilityHints--
+	var remain = remainingCells
+	var tempData = new Array (9)
+	for (var i = 0; i < 9; i++) {
+		tempData[i] = new Array (9)
+		for (var j = 0; j < 9; j++)
+			tempData[i][j] = data[i][j]
+	}
+	if (solveSudoku(tempData, remain, 1, undefined))
+		showInfo(200, 80, '80px', 'Разрешимо')
+	else
+		showInfo(200, 80, '80px', 'Неразрешимо')	
+}
+
+function showHints() {
+	if (remainingCells == 0 || startTimer == 0)
+		return
+	document.getElementById('hint').blur()
+	var text = '<br><table width = "350">' + 
+		'<tr align = "center">' +
+			'<td width = "100"><input type = "button" style = "width: 25em" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()"></td>' +
+		'</tr><tr align = "center">' +
+			'<td width = "100"><input type = "button" style = "width: 25em" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)"></td>' +
+		'</tr>' + 
+		'</tr><tr align = "center">' +
+			'<td width = "100"><input type = "button" style = "width: 25em" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></td>' +
+		'</tr></table>'		
+	showInfo(350, 150, '25px', text)
+}
+

@@ -43,6 +43,7 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.way = []
 	this.wayIndex = 0
 	this.destroyed = 0
+	this.surrenderTimer = 0
 	this.setDirection()
 	
 	this.image = new Image(cellSize, cellSize)
@@ -252,34 +253,49 @@ Bomberman.prototype.plantBomb = function(power, timer) {
 	bombs[i] = new Bomb(i, this.x, this.y, power, timer)
 }
 
-Bomberman.prototype.surrender = function() {
-	alert('Тестовое сообщение о том, что я сдаюсь.') //TODO: animation
-	//this.destroyed = 1
-	this.destroy()
+Bomberman.prototype.surrenderAnimation = function()  {
+	if (this.surrenderTimer < 7)
+		this.drawy -= 15 - this.surrenderTimer
+	else
+		this.drawy += 15 + (this.surrenderTimer - 7)
+	this.surrenderTimer++
+	this.draw()
+	if (this.drawy > document.getElementById('mainTable').offsetTop + document.getElementById('td' + 8 + this.x).offsetTop + cellHalfSize) //bomberman fell too deep
+		this.destroy()
 }
+
+Bomberman.prototype.findNewTarget = function() {
+	var list = []
+	for (var i = 0; i < 81; i++)
+		if (!walls[i])
+			list.push(i)
+	if (list.length != 0) {
+		var index = list[Math.floor(Math.random()*list.length)]
+		this.setTarget(index%9, Math.floor(index/9))
+		this.waitTimer = 0
+	}
+	if (this.cantFindWay == 1 && this.waitTimer == 0)
+		this.waitTimer = 10 //wait 1 second
+} 
 
 Bomberman.prototype.AI = function() {
 	if (this.destroyed)
 		return
+	if (this.surrenderTimer) {
+		this.surrenderAnimation()
+		return
+	}
 	if (this.waitTimer <= 0 && this.direction == directions.wait && this.way.length == 0) {
-		var list = []
-		for (var i = 0; i < 81; i++)
-			if (!walls[i])
-				list.push(i)
-		if (list.length != 0) {
-			var index = list[Math.floor(Math.random()*list.length)]
-			this.setTarget(index%9, Math.floor(index/9))
-			this.waitTimer = 0
-		}
-		if (this.cantFindWay == 1 && this.waitTimer == 0)
-			this.waitTimer = 10
-		if (this.cantFindWay == 50) {
-			this.surrender()
+		this.findNewTarget()
+		if (this.cantFindWay == 50) { //surrender
+			this.surrenderTimer = 1
 			return
 		}		
 	} else {
 		this.waitTimer--
 	}
-	this.move()
+	if (this.waitTimer <= 0)
+		this.move()
 	this.draw()
 }
+

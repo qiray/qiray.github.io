@@ -25,16 +25,20 @@ function tryToSolve(tempData, y, x) { //Try to find correct digit for tempData[i
 		return "&nbsp"
 }
 
-function backtrackingSolve(tempData, remain) {
-	var currentX = -1, currentY = -1
+function backtrackingSolve(tempData, remain) { //TODO: maybe add another simple algorithms
+	var currentX = -1, currentY = -1, minValue = 10
 	for (var i = 0; i < 9; i++) {
 		if (currentX != -1 && currentY != -1)
 			break
 		for (var j = 0; j < 9; j++)
 			if (tempData[i][j] == "&nbsp") {
-				currentX = j
-				currentY = i
-				break
+				var len = findVariantsForCell(tempData, i, j).length
+				if (len == 0)
+					return false
+				if (len < minValue) {
+					currentX = j
+					currentY = i
+				}
 			}
 	}
 	if (currentX == -1 && currentY == -1)
@@ -103,3 +107,4 @@ function removeOneCell() {
 	initialData[index] = false
 	data[Math.floor(index/9)][index%9] = "&nbsp"
 }
+

@@ -99,3 +99,4 @@ function destroyCell(x, y) {
 			break
 		}
 }
+

@@ -11,9 +11,10 @@ var difficultLevel = medium //number of cells to remove
 var remainingCells = 0
 var currentIndex = 0 //for correct processing of popup window with digits to select
 var popupVisible = 0 //1 when a popup window is visible
-var hints = 0 //number of hints
+var oneDigitHints = 0, stopBomberHints = 0, checkSolvabilityHints = 0 //number of hints
 var gameTimer = 0 //timer value
 var startTimer = 0 //1 when we start gameTimer
+var version = '1.0'
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = Math.floor(1.1*cellSize)
 
 function gameTimerToString() {
@@ -72,16 +73,36 @@ function init_sudoku() {
 	}
 }
 
+function initNumberOfHints(one, stop, check) {
+	oneDigitHints = one
+	stopBomberHints = stop
+	checkSolvabilityHints = check
+}
+
+function setHints() {
+	switch (difficultLevel) {
+		case trivial:
+			initNumberOfHints(5, 3, 10)
+			break
+		case easy:
+			initNumberOfHints(3, 2, 7)
+			break
+		case medium:
+			initNumberOfHints(2, 1, 5)
+			break
+		default:
+			initNumberOfHints(1, 0, 3)
+			break						
+	}
+}
+
 function init_game() {
 	init_sudoku()
 	remainingCells = 0
 	newGame() //generate new field
 	if (difficultLevel == medium && document.getElementById('difficultySelect').selectedIndex != 2)
 		document.getElementById('difficultySelect').selectedIndex = 2
-	hints = Math.floor((81 - difficultLevel)/15) //init number of max hints
-	if (difficultLevel >= ultra)
-		hints = 0
-	document.getElementById('hintsSpan').innerHTML = hints	
+	setHints()
 	if (!walls)
 		walls = new Array(81)
 	for (var i = 0; i < 81; i++)
@@ -108,6 +129,7 @@ function init_game() {
 	document.getElementById("powerRange").value = document.getElementById('powerSpan').innerHTML = defaultBombPower
 	document.getElementById("wallRange").value = document.getElementById('wallSpan').innerHTML = wallsToBuild
 	document.getElementById('wallCheck').checked = false
+	mouseWall = 0
 	startStop = 1
 	document.getElementById('startStopButton').value = 'Стоп'
 }
@@ -115,7 +137,7 @@ function init_game() {
 function victory() {
 	startTimer = 0
 	document.getElementById('info').style.lineHeight = '40px'
-	showInfo("Вы выиграли! <br>Ваше время - " + gameTimerToString())
+	showInfo(200, 80, '40px', "Вы выиграли! <br>Ваше время - " + gameTimerToString())
 }
 
 function redraw() {
@@ -129,7 +151,7 @@ function redraw() {
 function game_cycle() {
 	if (startTimer == 0)
 		return
-	if (startStop)
+	if (startStop) //TODO: remove after tests
 		bomberman.AI()
 	for (var i = 0; i < bombs.length; i++) {
 		if (!bombs[i])
@@ -246,4 +268,6 @@ function showSolution() {
 	} else
 		text = 'Не могу решить.'
 	alert (text)
+
 }
+
