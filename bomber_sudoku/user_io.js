@@ -134,7 +134,7 @@ function setDifficultyMenu() {
 	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(easy) + '" onclick = "setDifficulty(easy)">' +
 	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(medium) + '" onclick = "setDifficulty(medium)">' + 
 	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(hard) + '" onclick = "setDifficulty(hard)">'
-	showInfo(400, 280, '30px', text)	
+	showInfo(400, 310, '30px', text)	
 }
 
 function showRules() {
