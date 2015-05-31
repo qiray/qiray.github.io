@@ -21,7 +21,7 @@ var gameTimer = 0 //timer value
 var sudokuTimerInterval
 var startTimer = 0 //1 when we start gameTimer
 var version = '1.0'
-var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = Math.floor(1.1*cellSize)
+var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 1.12*cellSize
 
 function gameTimerToString() {
 	var hours = Math.floor(gameTimer/3600)
@@ -228,10 +228,9 @@ function checkFilling(y, x) {
 var mouseWall = 0, startStop = 1
 
 function setCellSize() {
-	//var oldSize = cellSize
 	cellSize = parseInt(document.getElementById("sizeRange").value)
 	cellHalfSize = Math.floor(cellSize/2)
-	cellSizeWithBorders = Math.floor(1.1*cellSize)
+	cellSizeWithBorders = 1.12*cellSize
 	document.getElementById('cellSizeSpan').innerHTML = cellSize
 	document.getElementById('mainTable').setAttribute('width', 10*cellSize) 
 	document.getElementById('mainTable').setAttribute('height', 10*cellSize) 
@@ -249,7 +248,8 @@ function setCellSize() {
 		}
 	if (bomberman && !bomberman.destroyed) {
 		bomberman.image.style.height = bomberman.image.style.width = cellSize	
-		bomberman.target.style.height = bomberman.target.style.width = cellSizeWithBorders - 2
+		bomberman.target.style.height = cellSizeWithBorders - 0.5
+		bomberman.target.style.width = cellSizeWithBorders - 2
 		bomberman.target.style.left = document.getElementById('td' + bomberman.targety+bomberman.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
 		bomberman.target.style.top = document.getElementById('td' + bomberman.targety+bomberman.targetx).offsetTop + document.getElementById('mainTable').offsetTop
 		bomberman.drawx = document.getElementById('td' + bomberman.y+bomberman.x).offsetLeft + document.getElementById('mainTable').offsetLeft
@@ -310,6 +310,5 @@ function showSolution() {
 	} else
 		text = 'Не могу решить.'
 	alert (text)
-
 }
 

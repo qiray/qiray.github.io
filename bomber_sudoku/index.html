@@ -66,15 +66,18 @@ document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 +
 			document.write('<tr align = "center">')
 			for(j = 0; j < 9; j++) {
 				document.write('<td')
-				if (i%3 == 2 && j%3 == 2)
-					document.write(' style = "border-right:2px solid #000000; border-bottom:2px solid #000000"')
-				else if (j%3 == 2)
-					document.write(' style = "border-right:2px solid #000000"')
-				else if (i%3 == 2)
-					document.write(' style = "border-bottom:2px solid #000000"')
-				document.write(' height = "' + cellSize + '" width = "' + cellSize + '" id = td' + i+j + ' onClick="handleClick(this)"><b>' + data[i][j] + '</b></td>')
+				var text = ''
+				if (j%3 == 0)
+					text += 'border-left:2px solid #000000;'
+				if (i%3 == 0)
+					text += 'border-top:2px solid #000000;'					
+				if (j%3 == 2)
+					text += "border-right:2px solid #000000;"
+				if (i%3 == 2)
+					text += "border-bottom:2px solid #000000"
+				document.write(' style = "' + text + '" height = "' + cellSize + '" width = "' + cellSize + '" id = td' + i+j + ' onClick="handleClick(this)"><b>' + data[i][j] + '</b></td>')
 			}
-			document.write('</tr>')	
+			document.write('</tr>')
 		}
 document.write('</table><br><br>')
 </script>

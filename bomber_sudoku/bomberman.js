@@ -55,7 +55,7 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.image.style.zIndex = 9
 	this.image.onclick = function () { clickObject (y, x) }
 	document.getElementById('all').appendChild(this.image)
-	this.target = new Image(cellSizeWithBorders - 2, cellSizeWithBorders - 2)
+	this.target = new Image(cellSizeWithBorders - 2, cellSizeWithBorders - 0.5)
 	this.target.src = 'images/target.png'
 	this.target.id = 'target' + id
 	this.target.style.position = 'absolute'
