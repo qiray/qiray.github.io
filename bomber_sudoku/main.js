@@ -1,5 +1,10 @@
+
 /*
- * jsSudoku Copyright 2014 Yaroslav Zotov zotovyaa@mail.ru //TODO: add normal dates and copyrights
+ * Bombersudoku v 1.0
+ * Idea - Danil Mikhaylov
+ * Programming - Yaroslav Zotov
+ * Based on jsSudoku (https://sourceforge.net/projects/jssudoku/)
+ * 2015
  */
 
 var data = new Array(9) //this array is used to display digits
@@ -13,6 +18,7 @@ var currentIndex = 0 //for correct processing of popup window with digits to sel
 var popupVisible = 0 //1 when a popup window is visible
 var oneDigitHints = 0, stopBomberHints = 0, checkSolvabilityHints = 0 //number of hints
 var gameTimer = 0 //timer value
+var sudokuTimerInterval
 var startTimer = 0 //1 when we start gameTimer
 var version = '1.0'
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = Math.floor(1.1*cellSize)
@@ -27,12 +33,10 @@ function gameTimerToString() {
 	return (hours == 0 ? '' : hours + ':') + minutes + ':' + seconds
 }
 
-window.setInterval("if (startTimer) {gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString()}", 1000) //
-
 function resize() {
 	var divAll = document.getElementById('all'), size = document.getElementById('all').clientHeight
 	var overlay = document.getElementById('popup_overlay')
-	overlay.style.width = window.innerWidth - 10
+	overlay.style.width = window.innerWidth//  10
 	overlay.style.height = window.innerHeight > size ? window.innerHeight : size
 }
 
@@ -100,8 +104,6 @@ function init_game() {
 	init_sudoku()
 	remainingCells = 0
 	newGame() //generate new field
-	if (difficultLevel == medium && document.getElementById('difficultySelect').selectedIndex != 2)
-		document.getElementById('difficultySelect').selectedIndex = 2
 	setHints()
 	if (!walls)
 		walls = new Array(81)
@@ -122,12 +124,14 @@ function init_game() {
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
 	bombermanTimer = setInterval('game_cycle()', game_delay)
+	sudokuTimerInterval = setInterval("gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString()", 1000) //
 	redraw()
 	//TODO: remove
 	document.getElementById("speedRange").value = document.getElementById('speedSpan').innerHTML = bomberman.speed
 	document.getElementById("timerRange").value = document.getElementById('timerSpan').innerHTML = defaultBombTimer
 	document.getElementById("powerRange").value = document.getElementById('powerSpan').innerHTML = defaultBombPower
 	document.getElementById("wallRange").value = document.getElementById('wallSpan').innerHTML = wallsToBuild
+	document.getElementById("sizeRange").value = document.getElementById('cellSizeSpan').innerHTML = cellSize
 	document.getElementById('wallCheck').checked = false
 	mouseWall = 0
 	startStop = 1
@@ -135,6 +139,8 @@ function init_game() {
 }
 
 function victory() {
+	bomberman.surrenderTimer = 1
+	clearInterval(sudokuTimerInterval)
 	startTimer = 0
 	document.getElementById('info').style.lineHeight = '40px'
 	showInfo(200, 80, '40px', "Вы выиграли! <br>Ваше время - " + gameTimerToString())
@@ -149,15 +155,19 @@ function redraw() {
 //Game with bomberman logic
 
 function game_cycle() {
-	if (startTimer == 0)
-		return
 	if (startStop) //TODO: remove after tests
-		bomberman.AI()
+		bomberman.AI()	
+	var flag = 1
 	for (var i = 0; i < bombs.length; i++) {
 		if (!bombs[i])
 			continue
-		bombs[i].process()
+		if (startTimer) {
+			bombs[i].process()
+			flag = 0
+		}
 	}
+	if (bomberman.destroyed && flag)
+		clearInterval(bombermanTimer)
 }
 
 function setWall(x, y) {
@@ -216,6 +226,38 @@ function checkFilling(y, x) {
 //TODO: remove these test functions
 
 var mouseWall = 0, startStop = 1
+
+function setCellSize() {
+	//var oldSize = cellSize
+	cellSize = parseInt(document.getElementById("sizeRange").value)
+	cellHalfSize = Math.floor(cellSize/2)
+	cellSizeWithBorders = Math.floor(1.1*cellSize)
+	document.getElementById('cellSizeSpan').innerHTML = cellSize
+	document.getElementById('mainTable').setAttribute('width', 10*cellSize) 
+	document.getElementById('mainTable').setAttribute('height', 10*cellSize) 
+	document.getElementById('mainTable').style.left = (document.getElementById('all').clientWidth - document.getElementById('mainTable').clientWidth)/2
+	for (var i = 0; i < 9; i++)
+		for (var j = 0; j < 9; j++) {
+			document.getElementById('td' + i + j).setAttribute('width', cellSize)
+			document.getElementById('td' + i + j).setAttribute('height', cellSize)
+		}
+	for (var i = 0; i < bombs.length; i++)
+		if (bombs[i]) {
+			bombs[i].image.style.left = bombs[i].drawx = document.getElementById('td' + bombs[i].y+bombs[i].x).offsetLeft + document.getElementById('mainTable').offsetLeft
+			bombs[i].image.style.top = bombs[i].drawy = document.getElementById('td' + bombs[i].y+bombs[i].x).offsetTop + document.getElementById('mainTable').offsetTop
+			bombs[i].image.style.height = bombs[i].image.style.width = cellSize
+		}
+	if (bomberman && !bomberman.destroyed) {
+		bomberman.image.style.height = bomberman.image.style.width = cellSize	
+		bomberman.target.style.height = bomberman.target.style.width = cellSizeWithBorders - 2
+		bomberman.target.style.left = document.getElementById('td' + bomberman.targety+bomberman.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
+		bomberman.target.style.top = document.getElementById('td' + bomberman.targety+bomberman.targetx).offsetTop + document.getElementById('mainTable').offsetTop
+		bomberman.drawx = document.getElementById('td' + bomberman.y+bomberman.x).offsetLeft + document.getElementById('mainTable').offsetLeft
+		bomberman.drawy = document.getElementById('td' + bomberman.y+bomberman.x).offsetTop + document.getElementById('mainTable').offsetTop
+		bomberman.image.style.left = bomberman.drawx
+		bomberman.image.style.top = bomberman.drawy
+	}			
+}
 
 function setSpeed() {
 	if (bomberman)

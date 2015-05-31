@@ -96,6 +96,79 @@ function hidePopup() {
 	popupVisible = 0
 }
 
+function difficultyTostring(level) {
+	switch (level) {
+		case trivial:
+			return 'Элементарно'
+		case easy:
+			return 'Легко'
+		case medium:
+			return 'Норма'
+		case hard:
+			return 'Трудно'
+		case ultra:
+			return 'Ультра'
+		default:
+			return 'Неизвестно'
+	}
+}
+
+//main menu actions
+
+function startNewGame() {
+	document.getElementById('all').style.display = 'block'
+	document.getElementById('mainTable').style.left = (document.getElementById('all').clientWidth - document.getElementById('mainTable').clientWidth)/2
+	init_game()
+	document.getElementById('mainMenu').style.display = 'none'
+}
+
+function setDifficulty(level) {
+	difficultLevel = level
+	document.getElementById('difficultyButton').value = 'Уровень сложности: ' + difficultyTostring(difficultLevel)
+	hidePopup()
+}
+
+function setDifficultyMenu() {
+	var text = 'Выберите сложность:<br><input type = "button" style = "width: 27em; height: 5em;" value = "' + 
+	difficultyTostring(trivial) + '" onclick = "setDifficulty(trivial)">' + 
+	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(easy) + '" onclick = "setDifficulty(easy)">' +
+	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(medium) + '" onclick = "setDifficulty(medium)">' + 
+	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(hard) + '" onclick = "setDifficulty(hard)">'
+	showInfo(400, 280, '30px', text)	
+}
+
+function showRules() {
+	var text = '<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">В этой игре вам нужно решить классическую игру судоку: ' +
+	'требуется заполнить свободные клетки цифрами от 1 до 9 так, ' + 
+	'чтобы в каждой строке, в каждом столбце и в каждом малом квадрате 3×3 ' + 
+	'каждая цифра встречалась бы только один раз.</p>' + 
+	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">Однако, ваш противник ' +
+	'постарается навредить вам: он ставит бомбы, которые уничтожают ближайшие цифры, и, таким образом, ' + 
+	'разрушают вашу игровую стратегию.</p>' +
+	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">При полном заполнении строки, столбца или квадрата 3×3 ' +
+	'вы получаете бонус: стены, которые ограничивают передвижение бомбермена и взрывные волны. ' + 
+	'Также в вашем распоряжении имеется несколько видов подсказок.</p>' +
+	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">Вы готовы? Тогда вперед!</p>'
+	showInfo(450, 365, '18px', text)
+}
+
+function showAboutInfo() {
+	var text = '<div style = "margin: 20px; font-size: 16pt">Bombersudoku ' + version + '</div>' +
+	'<p>Автор идеи</p><h4>Данил Михайлов</h4>' +
+	'<p>Разработчик</p><h4>Ярослав Зотов</h4>' + 
+	'<p>Тестирование</p><h4>Данил Михайлов</h4>'
+	showInfo(250, 250, '12px', text)
+}
+
+function showMainMenu() {
+	clearInterval(sudokuTimerInterval)
+	clearInterval(bombermanTimer)
+	document.getElementById('all').style.display = 'none'
+	document.getElementById('mainMenu').style.display = 'block'	
+}
+
+//hints
+
 function oneDigitHint() {
 	if (remainingCells == 0 || startTimer == 0)
 		return
@@ -157,13 +230,13 @@ function showHints() {
 	document.getElementById('hint').blur()
 	var text = '<br><table width = "350">' + 
 		'<tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 25em" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()"></td>' +
+			'<td width = "100"><input type = "button" style = "width: 25em; height: 5em;" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()"></td>' +
 		'</tr><tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 25em" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)"></td>' +
+			'<td width = "100"><input type = "button" style = "width: 25em; height: 5em;" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)"></td>' +
 		'</tr>' + 
 		'</tr><tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 25em" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></td>' +
+			'<td width = "100"><input type = "button" style = "width: 25em; height: 5em;" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></td>' +
 		'</tr></table>'		
-	showInfo(350, 150, '25px', text)
+	showInfo(350, 250, '25px', text)
 }
 

@@ -10,14 +10,14 @@
 <SCRIPT type="text/javascript" language="JavaScript" src="bomberman.js"></SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="bomb.js"></SCRIPT>
 </HEAD>
-<BODY onload="resize(); init_game()" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
+<BODY onload="resize();" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
 
-<div id="popup_overlay" style='position: absolute; top:0px; left:0px; width: 450px; height: 600px; background-color: lightgrey; z-index:10; opacity:0.5;display:none' onclick="hidePopup()">
+<div id="popup_overlay" style='position: fixed; top:0px; left:0px; width: 450px; height: 600px; background-color: lightgrey; z-index:10; opacity:0.5;display:none' onclick="hidePopup()">
 </div>
 
 <div id="popup" style='position: fixed; top:50%; left:50%; margin-top: -150px; margin-left: -125px; z-index:11; display:none;'>
 <script type="text/javascript" language="JavaScript">
-document.write('<table border = 1 style="border:solid;background-color: #E0EEE0; border-radius:10px">')
+document.write('<table border = 1 style = "border:solid; background-color: #E0EEE0; border-radius:10px; font-size: 14pt">')
 		for (var i = 0; i < 3; i++) {
 			document.write('<tr align = "center">')
 			for (var j = 0; j < 3; j++) {
@@ -34,30 +34,19 @@ document.write('</table>')
 <div id="info" style='position: fixed; z-index:12; display:none; width:200px; height:80px; top:50%; left:50%; margin-top: -40px; margin-left: -100px; border:5px solid #B4CDCD; background-color: #D1EEEE; border-radius:10px; text-align:center;line-height: 80px;'>
 You win!
 </div>
-<div id="all" style = 'position: absolute; top:0px; left:50%; margin-left: -225px; width: 450px;'>
+<div id="all" style = 'display:none; position: absolute; top:0px; left:50%; margin-left: -225px; width: 450px;'>
 <br>
-<table width="445">
+<table width="450">
 <tr>
-	<td>
-		<b>Сложность:</b><br>
-		<script type="text/javascript" language="JavaScript">
-			var text = '<select name= "difficulty" id = "difficultySelect" onchange = "difficultLevel=parseInt(this.options[selectedIndex].value)">' +
-					'<option value="' + trivial + '">Элементарно</option>' + 
-					'<option value="' + easy + '">Легко</option>' +
-					'<option selected value="' + medium + '">Норма</option>' +
-					'<option value="' + hard + '">Трудно</option>' +
-					'<option value="' + ultra + '">Ультра (рискнете?)</option>' +
-				'</select><br><br>'
-			document.write(text)			
-		</script>
+	<td width = '33%' align = "center">
+		<input type="button" id="hint" style="width: 12em; height: 3em;" value="В главное меню" onClick="showMainMenu()">
 	</td>
-	<td align="right">
-		<input type="button" id="hint" style="width: 10em" value="Подсказки" onClick="showHints()">
-	</td>
-	</tr>
-<tr>
-	<td><input type="button" value="Новая игра" onClick="init_game();"></td>
-	<td style = "vertical-align: bottom" align="right">Прошло времени: <span id="timer">00:00</span><br></td>
+	<td width = '33%' align = "center" style = 'font-size: 10pt;'>
+		Прошло времени: <span id="timer">00:00</span>
+	</td>	
+	<td width = '33%' align = "center">
+		<input type="button" id="hint" style="width: 12em; height: 3em;" value="Подсказки" onClick="showHints()">
+	</td>	
 </tr>
 </table>
 <!--TODO: remove these test objects -->
@@ -66,10 +55,11 @@ You win!
 Мощность бомб: <input type="range" min="1" max="8" id="powerRange" oninput="setPower()" value="2"><span id = 'powerSpan'>0</span><br>
 Таймер бомб: <input type="range" min="1000" max="10000" step = '100' id="timerRange" oninput="setTimer()" value="3000"><span id = 'timerSpan'>0</span><br>
 Стен в награду: <input type="range" min="0" max="9" id="wallRange" oninput="setWallRange()" value="3"><span id = 'wallSpan'>3</span><br>
+Размер клетки: <input type="range" min="25" max="70" id="sizeRange" oninput="setCellSize()" value="45"><span id = 'cellSizeSpan'>45</span><br>
 Ставить стены мышкой: <input type = 'checkbox' id = 'wallCheck' onchange = 'switchMouseWall()'><br>
 <input type = 'button' id = 'startStopButton' value = 'Стоп' onclick = 'switchStartStop()'>
 <script type="text/javascript" language="JavaScript">
-document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 + '" width = "' + cellSize*10 + '" style = "position: relative">')
+document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 + '" width = "' + cellSize*10 + '" style = "position: relative; font-size: 14pt">')
 		init_sudoku();//init data
 		var i,j
 		for(i = 0; i < 9; i++) {
@@ -88,26 +78,29 @@ document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 +
 		}
 document.write('</table><br><br>')
 </script>
-</div> <!--TODO: make menu -->
-<div id="mainMenu" style = 'display:none; position: absolute; top:25px; left:50%; margin-left: -225px; width: 450px; height: 400px; background-color: rgba(255, 255, 255, 0.5); border-radius: 10px; z-index: 20'>
+</div>
+<div id="mainMenu" style = 'display:block; position: absolute; top:25px; left:50%; margin-left: -225px; width: 450px; height: 400px; background-color: rgba(255, 255, 255, 0.5); border-radius: 10px;'>
 	<table width = "450">
 		<tr align = "center">
-			<td><br>Bombersudoku <script type="text/javascript" language="JavaScript">document.write(version)</script><br>&nbsp</td>
+			<td style = 'font-size: 18pt'>Bombersudoku <script type="text/javascript" language="JavaScript">document.write(version)</script></td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Новая игра" onclick = ""></td>
+			<td><br><input type = "button" style = "width: 23em; height: 5em;" value = "Новая игра" onclick = "startNewGame()"></td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Уровень сложности" onclick = ""></td>
+			<td><script type="text/javascript" language="JavaScript">
+				document.write('<input type = "button" style = "width: 23em; height: 5em;" id = "difficultyButton" value = "Уровень сложности: ' + difficultyTostring(difficultLevel) + '" onclick = "setDifficultyMenu()">')
+			</script>
+			</td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Правила" onclick = ""></td>
+			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Правила" onclick = "showRules()"></td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Пустая кнопка для красоты" onclick = ""></td>
+			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Пустая кнопка для красоты" onclick = "alert('Я ничего не делаю. Пожалуйста, придумайте мне назначение.')"></td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Об игре" onclick = ""></td>
+			<td><input type = "button" style = "width: 23em; height: 5em;" value = "Об игре" onclick = "showAboutInfo()"></td>
 		</tr>
 	</table>
 </div>
