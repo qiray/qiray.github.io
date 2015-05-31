@@ -52,6 +52,7 @@ function newGame() {
 			if (obj != null) {
 				obj.removeAttribute('bgcolor') //to remove color from 'hinted' cells
 				obj.removeAttribute('background') //remove walls
+				obj.style.backgroundSize = 'auto'
 			}
 		}
 	for (i = 0; i < difficultLevel; i++)
