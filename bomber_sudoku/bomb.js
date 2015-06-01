@@ -91,7 +91,7 @@ function destroyCell(x, y) {
 	if (walls[9*y + x])
 		return
 	document.getElementById('td' + y + x).setAttribute('background', explosionImageText)
-    document.getElementById('td' + y + x).style.backgroundSize = '100%'
+	document.getElementById('td' + y + x).style.backgroundSize = '100%'
 	if (data[y][x] != '&nbsp')
 		remainingCells++
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = '&nbsp'

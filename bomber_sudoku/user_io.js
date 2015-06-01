@@ -129,16 +129,16 @@ function setDifficulty(level) {
 }
 
 function setDifficultyMenu() {
-	var text = 'Выберите сложность:<br><input type = "button" style = "width: 27em; height: 5em;" value = "' + 
+	var text = 'Выберите сложность:<br><input type = "button" style = "width: 350px; height: 70px;" value = "' + 
 	difficultyTostring(trivial) + '" onclick = "setDifficulty(trivial)">' + 
-	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(easy) + '" onclick = "setDifficulty(easy)">' +
-	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(medium) + '" onclick = "setDifficulty(medium)">' + 
-	'<input type = "button" style = "width: 27em; height: 5em;" value = "' + difficultyTostring(hard) + '" onclick = "setDifficulty(hard)">'
-	showInfo(400, 310, '30px', text)	
+	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(easy) + '" onclick = "setDifficulty(easy)">' +
+	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(medium) + '" onclick = "setDifficulty(medium)">' + 
+	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(hard) + '" onclick = "setDifficulty(hard)">'
+	showInfo(400, 330, '35px', text)	
 }
 
 function showRules() {
-	var text = '<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">В этой игре вам нужно решить классическую игру судоку: ' +
+	var text = '<div style = "font-family: Arial; font-size: 18px"><p align="justify" style = "margin: 10px 20px; text-indent: 20px;">В этой игре вам нужно решить классическую игру судоку: ' +
 	'требуется заполнить свободные клетки цифрами от 1 до 9 так, ' + 
 	'чтобы в каждой строке, в каждом столбце и в каждом малом квадрате 3×3 ' + 
 	'каждая цифра встречалась бы только один раз.</p>' + 
@@ -148,7 +148,7 @@ function showRules() {
 	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">При полном заполнении строки, столбца или квадрата 3×3 ' +
 	'вы получаете бонус: стены, которые ограничивают передвижение бомбермена и взрывные волны. ' + 
 	'Также в вашем распоряжении имеется несколько видов подсказок.</p>' +
-	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">Вы готовы? Тогда вперед!</p>'
+	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">Вы готовы? Тогда вперед!</p></div>'
 	showInfo(450, 365, '18px', text)
 }
 
@@ -164,7 +164,8 @@ function showMainMenu() {
 	clearInterval(sudokuTimerInterval)
 	clearInterval(bombermanTimer)
 	document.getElementById('all').style.display = 'none'
-	document.getElementById('mainMenu').style.display = 'block'	
+	document.getElementById('mainMenu').style.display = 'block'
+	document.getElementById('info').onclick = function() { return }
 }
 
 //hints
@@ -190,6 +191,7 @@ function oneDigitHint() {
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
 	document.getElementById('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
 	showInfo(200, 80, '80px', "Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
+	//document.getElementById('info').setAttribute('onclick', 'alert();')
 	checkFilling(y, x)
 	if (--remainingCells == 0) //victory checking
 		victory()
@@ -228,15 +230,14 @@ function showHints() {
 	if (remainingCells == 0 || startTimer == 0)
 		return
 	document.getElementById('hint').blur()
-	var text = '<br><table width = "350">' + 
+	var text = '<br><table width = "340">' + 
 		'<tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 25em; height: 5em;" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()"></td>' +
+			'<td width = "100"><input type = "button" style = "width: 300px; height: 75px;" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()"></td>' +
 		'</tr><tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 25em; height: 5em;" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)"></td>' +
+			'<td width = "100"><input type = "button" style = "width: 300px; height: 75px;" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)"></td>' +
 		'</tr>' + 
 		'</tr><tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 25em; height: 5em;" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></td>' +
-		'</tr></table>'		
-	showInfo(350, 250, '25px', text)
+			'<td width = "100"><input type = "button" style = "width: 300px; height: 75px;" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></td>' +
+		'</tr></table>'
+	showInfo(340, 280, '25px', text)
 }
-

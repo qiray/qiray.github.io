@@ -55,21 +55,12 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.image.style.zIndex = 9
 	this.image.onclick = function () { clickObject (y, x) }
 	document.getElementById('all').appendChild(this.image)
-	this.target = new Image(cellSizeWithBorders - 2, cellSizeWithBorders - 0.5)
-	this.target.src = 'images/target.png'
-	this.target.id = 'target' + id
-	this.target.style.position = 'absolute'
-	this.target.style.left = document.getElementById('td' + this.targety + this.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
-	this.target.style.top = document.getElementById('td' + this.targety + this.targetx).offsetTop + document.getElementById('mainTable').offsetTop
-	this.target.onclick = function() { }
-	this.target.style.zIndex = 8
-	document.getElementById('all').appendChild(this.target)	
+	document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/target.png')
+	document.getElementById('td' + this.targety + this.targetx).style.backgroundSize = '100%'
 }
 
 Bomberman.prototype.destroy = function() {
 	var element = document.getElementById('bomberman' + this.id)
-	element.parentNode.removeChild(element)
-	var element = document.getElementById('target' + this.id)
 	element.parentNode.removeChild(element)
 	this.destroyed = 1
 }
@@ -219,6 +210,7 @@ Bomberman.prototype.setDirection = function() {
 
 Bomberman.prototype.setTarget = function(targetx, targety) {
 	this.wayIndex = 0
+	var oldtargetx = this.targetx, oldtargety = this.targety
 	this.targetx = targetx
 	this.targety = targety
 	console.log(targetx + ' ' + targety)
@@ -232,10 +224,12 @@ Bomberman.prototype.setTarget = function(targetx, targety) {
 		this.direction = directions.wait
 		this.cantFindWay++
 	} else {
-		document.getElementById('target' + this.id).style.left = document.getElementById('td' + this.targety + this.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
-		document.getElementById('target' + this.id).style.top = document.getElementById('td' + this.targety + this.targetx).offsetTop + document.getElementById('mainTable').offsetTop
-		var y = this.targety, x = this.targetx
-		document.getElementById('target' + this.id).onclick = function () { clickObject (y, x) }
+		document.getElementById('td' + oldtargety + oldtargetx).removeAttribute('background')
+		document.getElementById('td' + oldtargety + oldtargetx).style.backgroundSize = 'auto'
+		if (walls[oldtargety*9 + oldtargetx])
+			document.getElementById('td' + oldtargety + oldtargetx).setAttribute('background', 'images/wall.jpg')
+		document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/target.png')
+		document.getElementById('td' + this.targety + this.targetx).style.backgroundSize = '100%'
 	}
 	this.setDirection()
 }
@@ -298,4 +292,3 @@ Bomberman.prototype.AI = function() {
 		this.move()
 	this.draw()
 }
-

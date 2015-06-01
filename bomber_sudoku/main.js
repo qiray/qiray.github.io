@@ -126,6 +126,10 @@ function init_game() {
 		clearInterval(bombermanTimer)
 	bombermanTimer = setInterval('game_cycle()', game_delay)
 	sudokuTimerInterval = setInterval("gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString()", 1000) //
+	document.getElementById('info').onclick = function(e) { 
+		if (e.target == document.getElementById('info'))
+			hidePopup()
+	}
 	redraw()
 	//TODO: remove
 	document.getElementById("speedRange").value = document.getElementById('speedSpan').innerHTML = bomberman.speed
@@ -248,11 +252,7 @@ function setCellSize() {
 			bombs[i].image.style.height = bombs[i].image.style.width = cellSize
 		}
 	if (bomberman && !bomberman.destroyed) {
-		bomberman.image.style.height = bomberman.image.style.width = cellSize	
-		bomberman.target.style.height = cellSizeWithBorders - 0.5
-		bomberman.target.style.width = cellSizeWithBorders - 2
-		bomberman.target.style.left = document.getElementById('td' + bomberman.targety+bomberman.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
-		bomberman.target.style.top = document.getElementById('td' + bomberman.targety+bomberman.targetx).offsetTop + document.getElementById('mainTable').offsetTop
+		bomberman.image.style.height = bomberman.image.style.width = cellSize
 		bomberman.drawx = document.getElementById('td' + bomberman.y+bomberman.x).offsetLeft + document.getElementById('mainTable').offsetLeft
 		bomberman.drawy = document.getElementById('td' + bomberman.y+bomberman.x).offsetTop + document.getElementById('mainTable').offsetTop
 		bomberman.image.style.left = bomberman.drawx
@@ -312,4 +312,3 @@ function showSolution() {
 		text = 'Не могу решить.'
 	alert (text)
 }
-
