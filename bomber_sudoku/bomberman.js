@@ -45,9 +45,11 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.destroyed = 0
 	this.surrenderTimer = 0
 	this.setDirection()
-	
+
+	this.currentFrame = 0
+	this.spritePath = 'images/Bomberman/Front/'
 	this.image = new Image(cellSize, cellSize)
-	this.image.src = 'images/Bomberman_test.png' //TODO: load textures
+	this.image.src = 'images/Bomberman/Front/0.png'
 	this.image.id = 'bomberman' + id
 	this.image.style.position = 'absolute'
 	this.image.style.left = this.drawx
@@ -176,6 +178,8 @@ Bomberman.prototype.checkDirection = function () {
 
 Bomberman.prototype.move = function () {
 	this.checkDirection()
+	this.image.src = this.spritePath + this.currentFrame + '.png'
+	this.currentFrame = (this.currentFrame + 1)%8
 	switch (this.direction) {
 		case directions.up :
 			this.drawy -= this.speed
@@ -199,7 +203,28 @@ Bomberman.prototype.calcDirection = function() {
 	var ydiff = this.way[this.wayIndex + 1].y - this.way[this.wayIndex].y
 	xdiff = xdiff == 8 ? -1 : xdiff == -8 ? 1 : xdiff
 	ydiff = ydiff == 8 ? -1 : ydiff == -8 ? 1 : ydiff
-	this.direction = xdiff + 9*ydiff //TODO: change texture
+	this.direction = xdiff + 9*ydiff
+	switch (this.direction) {
+		case directions.up:
+			this.spritePath = 'images/Bomberman/Back/'
+			break
+		case directions.down:
+			this.spritePath = 'images/Bomberman/Front/'
+			break
+		case directions.left:
+			this.spritePath = 'images/Bomberman/Side/'
+			break
+		case directions.right:
+			this.spritePath = 'images/Bomberman/Side/'
+			break
+			
+	}
+	this.currentFrame = 0
+	if (this.direction == directions.left)
+		this.image.style.transform = 'scale(-1, 1)'
+	else
+		this.image.style.transform = 'scale(1, 1)'
+	this.image.src = this.spritePath + '0.png'
 }
 
 Bomberman.prototype.setDirection = function() {

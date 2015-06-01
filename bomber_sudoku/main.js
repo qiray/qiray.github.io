@@ -97,7 +97,7 @@ function setHints() {
 			break
 		default:
 			initNumberOfHints(1, 0, 3)
-			break						
+			break
 	}
 }
 
@@ -161,7 +161,7 @@ function redraw() {
 
 function game_cycle() {
 	if (startStop) //TODO: remove after tests
-		bomberman.AI()	
+		bomberman.AI()
 	var flag = 1
 	for (var i = 0; i < bombs.length; i++) {
 		if (!bombs[i])
@@ -178,6 +178,7 @@ function game_cycle() {
 function setWall(x, y) {
 	walls[y*9 + x] = 1
 	document.getElementById('td' + y + x).setAttribute('background', 'images/wall.jpg')
+	document.getElementById('td' + y + x).style.backgroundSize = '100%'
 }
 
 function setNWalls(wallsToBuild, starty, startx, maxY, maxX) {

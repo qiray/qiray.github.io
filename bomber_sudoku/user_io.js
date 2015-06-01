@@ -156,8 +156,9 @@ function showAboutInfo() {
 	var text = '<div style = "margin: 20px; font-size: 16pt">Bombersudoku ' + version + '</div>' +
 	'<p>Автор идеи</p><h4>Данил Михайлов</h4>' +
 	'<p>Разработчик</p><h4>Ярослав Зотов</h4>' + 
-	'<p>Тестирование</p><h4>Данил Михайлов</h4>'
-	showInfo(250, 250, '12px', text)
+	'<p>Тестирование</p><h4>Данил Михайлов</h4>' + 
+	'<p>Спрайты</p><h4><a target = "_blank" href = "http://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-bomberman-inspired-sprites--gamedev-8541">Michael James Williams</a></h4>'
+	showInfo(250, 320, '12px', text)
 }
 
 function showMainMenu() {
