@@ -48,6 +48,7 @@ Bomb.prototype.destroy = function() {
 			continue
 		document.getElementById('td' + coords.y + this.x).removeAttribute('background') //remove explosions
 	}
+	document.getElementById('td' + bomberman.targety + bomberman.targetx).setAttribute('background', 'images/target.png')
 	bombs[this.id] = undefined
 }
 
