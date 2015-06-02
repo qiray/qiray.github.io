@@ -75,7 +75,7 @@ document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 +
 					text += "border-right:2px solid #000000;"
 				if (i%3 == 2)
 					text += "border-bottom:2px solid #000000;"
-				document.write(' style = " background-size: 100%; ' + text + '" height = "' + cellSize + '" width = "' + cellSize + '" id = td' + i+j + ' onClick="handleClick(this)"><b>' + data[i][j] + '</b></td>')
+				document.write(' style = " background-size: 100% 100%; ' + text + '" height = "' + cellSize + '" width = "' + cellSize + '" id = td' + i+j + ' onClick="handleClick(this)"><b>' + data[i][j] + '</b></td>')
 			}
 			document.write('</tr>')
 		}
