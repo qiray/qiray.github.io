@@ -17,6 +17,9 @@ var directions = {
 	wait: 0,
 }
 
+var bombermanTextures = [], bombermanTexturesLength = 8
+var bombermanPaths = ['images/Bomberman/Front/', 'images/Bomberman/Back/', 'images/Bomberman/Side/']
+
 function roundTheWorld(coords) {
 	if (coords.x < 0)
 		coords.x += 9
@@ -38,7 +41,6 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.direction = directions.wait //default
 	this.targetx = targetx
 	this.targety = targety
-	this.cantFindWay = 0
 	this.waitTimer = 0
 	this.way = []
 	this.wayIndex = 0
@@ -58,7 +60,6 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.image.onclick = function () { clickObject (y, x) }
 	document.getElementById('all').appendChild(this.image)
 	document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/target.png')
-	document.getElementById('td' + this.targety + this.targetx).style.backgroundSize = '100%'
 }
 
 Bomberman.prototype.destroy = function() {
@@ -73,37 +74,9 @@ Bomberman.prototype.generateWay = function () {
 		return this.way
 	}
 	this.way = []
-	var list = [], list_next = []
-	var lengths = new Array(81)
-	list_next.push ({x: this.x, y: this.y})
-	var d = 0
-	var finish_found = 0
-	for (var i = 0; i < 81; i++)
-		lengths[i] = walls[i] ? 10000 : -1
-	lengths[this.x + 9*this.y] = d
-	while (!finish_found && list_next.length) {
-		list = list_next
-		list_next = []
-		d++
-		for (var i in list) {
-			if (finish_found)
-				break
-			var x = list[i].x, y = list[i].y
-			var tmp = [{x: x - 1, y: y}, {x: x + 1, y: y}, {x: x, y: y - 1}, {x: x, y: y + 1}]
-			for (var j in tmp) {
-				roundTheWorld(tmp[j])
-				if (lengths[tmp[j].x + 9*tmp[j].y] >= 0)
-					continue
-				list_next.push(tmp[j])
-				lengths[tmp[j].x + 9*tmp[j].y] = d
-				if (tmp[j].x == this.targetx && tmp[j].y == this.targety) {
-					finish_found = 1
-					break
-				}
-			}
-		}
-	}
-	if (finish_found) {
+	var tmp = [], finish = {found: false}
+	var lengths = this.possibleMoves(tmp, 1, finish)
+	if (finish.found) {
 		d = lengths[this.targetx + 9*this.targety] 
 		var current = {x: this.targetx, y: this.targety}
 		this.way.push(current)
@@ -123,7 +96,6 @@ Bomberman.prototype.generateWay = function () {
 			}
 		}
 		this.way.reverse()
-		this.cantFindWay = 0
 	}
 	return this.way
 }
@@ -178,8 +150,10 @@ Bomberman.prototype.checkDirection = function () {
 
 Bomberman.prototype.move = function () {
 	this.checkDirection()
-	this.image.src = this.spritePath + this.currentFrame + '.png'
-	this.currentFrame = (this.currentFrame + 1)%8
+	if (this.direction != directions.wait) {
+		this.image.src = this.spritePath + this.currentFrame + '.png'
+		this.currentFrame = (this.currentFrame + 1)%bombermanTexturesLength
+	}
 	switch (this.direction) {
 		case directions.up :
 			this.drawy -= this.speed
@@ -245,17 +219,13 @@ Bomberman.prototype.setTarget = function(targetx, targety) {
 		return
 	}
 	this.way = this.generateWay()
-	if (this.way.length == 0) {
+	document.getElementById('td' + oldtargety + oldtargetx).removeAttribute('background')
+	if (walls[oldtargety*9 + oldtargetx])
+		document.getElementById('td' + oldtargety + oldtargetx).setAttribute('background', 'images/wall.jpg')
+	if (this.way.length == 0)
 		this.direction = directions.wait
-		this.cantFindWay++
-	} else {
-		document.getElementById('td' + oldtargety + oldtargetx).removeAttribute('background')
-		document.getElementById('td' + oldtargety + oldtargetx).style.backgroundSize = 'auto'
-		if (walls[oldtargety*9 + oldtargetx])
-			document.getElementById('td' + oldtargety + oldtargetx).setAttribute('background', 'images/wall.jpg')
+	else
 		document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/target.png')
-		document.getElementById('td' + this.targety + this.targetx).style.backgroundSize = '100%'
-	}
 	this.setDirection()
 }
 
@@ -283,19 +253,57 @@ Bomberman.prototype.surrenderAnimation = function()  {
 		this.destroy()
 }
 
+Bomberman.prototype.possibleMoves = function(result, searchFinish, finish) {
+	var list = [], list_next = []
+	var lengths = new Array(81)
+	list_next.push ({x: this.x, y: this.y})
+	var d = 0
+	var finish_found = 0
+	for (var i = 0; i < 81; i++)
+		lengths[i] = walls[i] ? 10000 : -1
+	lengths[this.x + 9*this.y] = d
+	while (!finish_found && list_next.length) {
+		list = list_next
+		list_next = []
+		d++
+		for (var i in list) {
+			if (searchFinish && finish_found)
+				break
+			var x = list[i].x, y = list[i].y
+			var tmp = [{x: x - 1, y: y}, {x: x + 1, y: y}, {x: x, y: y - 1}, {x: x, y: y + 1}]
+			for (var j in tmp) {
+				roundTheWorld(tmp[j])
+				if (lengths[tmp[j].x + 9*tmp[j].y] >= 0)
+					continue
+				list_next.push(tmp[j])
+				lengths[tmp[j].x + 9*tmp[j].y] = d
+				if (searchFinish && tmp[j].x == this.targetx && tmp[j].y == this.targety) {
+					finish_found = 1
+					break
+				}
+			}
+		}
+	}
+	for (var i = 0; i < 81; i++)
+		if (lengths[i] != 10000 && lengths[i] >= 0)
+			result.push(i)
+	if (finish)
+		finish.found = finish_found
+	return lengths
+}
+
 Bomberman.prototype.findNewTarget = function() {
 	var list = []
-	for (var i = 0; i < 81; i++)
-		if (!walls[i])
-			list.push(i)
+	this.possibleMoves(list)
+	if (list.length <= 3) {
+		this.surrenderTimer = 1
+		return
+	}
 	if (list.length != 0) {
 		var index = list[Math.floor(Math.random()*list.length)]
 		this.setTarget(index%9, Math.floor(index/9))
-		this.waitTimer = 0
 	}
-	if (this.cantFindWay == 1 && this.waitTimer == 0)
-		this.waitTimer = 10 //wait 1 second
-} 
+}
 
 Bomberman.prototype.AI = function() {
 	if (this.destroyed)
@@ -304,16 +312,12 @@ Bomberman.prototype.AI = function() {
 		this.surrenderAnimation()
 		return
 	}
-	if (this.waitTimer <= 0 && this.direction == directions.wait && this.way.length == 0) {
-		this.findNewTarget()
-		if (this.cantFindWay == 50) { //surrender
-			this.surrenderTimer = 1
-			return
-		}		
-	} else {
+	if (this.waitTimer > 0) {
 		this.waitTimer--
+		return
 	}
-	if (this.waitTimer <= 0)
-		this.move()
+	if (this.direction == directions.wait && this.way.length == 0)
+		this.findNewTarget()
+	this.move()
 	this.draw()
 }

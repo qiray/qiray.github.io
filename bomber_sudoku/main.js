@@ -52,7 +52,6 @@ function newGame() {
 			if (obj != null) {
 				obj.removeAttribute('bgcolor') //to remove color from 'hinted' cells
 				obj.removeAttribute('background') //remove walls
-				obj.style.backgroundSize = 'auto'
 			}
 		}
 	for (i = 0; i < difficultLevel; i++)
@@ -64,7 +63,7 @@ function newGame() {
 	document.getElementById('timer').innerHTML = '00:00'
 }
 
-function init_sudoku() {
+function init_data() {
 	var i, j
 	for(i = 0; i < 9; i++) {
 		if (!data[i])
@@ -76,6 +75,19 @@ function init_sudoku() {
 			initialData[i+j*9] = true //array for initial digits
 		}
 	}
+	if (ExplosionImg.length == 0) //preload explosion image
+		for (var i = 0; i < bombTexts.length; i++) {
+			var tmp = new Image(cellSize, cellSize)
+			tmp.src = bombTexts[i]
+			ExplosionImg.push(tmp)
+		}
+	if (bombermanTextures.length == 0)
+		for (var i = 0; i < bombermanTexturesLength; i++)
+			for (var j = 0; j < bombermanPaths.length; j++) {
+				var tmp = new Image(cellSize, cellSize)
+				tmp.src = bombermanPaths[j] + i + '.png'
+				bombermanTextures.push(tmp)
+			}
 }
 
 function initNumberOfHints(one, stop, check) {
@@ -102,7 +114,7 @@ function setHints() {
 }
 
 function init_game() {
-	init_sudoku()
+	init_data()
 	remainingCells = 0
 	newGame() //generate new field
 	setHints()
@@ -178,7 +190,6 @@ function game_cycle() {
 function setWall(x, y) {
 	walls[y*9 + x] = 1
 	document.getElementById('td' + y + x).setAttribute('background', 'images/wall.jpg')
-	document.getElementById('td' + y + x).style.backgroundSize = '100%'
 }
 
 function setNWalls(wallsToBuild, starty, startx, maxY, maxX) {

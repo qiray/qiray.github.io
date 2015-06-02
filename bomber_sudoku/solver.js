@@ -107,4 +107,3 @@ function removeOneCell() {
 	initialData[index] = false
 	data[Math.floor(index/9)][index%9] = "&nbsp"
 }
-

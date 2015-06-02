@@ -192,7 +192,6 @@ function oneDigitHint() {
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
 	document.getElementById('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
 	showInfo(200, 80, '80px', "Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
-	//document.getElementById('info').setAttribute('onclick', 'alert();')
 	checkFilling(y, x)
 	if (--remainingCells == 0) //victory checking
 		victory()
