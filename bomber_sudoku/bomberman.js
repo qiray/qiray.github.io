@@ -101,6 +101,11 @@ Bomberman.prototype.generateWay = function () {
 }
 
 Bomberman.prototype.checkDirection = function () {
+	if (walls[this.targety*9 + this.targetx]) {
+		this.direction = directions.wait
+		this.way = []
+		return
+	}		
 	if (this.drawx < document.getElementById('mainTable').offsetLeft - cellHalfSize)
 		this.drawx = document.getElementById('td' + this.y + 8).offsetLeft + document.getElementById('mainTable').offsetLeft + cellHalfSize
 	if (this.drawy < document.getElementById('mainTable').offsetTop - cellHalfSize)
@@ -134,17 +139,17 @@ Bomberman.prototype.checkDirection = function () {
 		return
 	var nextx = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetLeft + document.getElementById('mainTable').offsetLeft
 	var nexty = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetTop + document.getElementById('mainTable').offsetTop
-	if (Math.abs(this.drawx - nextx) <= this.speed/2 && Math.abs(this.drawy - nexty) <= this.speed/2) { //next cell reached
+	if (this.wayIndex < this.way.length - 1 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x] || //there is a wall so we need to recalc the way
+		walls[this.way[this.wayIndex].y*9 + this.way[this.wayIndex].x]) {
+		this.setTarget(this.targetx, this.targety)
+		return
+	}
+	if ((this.direction == directions.left || this.direction == directions.right) && Math.abs(this.drawx - nextx) <= this.speed/2
+		|| (this.direction == directions.down || this.direction == directions.up) && Math.abs(this.drawy - nexty) <= this.speed/2) { //next cell reached
 		this.wayIndex++
 		this.calcDirection()
 		this.x = this.way[this.wayIndex].x
 		this.y = this.way[this.wayIndex].y
-		this.drawx = nextx
-		this.drawy = nexty
-		if (this.wayIndex < this.way.length - 1 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x] || //there is a wall so we need to recalc the way
-		    walls[this.way[this.wayIndex].y*9 + this.way[this.wayIndex].x]) {
-			this.setTarget(this.targetx, this.targety)
-		}
 	}
 }
 

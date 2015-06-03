@@ -148,7 +148,6 @@ function init_game() {
 	document.getElementById("timerRange").value = document.getElementById('timerSpan').innerHTML = defaultBombTimer
 	document.getElementById("powerRange").value = document.getElementById('powerSpan').innerHTML = defaultBombPower
 	document.getElementById("wallRange").value = document.getElementById('wallSpan').innerHTML = wallsToBuild
-	document.getElementById("sizeRange").value = document.getElementById('cellSizeSpan').innerHTML = cellSize
 	document.getElementById('wallCheck').checked = false
 	mouseWall = 0
 	startStop = 1

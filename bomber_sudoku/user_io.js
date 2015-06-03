@@ -14,7 +14,7 @@ function enterDigit(digit) {
 	if (digit == 0) { //clear cell
 		if (data[y][x] != '&nbsp')
 			remainingCells++
-		data[y][x] = document.getElementById('td' + y + x).innerHTML = '&nbsp'	
+		data[y][x] = document.getElementById('td' + y + x).innerHTML = '&nbsp'
 	}
 	else {
 		if (wrongDigit(currentIndex, digit)) {
@@ -122,10 +122,28 @@ function startNewGame() {
 	document.getElementById('mainMenu').style.display = 'none'
 }
 
+function showAchievements() {
+	var text = '<h2>В будущем здесь будет что-то написано</h2>'
+	showInfo(400, 330, '35px', text)
+}
+
+function showSettings() {
+	var text = '<h3>Настройки:</h3><table width = "400">' +
+		'<tr align = "center"><td>' + 
+		'<input type = "button" style = "width: 330px; height: 75px;" value = "Уровень сложности: ' + 
+			difficultyTostring(difficultLevel) + '" onclick = "setDifficultyMenu()">' +
+		'</td></tr><tr align = "center"><td>' +
+		'<br>Размер клетки поля<br><input type="range" class = "big_range" style = "width: 300px" min="25" max="70" id="sizeRange" oninput="setCellSize()" value="' 
+			+ cellSize + '"><br><span id = "cellSizeSpan">' + cellSize + '</span><br>' + 
+		'</td></tr>' +
+	'</table>'
+	showInfo(400, 330, '35px', text)
+}
+
 function setDifficulty(level) {
 	difficultLevel = level
-	document.getElementById('difficultyButton').value = 'Уровень сложности: ' + difficultyTostring(difficultLevel)
 	hidePopup()
+	showSettings()
 }
 
 function setDifficultyMenu() {
@@ -134,7 +152,7 @@ function setDifficultyMenu() {
 	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(easy) + '" onclick = "setDifficulty(easy)">' +
 	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(medium) + '" onclick = "setDifficulty(medium)">' + 
 	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(hard) + '" onclick = "setDifficulty(hard)">'
-	showInfo(400, 330, '35px', text)	
+	showInfo(400, 330, '35px', text)
 }
 
 function showRules() {

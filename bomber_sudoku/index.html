@@ -9,6 +9,8 @@
 <SCRIPT type="text/javascript" language="JavaScript" src="solver.js"></SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="bomberman.js"></SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="bomb.js"></SCRIPT>
+<SCRIPT type="text/javascript" language="JavaScript" src="achievements.js"></SCRIPT>
+<link rel="stylesheet" type="text/css" href="range.css"/>
 </HEAD>
 <BODY onload="resize();" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
 
@@ -55,7 +57,7 @@ You win!
 Мощность бомб: <input type="range" min="1" max="8" id="powerRange" oninput="setPower()" value="2"><span id = 'powerSpan'>0</span><br>
 Таймер бомб: <input type="range" min="1000" max="10000" step = '100' id="timerRange" oninput="setTimer()" value="3000"><span id = 'timerSpan'>0</span><br>
 Стен в награду: <input type="range" min="0" max="9" id="wallRange" oninput="setWallRange()" value="3"><span id = 'wallSpan'>3</span><br>
-Размер клетки: <input type="range" min="25" max="70" id="sizeRange" oninput="setCellSize()" value="45"><span id = 'cellSizeSpan'>45</span><br>
+<!--Размер клетки: <input type="range" min="25" max="70" id="sizeRange" oninput="setCellSize()" value="45"><span id = 'cellSizeSpan'>45</span><br>-->
 Ставить стены мышкой: <input type = 'checkbox' id = 'wallCheck' onchange = 'switchMouseWall()'><br>
 <input type = 'button' id = 'startStopButton' value = 'Стоп' onclick = 'switchStartStop()'>
 <script type="text/javascript" language="JavaScript">
@@ -91,16 +93,13 @@ document.write('</table><br><br>')
 			<td><br><input type = "button" style = "width: 330px; height: 75px;" value = "Новая игра" onclick = "startNewGame()"></td>
 		</tr>
 		<tr align = "center">
-			<td><script type="text/javascript" language="JavaScript">
-				document.write('<input type = "button" style = "width: 330px; height: 75px;" id = "difficultyButton" value = "Уровень сложности: ' + difficultyTostring(difficultLevel) + '" onclick = "setDifficultyMenu()">')
-			</script>
-			</td>
+			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Достижения" onclick = "showAchievements()"></td>
+		</tr>
+		<tr align = "center">
+			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Настройки" onclick = "showSettings()"></td>
 		</tr>
 		<tr align = "center">
 			<td><input type = "button" style = "width: 330px; height: 75px;;" value = "Правила" onclick = "showRules()"></td>
-		</tr>
-		<tr align = "center">
-			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Пустая кнопка для красоты" onclick = "alert('Я ничего не делаю. Пожалуйста, придумайте мне назначение.')"></td>
 		</tr>
 		<tr align = "center">
 			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Об игре" onclick = "showAboutInfo()"></td>
