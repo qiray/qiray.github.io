@@ -12,7 +12,7 @@ var initData = [[2,5,7,1,3,9,4,8,6],[9,6,3,8,5,4,1,7,2],[1,8,4,6,7,2,9,5,3],[6,1
 var trueData = new Array(9) //this array contains true digits (not inputed by user)
 var initialData = new Array(81) //contains bool data: true if this cell is initially occupied with digit, else false
 var trivial = 22, easy = 32, medium = 42, hard = 52, ultra = 58 //some preseted difficult levels
-var difficultLevel = medium //number of cells to remove
+var difficultLevel = trivial//medium //number of cells to remove
 var remainingCells = 0
 var currentIndex = 0 //for correct processing of popup window with digits to select
 var popupVisible = 0 //1 when a popup window is visible

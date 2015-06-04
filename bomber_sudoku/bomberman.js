@@ -46,6 +46,8 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.wayIndex = 0
 	this.destroyed = 0
 	this.surrenderTimer = 0
+	this.needToPlantBomb = 1
+	this.nextTargetx = this.nextTargety = -1
 	this.setDirection()
 
 	this.currentFrame = 0
@@ -65,6 +67,14 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 Bomberman.prototype.destroy = function() {
 	var element = document.getElementById('bomberman' + this.id)
 	element.parentNode.removeChild(element)
+	document.getElementById('td' + this.targety + this.targetx).removeAttribute('background')
+	if (this.nextTargetx != -1 && this.nextTargety != -1) {
+		document.getElementById('td' + this.nextTargety + this.nextTargetx).removeAttribute('background')
+		if (walls[this.nextTargety*9 + this.nextTargetx])
+			document.getElementById('td' + this.nextTargety + this.nextTargetx).setAttribute('background', 'images/wall.jpg')		
+	}
+	if (walls[this.targety*9 + this.targetx])
+		document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/wall.jpg')
 	this.destroyed = 1
 }
 
@@ -101,11 +111,6 @@ Bomberman.prototype.generateWay = function () {
 }
 
 Bomberman.prototype.checkDirection = function () {
-	if (walls[this.targety*9 + this.targetx]) {
-		this.direction = directions.wait
-		this.way = []
-		return
-	}		
 	if (this.drawx < document.getElementById('mainTable').offsetLeft - cellHalfSize)
 		this.drawx = document.getElementById('td' + this.y + 8).offsetLeft + document.getElementById('mainTable').offsetLeft + cellHalfSize
 	if (this.drawy < document.getElementById('mainTable').offsetTop - cellHalfSize)
@@ -121,8 +126,11 @@ Bomberman.prototype.checkDirection = function () {
 		this.direction = directions.wait
 		this.way = []
 		this.x = this.targetx
-		this.y = this.targety	
-		this.plantBomb(defaultBombPower, defaultBombTimer)
+		this.y = this.targety
+		if (this.needToPlantBomb) 
+			this.plantBomb(defaultBombPower, defaultBombTimer)
+		else if (this.nextTargetx != this.targetx && this.nextTargety != this.targety)
+			this.setTarget(this.nextTargetx, this.nextTargety, 1)
 		return
 	}
 	
@@ -135,21 +143,51 @@ Bomberman.prototype.checkDirection = function () {
 		clickObject(Math.floor(y), Math.floor(x))
 	}
 	
+	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x] &&
+		 walls[this.way[this.wayIndex].y*9 + this.way[this.wayIndex].x]) {
+console.log(3)
+		var list = []
+		for (var i = 0; i < 81; i++)
+			if(!walls[i])
+				list.push(i)
+		if(list.length > 0) {
+			this.direction = directions.wait
+			this.way = []
+			var index = Math.floor(Math.random()*list.length)
+			this.x = list[index]%9
+			this.y = Math.floor(list[index]/9)
+console.log('Teleport: x = ' + this.x + ' y = ' + this.y)
+			this.drawx = document.getElementById('td' + this.y + this.x).offsetLeft + document.getElementById('mainTable').offsetLeft
+			this.drawy = document.getElementById('td' + this.y + this.x).offsetTop + document.getElementById('mainTable').offsetTop
+		} else
+			this.surrenderTimer = 1
+		return
+	}	
+	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x]) { //there is a wall so we need to recalc the way
+console.log(1)
+		this.x = this.way[this.wayIndex + 1].x
+		this.y = this.way[this.wayIndex + 1].y
+		this.nextTargetx = this.targetx
+		this.nextTargety = this.targety
+		this.setTarget(this.way[this.wayIndex].x, this.way[this.wayIndex].y, 0)
+		return
+	}
 	if (this.wayIndex >= this.way.length - 2)
 		return
 	var nextx = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetLeft + document.getElementById('mainTable').offsetLeft
-	var nexty = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetTop + document.getElementById('mainTable').offsetTop
-	if (this.wayIndex < this.way.length - 1 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x] || //there is a wall so we need to recalc the way
-		walls[this.way[this.wayIndex].y*9 + this.way[this.wayIndex].x]) {
-		this.setTarget(this.targetx, this.targety)
-		return
-	}
+	var nexty = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetTop + document.getElementById('mainTable').offsetTop	
 	if ((this.direction == directions.left || this.direction == directions.right) && Math.abs(this.drawx - nextx) <= this.speed/2
 		|| (this.direction == directions.down || this.direction == directions.up) && Math.abs(this.drawy - nexty) <= this.speed/2) { //next cell reached
 		this.wayIndex++
 		this.calcDirection()
 		this.x = this.way[this.wayIndex].x
 		this.y = this.way[this.wayIndex].y
+		if (walls[this.targety*9 + this.targetx]) {
+console.log(2)
+			this.direction = directions.wait
+			this.way = []
+			return
+		}		
 	}
 }
 
@@ -212,25 +250,38 @@ Bomberman.prototype.setDirection = function() {
 	this.calcDirection()
 }
 
-Bomberman.prototype.setTarget = function(targetx, targety) {
+Bomberman.prototype.setTarget = function(targetx, targety, needToPlantBomb) {
+	this.needToPlantBomb = needToPlantBomb
 	this.wayIndex = 0
 	var oldtargetx = this.targetx, oldtargety = this.targety
+	if (this.nextTargetx != -1 && this.nextTargety != -1) {
+		oldtargetx = this.nextTargetx
+		oldtargety = this.nextTargety
+	}
 	this.targetx = targetx
 	this.targety = targety
-	console.log(targetx + ' ' + targety)
+	console.log('target: x = ' + targetx + ' y = ' + targety + ' bomb = ' + needToPlantBomb)
 	if (targetx == this.x && targety == this.y) {
 		this.direction = directions.wait
 		this.way = []
 		return
 	}
 	this.way = this.generateWay()
-	document.getElementById('td' + oldtargety + oldtargetx).removeAttribute('background')
-	if (walls[oldtargety*9 + oldtargetx])
-		document.getElementById('td' + oldtargety + oldtargetx).setAttribute('background', 'images/wall.jpg')
 	if (this.way.length == 0)
 		this.direction = directions.wait
-	else
-		document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/target.png')
+	if (this.targetx == this.nextTargetx && this.nextTargety == this.targety) {
+		document.getElementById('td' + this.targety + this.targetx).removeAttribute('background')
+		if (walls[this.targety*9 + this.targetx])
+			document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/wall.jpg')	
+	}
+	if (this.needToPlantBomb) {
+		document.getElementById('td' + oldtargety + oldtargetx).removeAttribute('background')
+		if (walls[oldtargety*9 + oldtargetx])
+			document.getElementById('td' + oldtargety + oldtargetx).setAttribute('background', 'images/wall.jpg')
+		if (!walls[this.targety*9 + this.targetx])
+			document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/target.png')
+		this.nextTargetx = this.nextTargety = -1
+	}
 	this.setDirection()
 }
 
@@ -306,7 +357,8 @@ Bomberman.prototype.findNewTarget = function() {
 	}
 	if (list.length != 0) {
 		var index = list[Math.floor(Math.random()*list.length)]
-		this.setTarget(index%9, Math.floor(index/9))
+		console.log('findNewTarget')
+		this.setTarget(index%9, Math.floor(index/9), 1)
 	}
 }
 

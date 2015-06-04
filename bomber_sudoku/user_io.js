@@ -32,7 +32,11 @@ function enterDigit(digit) {
 }
 
 function clickObject (y, x) {
-	var index = y*9 + x		
+	var index = y*9 + x
+	if (mouseWall) { //TODO: remove after test
+		setWall(x, y)
+		return
+	}	
 	if (!initialData[index]) {//Don't allow to modify initial digits.
 		currentIndex = index
 		showPopup()
@@ -202,11 +206,11 @@ function oneDigitHint() {
 	for (var i = 0; i < 9; i++) //y
 		for (var j = 0; j < 9; j++) { //x
 			index = 9*i + j
-			if (!initialData[index] && data[i][j] == "&nbsp") 
+			if (data[i][j] == "&nbsp") 
 				list.push(index)
 		}
 	index = Math.floor(Math.random() * list.length)
-	var x = index%9, y = Math.floor(index/9)
+	var x = list[index]%9, y = Math.floor(list[index]/9)
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
 	document.getElementById('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
 	showInfo(200, 80, '80px', "Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
@@ -241,7 +245,7 @@ function checkSolvability() { //awesome word
 	if (solveSudoku(tempData, remain, 1, undefined))
 		showInfo(200, 80, '80px', 'Разрешимо')
 	else
-		showInfo(200, 80, '80px', 'Неразрешимо')	
+		showInfo(200, 80, '80px', 'Неразрешимо')
 }
 
 function showHints() {
