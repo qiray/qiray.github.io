@@ -10,14 +10,15 @@
 <SCRIPT type="text/javascript" language="JavaScript" src="bomberman.js"></SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="bomb.js"></SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="achievements.js"></SCRIPT>
+<script src="http://vk.com/js/api/xd_connection.js?2"  type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="range.css"/>
 </HEAD>
 <BODY onload="resize();" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
 
-<div id="popup_overlay" style='position: fixed; top:0px; left:0px; width: 450px; height: 600px; background-color: lightgrey; z-index:10; opacity:0.5;display:none' onclick="hidePopup()">
+<div id="popupOverlay" style='position: fixed; _position:absolute; top:0px; left:0px; width: 450px; height: 600px; background-color: lightgrey; z-index:10; opacity:0.5; filter: alpha(opacity=50); display:none' onclick="hidePopup()">
 </div>
 
-<div id="popup" style='position: fixed; top:50%; left:50%; margin-top: -150px; margin-left: -125px; z-index:11; display:none;'>
+<div id="popup" style='position: fixed; _position:absolute; top:50%; left:50%; margin-top: -150px; margin-left: -125px; z-index:11; display:none;'>
 <script type="text/javascript" language="JavaScript">
 document.write('<table border = 1 style = "border:solid; background-color: #E0EEE0; border-radius:10px; font-size: 14pt">')
 		for (var i = 0; i < 3; i++) {
@@ -33,7 +34,7 @@ document.write('</table>')
 </script>
 </div>
 
-<div id="info" style='position: fixed; z-index:12; display:none; width:200px; height:80px; top:50%; left:50%; margin-top: -40px; margin-left: -100px; border:5px solid #B4CDCD; background-color: #D1EEEE; border-radius:10px; text-align:center;line-height: 80px;'>
+<div id="info" style='position: fixed; _position:absolute; z-index:12; display:none; width:200px; height:80px; top:50%; left:50%; margin-top: -40px; margin-left: -100px; border:5px solid #B4CDCD; background-color: #D1EEEE; border-radius:10px; text-align:center;line-height: 80px;'>
 You win!
 </div>
 <div id="all" style = 'display:none; position: absolute; top:0px; left:50%; margin-left: -225px; width: 450px;'>
@@ -106,5 +107,31 @@ document.write('</table><br><br>')
 		</tr>
 	</table>
 </div>
+<script type="text/javascript">
+	VK.init(function() {
+		var info = document.location.search.substr(1).split("&")
+		console.log(info)
+		for (var i in info) {
+			if(info[i].indexOf('viewer_id') != -1) {
+				current_id = parseInt(info[i].split('=')[1])
+				break
+			}
+		}
+		console.log('success, user_id = ' + current_id)
+		if (current_id == 0)
+			vkInited = 0
+		else
+			vkInited = 1
+		/*VK.api('storage.get', {key: 'time', user_id: current_id}, function(data) {
+			console.log(data)
+			if (data.response != '')
+				console.log('Best time = ' + data.response)
+		})*/
+
+	}, function() {
+		console.log('fail')
+		vkInited = 0
+	}, '5.33');
+</script>
 </BODY>
 </HTML>

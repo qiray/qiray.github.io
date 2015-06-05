@@ -14,7 +14,7 @@ var directions = {
 	right: 1,
 	down: 9,
 	left: -1,
-	wait: 0,
+	wait: 0
 }
 
 var bombermanTextures = [], bombermanTexturesLength = 8

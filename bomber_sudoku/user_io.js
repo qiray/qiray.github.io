@@ -45,8 +45,8 @@ function clickObject (y, x) {
 
 function handleClick(obj) {
 	if (startTimer == 0)
-		return	
-	var index = parseInt(parseInt(obj.id[2]*9) + parseInt(obj.id[3])), flag = false
+		return
+	var index = parseInt(parseInt(obj.id.charAt(2))*9 + parseInt(obj.id.charAt(3))), flag = false
 	if (mouseWall) { //TODO: remove after test
 		setWall(parseInt(obj.id[3]), parseInt(obj.id[2]))
 		return
@@ -75,7 +75,7 @@ function wrongDigit(index, digit) {
 
 function showInfo(width, height, fontSize, text) {
 	popupVisible = 1
-	document.getElementById('popup_overlay').style.display = 'block'
+	document.getElementById('popupOverlay').style.display = 'block'
 	document.getElementById('popup').style.display = 'none'
 	var info = document.getElementById('info')
 	info.style.width = width
@@ -88,13 +88,13 @@ function showInfo(width, height, fontSize, text) {
 }
 
 function showPopup() {
-	document.getElementById('popup_overlay').style.display = 'block'
+	document.getElementById('popupOverlay').style.display = 'block'
 	document.getElementById('popup').style.display = 'block'
 	popupVisible = 1
 }
 
 function hidePopup() {
-	document.getElementById('popup_overlay').style.display = 'none'
+	document.getElementById('popupOverlay').style.display = 'none'
 	document.getElementById('popup').style.display = 'none'
 	document.getElementById('info').style.display = 'none'
 	popupVisible = 0
@@ -127,12 +127,29 @@ function startNewGame() {
 }
 
 function showAchievements() {
-	var text = '<h2>В будущем здесь будет что-то написано</h2>'
-	showInfo(400, 330, '35px', text)
+	var text = '<h2 style = "margin: 20px">Достижения</h2>' +
+		'<div style = "font-family: Arial; font-size: 16px; margin-top: -10px; margin-left:auto; margin-right:auto; padding: 10px; width: 370px; height: 245px; overflow-y: auto;">' + 
+		'<b>Лучшее время</b><br><table width = "350" style = "font-size: 12px;">' + 
+		'<tr>' +
+			'<td width = "25%">' + difficultyTostring(trivial) + '</td><td width = "25%">' + difficultyTostring(easy) + '</td><td width = "25%">' + difficultyTostring(medium) + '</td><td width = "25%">' + difficultyTostring(hard) + '</td>' +  
+		'</tr><tr>' +
+			'<td>' + (playerInfo.bestTime.trivial == 0 ? 'не пройдено' : gameTimerToString(playerInfo.bestTime.trivial)) + '</td>' + 
+			'<td>' + (playerInfo.bestTime.easy == 0 ? 'не пройдено' : gameTimerToString(playerInfo.bestTime.easy)) + '</td>' + 
+			'<td>' + (playerInfo.bestTime.medium == 0 ? 'не пройдено' : gameTimerToString(playerInfo.bestTime.medium)) + '</td>' + 
+			'<td>' + (playerInfo.bestTime.hard == 0 ? 'не пройдено' : gameTimerToString(playerInfo.bestTime.hard)) + '</td>' + 
+		'</tr></table>' + 
+		'<table width = "350">'
+	for (var i = 0; i < playerInfo.achievements.length; i++) {
+		var index = playerInfo.achievements[i]
+		text += '<tr align = "center"><td><img src="' + achievements[index].img +'" height="50" width="50"></td>' + 
+			'<td><b>' + achievements[index].name + '</b><br>' + achievements[index].description + '</td></tr>'
+	}
+	text += '</table></div>'
+	showInfo(400, 330, '21px', text)
 }
 
 function showSettings() {
-	var text = '<h3>Настройки:</h3><table width = "400">' +
+	var text = '<h3 style = "margin: 20px">Настройки:</h3><table width = "400">' +
 		'<tr align = "center"><td>' + 
 		'<input type = "button" style = "width: 330px; height: 75px;" value = "Уровень сложности: ' + 
 			difficultyTostring(difficultLevel) + '" onclick = "setDifficultyMenu()">' +
@@ -141,7 +158,7 @@ function showSettings() {
 			+ cellSize + '"><br><span id = "cellSizeSpan">' + cellSize + '</span><br>' + 
 		'</td></tr>' +
 	'</table>'
-	showInfo(400, 330, '35px', text)
+	showInfo(400, 275, '5px', text)
 }
 
 function setDifficulty(level) {

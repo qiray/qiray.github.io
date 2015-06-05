@@ -21,11 +21,21 @@ var gameTimer = 0 //timer value
 var sudokuTimerInterval
 var startTimer = 0 //1 when we start gameTimer
 var version = '1.0'
+var vkInited = 0, current_id = 0 //for VK API
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 1.12*cellSize
 
-function gameTimerToString() {
-	var hours = Math.floor(gameTimer/3600)
-	var minutes = Math.floor((gameTimer - hours*3600)/60).toString(), seconds = (gameTimer%60).toString()
+if (!Array.prototype.indexOf) { //IE is awesome
+	Array.prototype.indexOf = function(obj, start) {
+		for (var i = (start || 0), j = this.length; i < j; i++)
+			if (this[i] === obj)
+				return i
+		return -1
+	}
+}
+
+function gameTimerToString(timerValue) {
+	var hours = Math.floor(timerValue/3600)
+	var minutes = Math.floor((timerValue - hours*3600)/60).toString(), seconds = (timerValue%60).toString()
 	if (minutes.length == 1)
 		minutes = "0" + minutes
 	if (seconds.length == 1)
@@ -35,9 +45,10 @@ function gameTimerToString() {
 
 function resize() {
 	var divAll = document.getElementById('all'), size = document.getElementById('all').clientHeight
-	var overlay = document.getElementById('popup_overlay')
-	overlay.style.width = window.innerWidth//  10
-	overlay.style.height = window.innerHeight > size ? window.innerHeight : size
+	var overlay = document.getElementById('popupOverlay')
+	overlay.style.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth//  10
+	var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+	overlay.style.height = height > size ? height : size
 }
 
 function newGame() {
@@ -137,7 +148,7 @@ function init_game() {
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
 	bombermanTimer = setInterval('game_cycle()', game_delay)
-	sudokuTimerInterval = setInterval("gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString()", 1000) //
+	sudokuTimerInterval = setInterval("gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString(gameTimer)", 1000) //
 	document.getElementById('info').onclick = function(e) { 
 		if (e.target == document.getElementById('info'))
 			hidePopup()
@@ -159,7 +170,27 @@ function victory() {
 	clearInterval(sudokuTimerInterval)
 	startTimer = 0
 	document.getElementById('info').style.lineHeight = '40px'
-	showInfo(200, 80, '40px', "Вы выиграли! <br>Ваше время - " + gameTimerToString())
+	showInfo(200, 80, '40px', "Вы выиграли! <br>Ваше время - " + gameTimerToString(gameTimer))
+	playerInfo.statistics.victories++
+	playerInfo.statistics.totalTime += gameTimer
+	switch (difficultLevel) {
+		case trivial:
+			if (playerInfo.bestTime.trivial > gameTimer || playerInfo.bestTime.trivial == 0)
+				playerInfo.bestTime.trivial = gameTimer
+			break
+		case easy:
+			if (playerInfo.bestTime.easy > gameTimer || playerInfo.bestTime.easy == 0)
+				playerInfo.bestTime.easy = gameTimer
+			break
+		case medium:
+			if (playerInfo.bestTime.medium > gameTimer || playerInfo.bestTime.medium == 0)
+				playerInfo.bestTime.medium = gameTimer
+			break
+		case hard:
+			if (playerInfo.bestTime.hard > gameTimer || playerInfo.bestTime.hard == 0)
+				playerInfo.bestTime.hard = gameTimer
+			break
+	}
 }
 
 function redraw() {
@@ -171,6 +202,7 @@ function redraw() {
 //Game with bomberman logic
 
 function game_cycle() {
+	checkAchievements()
 	if (startStop) //TODO: remove after tests
 		bomberman.AI()
 	var flag = 1
@@ -182,8 +214,6 @@ function game_cycle() {
 			flag = 0
 		}
 	}
-	if (bomberman.destroyed && flag)
-		clearInterval(bombermanTimer)
 }
 
 function setWall(x, y) {
