@@ -129,7 +129,7 @@ Bomberman.prototype.checkDirection = function () {
 		this.y = this.targety
 		if (this.needToPlantBomb) 
 			this.plantBomb(defaultBombPower, defaultBombTimer)
-		else if (this.nextTargetx != this.targetx && this.nextTargety != this.targety)
+		else 
 			this.setTarget(this.nextTargetx, this.nextTargety, 1)
 		return
 	}
@@ -159,8 +159,16 @@ console.log(3)
 console.log('Teleport: x = ' + this.x + ' y = ' + this.y)
 			this.drawx = document.getElementById('td' + this.y + this.x).offsetLeft + document.getElementById('mainTable').offsetLeft
 			this.drawy = document.getElementById('td' + this.y + this.x).offsetTop + document.getElementById('mainTable').offsetTop
+			if (this.nextTargety != -1 && this.nextTargetx != -1) {
+				document.getElementById('td' + this.nextTargety + this.nextTargetx).removeAttribute('background')
+				if (walls[this.nextTargety*9 + this.nextTargetx])
+					document.getElementById('td' + this.nextTargety + this.nextTargetx).setAttribute('background', 'images/wall.jpg')
+			}
+			document.getElementById('td' + this.targety + this.targetx).removeAttribute('background')
+			if (walls[this.targety*9 + this.targetx])
+				document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/wall.jpg')
 		} else
-			this.surrenderTimer = 1
+			this.surrenderTimer = this.surrenderTimer == 0 ? 1 : this.surrenderTimer
 		return
 	}	
 	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x]) { //there is a wall so we need to recalc the way
@@ -254,7 +262,7 @@ Bomberman.prototype.setTarget = function(targetx, targety, needToPlantBomb) {
 	this.needToPlantBomb = needToPlantBomb
 	this.wayIndex = 0
 	var oldtargetx = this.targetx, oldtargety = this.targety
-	if (this.nextTargetx != -1 && this.nextTargety != -1) {
+	if (!this.needToPlantBomb && this.nextTargetx != -1 && this.nextTargety != -1) {
 		oldtargetx = this.nextTargetx
 		oldtargety = this.nextTargety
 	}
@@ -269,11 +277,6 @@ Bomberman.prototype.setTarget = function(targetx, targety, needToPlantBomb) {
 	this.way = this.generateWay()
 	if (this.way.length == 0)
 		this.direction = directions.wait
-	if (this.targetx == this.nextTargetx && this.nextTargety == this.targety) {
-		document.getElementById('td' + this.targety + this.targetx).removeAttribute('background')
-		if (walls[this.targety*9 + this.targetx])
-			document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/wall.jpg')	
-	}
 	if (this.needToPlantBomb) {
 		document.getElementById('td' + oldtargety + oldtargetx).removeAttribute('background')
 		if (walls[oldtargety*9 + oldtargetx])
@@ -352,9 +355,12 @@ Bomberman.prototype.findNewTarget = function() {
 	var list = []
 	this.possibleMoves(list)
 	if (list.length <= 3) {
-		this.surrenderTimer = 1
+		this.surrenderTimer = this.surrenderTimer == 0 ? 1 : this.surrenderTimer
 		return
 	}
+	var nextTargetIndex = list.indexOf(this.nextTargety*9 + this.nextTargetx)
+	if (nextTargetIndex != -1)
+		list.splice(nextTargetIndex, 1)
 	if (list.length != 0) {
 		var index = list[Math.floor(Math.random()*list.length)]
 		console.log('findNewTarget')

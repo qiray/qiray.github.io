@@ -166,7 +166,8 @@ function init_game() {
 }
 
 function victory() {
-	bomberman.surrenderTimer = 1
+	if (bomberman.surrenderTimer == 0)
+		bomberman.surrenderTimer = 1
 	clearInterval(sudokuTimerInterval)
 	startTimer = 0
 	document.getElementById('info').style.lineHeight = '40px'
