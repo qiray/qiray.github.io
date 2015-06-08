@@ -18,7 +18,7 @@ var directions = {
 }
 
 var bombermanTextures = [], bombermanTexturesLength = 8
-var bombermanPaths = ['images/Bomberman/Front/', 'images/Bomberman/Back/', 'images/Bomberman/Side/']
+var bombermanPaths = ['images/Bomberman/Front/', 'images/Bomberman/Back/', 'images/Bomberman/Left/', 'images/Bomberman/Right/']
 
 function roundTheWorld(coords) {
 	if (coords.x < 0)
@@ -237,18 +237,14 @@ Bomberman.prototype.calcDirection = function() {
 			this.spritePath = 'images/Bomberman/Front/'
 			break
 		case directions.left:
-			this.spritePath = 'images/Bomberman/Side/'
+			this.spritePath = 'images/Bomberman/Left/'
 			break
 		case directions.right:
-			this.spritePath = 'images/Bomberman/Side/'
+			this.spritePath = 'images/Bomberman/Right/'
 			break
 			
 	}
 	this.currentFrame = 0
-	if (this.direction == directions.left)
-		this.image.style.transform = 'scale(-1, 1)'
-	else
-		this.image.style.transform = 'scale(1, 1)'
 	this.image.src = this.spritePath + '0.png'
 }
 

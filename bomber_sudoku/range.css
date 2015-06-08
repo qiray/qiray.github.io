@@ -1,98 +1,14 @@
 
-.big_range {
-  -webkit-appearance: none;
-  width: 100%;
-  margin: 20.8px 0;
+.slider {
+	border-radius: 5px;
+	background: #DDDDDD;
 }
 
-.big_range:focus {
-  outline: none;
-}
-
-.big_range::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  background: #DDDDDD;
-  border-radius: 1.3px;
-  border: 0.2px solid #000101;
-}
-
-.big_range::-webkit-slider-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 50px;
-  width: 50px;
-  border-radius: 5px;
-  background: #BFEFFF;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -21px;
-}
-
-.big_range:focus::-webkit-slider-runnable-track {
-  background: #DDDDDD;
-}
-
-.big_range::-moz-range-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  background: #DDDDDD;
-  border-radius: 1.3px;
-  border: 0.2px solid #000101;
-}
-
-.big_range::-moz-range-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 50px;
-  width: 50px;
-  border-radius: 5px;
-  background: #BFEFFF;
-  cursor: pointer;
-}
-
-.big_range::-ms-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  background: transparent;
-  border-color: transparent;
-  color: transparent;
-}
-
-.big_range::-ms-fill-lower {
-  background: #2a6495;
-  border: 0.2px solid #000101;
-  border-radius: 2.6px;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-}
-
-.big_range::-ms-fill-upper {
-  background: #3071a9;
-  border: 0.2px solid #000101;
-  border-radius: 2.6px;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-}
-
-.big_range::-ms-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 50px;
-  width: 50px;
-  border-radius: 5px;
-  background: #BFEFFF;
-  cursor: pointer;
-  height: 8.4px;
-}
-
-.big_range:focus::-ms-fill-lower {
-  background: #3071a9;
-}
-
-.big_range:focus::-ms-fill-upper {
-  background: #367ebd;
+.knob {
+	position: relative;
+	width: 50px;
+	height: 50px;
+	border: 1px solid #000000;
+	border-radius: 5px;
+	background: #BFEFFF;
 }

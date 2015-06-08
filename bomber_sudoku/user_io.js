@@ -149,16 +149,20 @@ function showAchievements() {
 }
 
 function showSettings() {
-	var text = '<h3 style = "margin: 20px">Настройки:</h3><table width = "400">' +
+	var text = '<div onselectstart="return false;" unselectable="on" style = "-o-user-select:none;-moz-user-select: -moz-none;-khtml-user-select: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;">' + 
+	'<h3 style = "margin: 20px">Настройки:</h3><table width = "400">' +
 		'<tr align = "center"><td>' + 
 		'<input type = "button" style = "width: 330px; height: 75px;" value = "Уровень сложности: ' + 
 			difficultyTostring(difficultLevel) + '" onclick = "setDifficultyMenu()">' +
 		'</td></tr><tr align = "center"><td>' +
-		'<br>Размер клетки поля<br><input type="range" class = "big_range" style = "width: 300px" min="25" max="70" id="sizeRange" oninput="setCellSize()" value="' 
-			+ cellSize + '"><br><span id = "cellSizeSpan">' + cellSize + '</span><br>' + 
+		'<br>Размер клетки поля<br><div id = "rangeDiv" align="left" style = "height: 50px; width: 300px;" ></div><br><span id = "cellSizeSpan">' + cellSize + '</span><br>' + 
 		'</td></tr>' +
-	'</table>'
+	'</table></div>'
 	showInfo(400, 275, '5px', text)
+	cellSizeSlider = new slider('rangeDiv', 300, 25, 65, 1, setCellSize)
+	cellSizeSlider.setValue(cellSize)
+	document.getElementById('info').onmouseup = cellSizeSlider.mouseUp
+	document.getElementById('popupOverlay').onmouseup = cellSizeSlider.mouseUp
 }
 
 function setDifficulty(level) {
@@ -228,6 +232,7 @@ function oneDigitHint() {
 		}
 	index = Math.floor(Math.random() * list.length)
 	var x = list[index]%9, y = Math.floor(list[index]/9)
+	hintedCells.push({x: x, y: y, timer: 5000})
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
 	document.getElementById('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
 	showInfo(200, 80, '80px', "Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])

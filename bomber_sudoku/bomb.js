@@ -87,6 +87,7 @@ Bomb.prototype.explode = function() {
 function destroyCell(x, y) {
 	if (walls[9*y + x])
 		return
+	document.getElementById('td' + y + x).removeAttribute('bgcolor')
 	document.getElementById('td' + y + x).setAttribute('background', explosionImageText)
 	if (data[y][x] != '&nbsp')
 		remainingCells++

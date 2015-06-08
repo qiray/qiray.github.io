@@ -10,6 +10,7 @@
 <SCRIPT type="text/javascript" language="JavaScript" src="bomberman.js"></SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="bomb.js"></SCRIPT>
 <SCRIPT type="text/javascript" language="JavaScript" src="achievements.js"></SCRIPT>
+<SCRIPT type="text/javascript" language="JavaScript" src="slider.js"></SCRIPT>
 <script src="http://vk.com/js/api/xd_connection.js?2"  type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="range.css"/>
 </HEAD>
@@ -20,7 +21,7 @@
 
 <div id="popup" style='position: fixed; _position:absolute; top:50%; left:50%; margin-top: -150px; margin-left: -125px; z-index:11; display:none;'>
 <script type="text/javascript" language="JavaScript">
-document.write('<table border = 1 style = "border:solid; background-color: #E0EEE0; border-radius:10px; font-size: 14pt">')
+document.write('<table border = 1 style = "border:solid; border-color: #000000; background-color: #E0EEE0; border-radius:10px; font-size: 14pt">')
 		for (var i = 0; i < 3; i++) {
 			document.write('<tr align = "center">')
 			for (var j = 0; j < 3; j++) {
@@ -58,9 +59,8 @@ You win!
 Мощность бомб: <input type="range" min="1" max="8" id="powerRange" oninput="setPower()" value="2"><span id = 'powerSpan'>0</span><br>
 Таймер бомб: <input type="range" min="1000" max="10000" step = '100' id="timerRange" oninput="setTimer()" value="3000"><span id = 'timerSpan'>0</span><br>
 Стен в награду: <input type="range" min="0" max="9" id="wallRange" oninput="setWallRange()" value="3"><span id = 'wallSpan'>3</span><br>
-<!--Размер клетки: <input type="range" min="25" max="70" id="sizeRange" oninput="setCellSize()" value="45"><span id = 'cellSizeSpan'>45</span><br>-->
 Ставить стены мышкой: <input type = 'checkbox' id = 'wallCheck' onchange = 'switchMouseWall()'><br>
-<input type = 'button' id = 'startStopButton' value = 'Стоп' onclick = 'switchStartStop()'>
+&nbsp<input type = 'button' id = 'startStopButton' value = 'Стоп' onclick = 'switchStartStop()'>
 <script type="text/javascript" language="JavaScript">
 document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 + '" width = "' + cellSize*10 + '" style = "position: relative; font-size: 14pt">')
 		init_data();
@@ -68,7 +68,7 @@ document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 +
 		for(i = 0; i < 9; i++) {
 			document.write('<tr align = "center">')
 			for(j = 0; j < 9; j++) {
-				document.write('<td')
+				document.write('<td ')
 				var text = ''
 				if (j%3 == 0)
 					text += 'border-left:2px solid #000000;'

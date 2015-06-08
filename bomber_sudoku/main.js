@@ -17,12 +17,14 @@ var remainingCells = 0
 var currentIndex = 0 //for correct processing of popup window with digits to select
 var popupVisible = 0 //1 when a popup window is visible
 var oneDigitHints = 0, stopBomberHints = 0, checkSolvabilityHints = 0 //number of hints
+var hintedCells = []
 var gameTimer = 0 //timer value
 var sudokuTimerInterval
 var startTimer = 0 //1 when we start gameTimer
 var version = '1.0'
 var vkInited = 0, current_id = 0 //for VK API
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 1.12*cellSize
+var cellSizeSlider = undefined
 
 if (!Array.prototype.indexOf) { //IE is awesome
 	Array.prototype.indexOf = function(obj, start) {
@@ -142,6 +144,7 @@ function init_game() {
 	rowWalls = new Array (9)
 	for (var i = 0; i < 9; i++)
 		squareWalls[i] = colWalls[i] = rowWalls[i] = 0
+	hintedCells = []
 	if (bomberman && !bomberman.destroyed) //remove old bomberman data
 		bomberman.destroy()
 	bomberman = new Bomberman(0, 0, 0, 1, 0, 0)
@@ -206,14 +209,19 @@ function game_cycle() {
 	checkAchievements()
 	if (startStop) //TODO: remove after tests
 		bomberman.AI()
-	var flag = 1
+	for (var i = 0; i < hintedCells.length; i++) {
+		if (hintedCells[i].timer > 0) 
+			hintedCells[i].timer -= game_delay
+		else if (hintedCells[i].x != -1) {
+			document.getElementById('td' + hintedCells[i].y + hintedCells[i].x).removeAttribute('bgcolor')
+			hintedCells[i].x = hintedCells[i].y = -1
+		}
+	}
 	for (var i = 0; i < bombs.length; i++) {
 		if (!bombs[i])
 			continue
-		if (startTimer) {
+		if (startTimer)
 			bombs[i].process()
-			flag = 0
-		}
 	}
 }
 
@@ -270,12 +278,12 @@ function checkFilling(y, x) {
 	}
 }
 
-//TODO: remove these test functions
-
-var mouseWall = 0, startStop = 1
-
-function setCellSize() {
-	cellSize = parseInt(document.getElementById("sizeRange").value)
+function setCellSize(value) {
+	cellSize = value
+	if (cellSize > 70)
+		cellSize = 70
+	if (cellSize < 25)
+		cellSize = 25
 	cellHalfSize = Math.floor(cellSize/2)
 	cellSizeWithBorders = 1.12*cellSize
 	document.getElementById('cellSizeSpan').innerHTML = cellSize
@@ -287,20 +295,11 @@ function setCellSize() {
 			document.getElementById('td' + i + j).setAttribute('width', cellSize)
 			document.getElementById('td' + i + j).setAttribute('height', cellSize)
 		}
-	for (var i = 0; i < bombs.length; i++)
-		if (bombs[i]) {
-			bombs[i].image.style.left = bombs[i].drawx = document.getElementById('td' + bombs[i].y+bombs[i].x).offsetLeft + document.getElementById('mainTable').offsetLeft
-			bombs[i].image.style.top = bombs[i].drawy = document.getElementById('td' + bombs[i].y+bombs[i].x).offsetTop + document.getElementById('mainTable').offsetTop
-			bombs[i].image.style.height = bombs[i].image.style.width = cellSize
-		}
-	if (bomberman && !bomberman.destroyed) {
-		bomberman.image.style.height = bomberman.image.style.width = cellSize
-		bomberman.drawx = document.getElementById('td' + bomberman.y+bomberman.x).offsetLeft + document.getElementById('mainTable').offsetLeft
-		bomberman.drawy = document.getElementById('td' + bomberman.y+bomberman.x).offsetTop + document.getElementById('mainTable').offsetTop
-		bomberman.image.style.left = bomberman.drawx
-		bomberman.image.style.top = bomberman.drawy
-	}			
 }
+
+//TODO: remove these test functions
+
+var mouseWall = 0, startStop = 1
 
 function setSpeed() {
 	if (bomberman)
