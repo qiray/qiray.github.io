@@ -9,6 +9,8 @@ var wallsToBuild = 3
 
 var defaultBombPower = 2, defaultBombTimer = 3000
 
+var targetImagePath = 'images/target.png'
+
 var directions = {
 	up: -9,
 	right: 1,
@@ -61,20 +63,20 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.image.style.zIndex = 9
 	this.image.onclick = function () { clickObject (y, x) }
 	document.getElementById('all').appendChild(this.image)
-	document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/target.png')
+	setCellClassImage(document.getElementById('td' + this.targety + this.targetx), targetImagePath, 'targetIEFixBackgroundSize')
 }
 
 Bomberman.prototype.destroy = function() {
 	var element = document.getElementById('bomberman' + this.id)
 	element.parentNode.removeChild(element)
-	document.getElementById('td' + this.targety + this.targetx).removeAttribute('background')
+	setCellClassImage(document.getElementById('td' + this.targety + this.targetx), '', '')
 	if (this.nextTargetx != -1 && this.nextTargety != -1) {
-		document.getElementById('td' + this.nextTargety + this.nextTargetx).removeAttribute('background')
+		setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), '', '')
 		if (walls[this.nextTargety*9 + this.nextTargetx])
-			document.getElementById('td' + this.nextTargety + this.nextTargetx).setAttribute('background', 'images/wall.jpg')		
+			setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
 	}
 	if (walls[this.targety*9 + this.targetx])
-		document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/wall.jpg')
+		setCellClassImage(document.getElementById('td' + this.targety + this.targetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
 	this.destroyed = 1
 }
 
@@ -145,7 +147,6 @@ Bomberman.prototype.checkDirection = function () {
 	
 	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x] &&
 		 walls[this.way[this.wayIndex].y*9 + this.way[this.wayIndex].x]) {
-console.log(3)
 		var list = []
 		for (var i = 0; i < 81; i++)
 			if(!walls[i])
@@ -156,23 +157,23 @@ console.log(3)
 			var index = Math.floor(Math.random()*list.length)
 			this.x = list[index]%9
 			this.y = Math.floor(list[index]/9)
-console.log('Teleport: x = ' + this.x + ' y = ' + this.y)
+			console.log('Teleport: x = ' + this.x + ' y = ' + this.y)
 			this.drawx = document.getElementById('td' + this.y + this.x).offsetLeft + document.getElementById('mainTable').offsetLeft
 			this.drawy = document.getElementById('td' + this.y + this.x).offsetTop + document.getElementById('mainTable').offsetTop
 			if (this.nextTargety != -1 && this.nextTargetx != -1) {
-				document.getElementById('td' + this.nextTargety + this.nextTargetx).removeAttribute('background')
+				setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), '', '')
 				if (walls[this.nextTargety*9 + this.nextTargetx])
-					document.getElementById('td' + this.nextTargety + this.nextTargetx).setAttribute('background', 'images/wall.jpg')
+					setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
 			}
-			document.getElementById('td' + this.targety + this.targetx).removeAttribute('background')
+			setCellClassImage(document.getElementById('td' + this.targety + this.targetx), '', '')
 			if (walls[this.targety*9 + this.targetx])
-				document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/wall.jpg')
+				setCellClassImage(document.getElementById('td' + this.targety + this.target), 'images/wall.jpg', 'wallIEFixBackgroundSize')
 		} else
 			this.surrenderTimer = this.surrenderTimer == 0 ? 1 : this.surrenderTimer
 		return
 	}	
 	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x]) { //there is a wall so we need to recalc the way
-console.log(1)
+		console.log(1)
 		this.x = this.way[this.wayIndex + 1].x
 		this.y = this.way[this.wayIndex + 1].y
 		this.nextTargetx = this.targetx
@@ -191,11 +192,11 @@ console.log(1)
 		this.x = this.way[this.wayIndex].x
 		this.y = this.way[this.wayIndex].y
 		if (walls[this.targety*9 + this.targetx]) {
-console.log(2)
+			console.log(2)
 			this.direction = directions.wait
 			this.way = []
 			return
-		}		
+		}
 	}
 }
 
@@ -274,11 +275,11 @@ Bomberman.prototype.setTarget = function(targetx, targety, needToPlantBomb) {
 	if (this.way.length == 0)
 		this.direction = directions.wait
 	if (this.needToPlantBomb) {
-		document.getElementById('td' + oldtargety + oldtargetx).removeAttribute('background')
+		setCellClassImage(document.getElementById('td' + oldtargety + oldtargetx), '', '')
 		if (walls[oldtargety*9 + oldtargetx])
-			document.getElementById('td' + oldtargety + oldtargetx).setAttribute('background', 'images/wall.jpg')
+			setCellClassImage(document.getElementById('td' + oldtargety + oldtargetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
 		if (!walls[this.targety*9 + this.targetx])
-			document.getElementById('td' + this.targety + this.targetx).setAttribute('background', 'images/target.png')
+			setCellClassImage(document.getElementById('td' + this.targety + this.targetx), targetImagePath, 'targetIEFixBackgroundSize')
 		this.nextTargetx = this.nextTargety = -1
 	}
 	this.setDirection()

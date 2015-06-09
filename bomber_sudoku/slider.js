@@ -74,7 +74,7 @@ function slider(elemId, sliderWidth, range1, range2, step, funcToImplement) {
 	function setValue2(x)	// установка по значению
 	{
 		if(x < range1 || x > range2) 
-			alert('Value is not included into a slider range!')
+			return
 		else 
 			setValue((x-range1)*point)
 	}
@@ -84,13 +84,13 @@ function slider(elemId, sliderWidth, range1, range2, step, funcToImplement) {
 
 //////////////////////////////// слушатели событий ////////////////////////////////////
 
-	function sliderClick(e) {	
+	function sliderClick(e) {
 		var x;
 		if(isIE) {
 			if(event.srcElement != slider) return; //IE onclick bug
 			x = event.offsetX - Math.round(knobWidth/2);
 		}	
-		else x = e.pageX-sliderOffset-knobWidth/2;
+		else x = e.pageX - sliderOffset - knobWidth/2;
 		setValue(x);
 	}
 
@@ -107,10 +107,11 @@ function slider(elemId, sliderWidth, range1, range2, step, funcToImplement) {
 	}
 	
 	function touchMov(e) {
-		//alert('x: ' + e.touches[0].pageX + ', y: ' + e.touches[0].pageY)
+		if (e)
+			e.preventDefault()
 		var x;
 		if(isIE) x = event.clientX-offsX;
-		else x = e.touches[0].pageX-sliderOffset-knobWidth/2;
+		else x = e.touches[0].pageX - sliderOffset - knobWidth/2;
 		setValue(x);
 	}
 		

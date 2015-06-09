@@ -39,19 +39,17 @@ Bomb.prototype.destroy = function() {
 		roundTheWorld(coords)
 		if (walls[9*this.y + coords.x])
 			continue
-		document.getElementById('td' + this.y + coords.x).removeAttribute('background') //remove explosions
-		document.getElementById('td' + this.y + coords.x).className = ''
+		setCellClassImage(document.getElementById('td' + this.y + coords.x), '', '')  //remove explosions
 	}
 	for (var i = this.y - this.power; i <= this.y + this.power; i++) {
 		var coords = {x: this.x, y: i}
 		roundTheWorld(coords)
 		if (walls[9*coords.y + this.x])
 			continue
-		document.getElementById('td' + coords.y + this.x).removeAttribute('background') //remove explosions
-		document.getElementById('td' + coords.y + this.x).className = ''
+		setCellClassImage(document.getElementById('td' + coords.y + this.x), '', '')  //remove explosions
 	}
 	if (!walls[bomberman.targety*9 + bomberman.targetx] && !bomberman.destroyed)
-		document.getElementById('td' + bomberman.targety + bomberman.targetx).setAttribute('background', 'images/target.png')
+		setCellClassImage(document.getElementById('td' + bomberman.targety + bomberman.targetx), targetImagePath, 'targetIEFixBackgroundSize')
 	bombs[this.id] = undefined
 }
 
@@ -90,8 +88,7 @@ function destroyCell(x, y) {
 	if (walls[9*y + x])
 		return
 	document.getElementById('td' + y + x).removeAttribute('bgcolor')
-	document.getElementById('td' + y + x).className = 'explosionIEFixBackgroundSize'
-	document.getElementById('td' + y + x).setAttribute('background', explosionImageText)
+	setCellClassImage(document.getElementById('td' + y + x), explosionImageText, 'explosionIEFixBackgroundSize')
 	if (data[y][x] != '&nbsp')
 		remainingCells++
 	document.getElementById('td' + y + x).innerHTML = data[y][x] = '&nbsp'

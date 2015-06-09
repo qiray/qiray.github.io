@@ -3,7 +3,7 @@ function handleKey(event) {
 	if (event.keyCode == 27 || event.keyCode == 13) //Escape or Enter pressed
 		hidePopup()
 	if (popupVisible) {
-		var digit = String.fromCharCode(event.which)
+		var digit = String.fromCharCode(event.which || event.keyCode)
 		if (digit >= '0' && digit <= '9')
 			enterDigit(parseInt(digit))
 	}
@@ -48,7 +48,7 @@ function handleClick(obj) {
 		return
 	var index = parseInt(parseInt(obj.id.charAt(2))*9 + parseInt(obj.id.charAt(3))), flag = false
 	if (mouseWall) { //TODO: remove after test
-		setWall(parseInt(obj.id[3]), parseInt(obj.id[2]))
+		setWall(parseInt(obj.id.charAt(3)), parseInt(obj.id.charAt(2)))
 		return
 	}
 	if (!initialData[index]) {//Don't allow to modify initial digits.
@@ -159,7 +159,8 @@ function showSettings() {
 		'</td></tr>' +
 	'</table></div>'
 	showInfo(400, 275, '5px', text)
-	var maxSize = Math.floor(window.innerWidth/10)
+	var maxSize = Math.floor(Math.min(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth, 
+	                                  window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight)/10.5)
 	cellSizeSlider = new slider('rangeDiv', 300, 30, maxSize, 1, setCellSize)
 	cellSizeSlider.setValue(cellSize)
 	document.getElementById('info').onmouseup = cellSizeSlider.mouseUp
@@ -173,11 +174,11 @@ function setDifficulty(level) {
 }
 
 function setDifficultyMenu() {
-	var text = 'Выберите сложность:<br><input type = "button" style = "width: 350px; height: 70px;" value = "' + 
+	var text = '<div align = "center">Выберите сложность:<br><input type = "button" style = "width: 350px; height: 70px;" value = "' + 
 	difficultyTostring(trivial) + '" onclick = "setDifficulty(trivial)">' + 
 	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(easy) + '" onclick = "setDifficulty(easy)">' +
 	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(medium) + '" onclick = "setDifficulty(medium)">' + 
-	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(hard) + '" onclick = "setDifficulty(hard)">'
+	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(hard) + '" onclick = "setDifficulty(hard)"></div>'
 	showInfo(400, 330, '35px', text)
 }
 
@@ -278,14 +279,8 @@ function showHints() {
 	if (remainingCells == 0 || startTimer == 0)
 		return
 	document.getElementById('hint').blur()
-	var text = '<br><table width = "340">' + 
-		'<tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 300px; height: 75px;" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()"></td>' +
-		'</tr><tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 300px; height: 75px;" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)"></td>' +
-		'</tr>' + 
-		'</tr><tr align = "center">' +
-			'<td width = "100"><input type = "button" style = "width: 300px; height: 75px;" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></td>' +
-		'</tr></table>'
+	var text = '<div align = "center"><br><input type = "button" style = "width: 300px; height: 75px;" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()">' +
+		'<input type = "button" style = "width: 300px; height: 75px;" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)">' +
+		'<input type = "button" style = "width: 300px; height: 75px;" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></div>'
 	showInfo(340, 280, '25px', text)
 }

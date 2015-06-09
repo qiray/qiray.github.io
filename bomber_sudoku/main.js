@@ -35,6 +35,23 @@ if (!Array.prototype.indexOf) { //IE is awesome
 	}
 }
 
+if (!window.console) { //IE is the greatest browser: it doesn't work correctly when console isn't opened
+	var console = {
+		log : function(){},
+		warn : function(){},
+		error : function(){},
+		time : function(){},
+		timeEnd : function(){}
+	}
+}
+
+function detectIE() { //returns true if browser is IE ()
+	var ua = window.navigator.userAgent
+	if (ua.indexOf('MSIE ') > 0 || ua.indexOf('Trident/') >  0 || ua.indexOf('Edge/') > 0)
+		return true
+	return false
+}
+
 function gameTimerToString(timerValue) {
 	var hours = Math.floor(timerValue/3600)
 	var minutes = Math.floor((timerValue - hours*3600)/60).toString(), seconds = (timerValue%60).toString()
@@ -51,6 +68,7 @@ function resize() {
 	overlay.style.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth//  10
 	var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 	overlay.style.height = height > size ? height : size
+	setCellSize(cellSize)
 }
 
 function newGame() {
@@ -65,6 +83,7 @@ function newGame() {
 			if (obj != null) {
 				obj.removeAttribute('bgcolor') //to remove color from 'hinted' cells
 				obj.removeAttribute('background') //remove walls
+				obj.className = ''
 			}
 		}
 	for (i = 0; i < difficultLevel; i++)
@@ -153,7 +172,7 @@ function init_game() {
 	bombermanTimer = setInterval('game_cycle()', game_delay)
 	sudokuTimerInterval = setInterval("gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString(gameTimer)", 1000) //
 	document.getElementById('info').onclick = function(e) { 
-		if (e.target == document.getElementById('info'))
+		if ((event.srcElement || e.target) == document.getElementById('info'))
 			hidePopup()
 	}
 	redraw()
@@ -284,7 +303,8 @@ function setCellSize(value) {
 		cellSize = 30
 	cellHalfSize = Math.floor(cellSize/2)
 	cellSizeWithBorders = 1.12*cellSize
-	document.getElementById('cellSizeSpan').innerHTML = cellSize
+	if (document.getElementById('cellSizeSpan'))
+		document.getElementById('cellSizeSpan').innerHTML = cellSize
 	document.getElementById('mainTable').setAttribute('width', 10*cellSize) 
 	document.getElementById('mainTable').setAttribute('height', 10*cellSize) 
 	document.getElementById('mainTable').style.left = (document.getElementById('all').clientWidth - document.getElementById('mainTable').clientWidth)/2
@@ -293,6 +313,31 @@ function setCellSize(value) {
 			document.getElementById('td' + i + j).setAttribute('width', cellSize)
 			document.getElementById('td' + i + j).setAttribute('height', cellSize)
 		}
+	for (var i = 0; i < bombs.length; i++)
+		if (bombs[i]) {
+			bombs[i].image.style.left = bombs[i].drawx = document.getElementById('td' + bombs[i].y+bombs[i].x).offsetLeft + document.getElementById('mainTable').offsetLeft
+			bombs[i].image.style.top = bombs[i].drawy = document.getElementById('td' + bombs[i].y+bombs[i].x).offsetTop + document.getElementById('mainTable').offsetTop
+			bombs[i].image.style.height = bombs[i].image.style.width = cellSize
+		}
+	if (bomberman && !bomberman.destroyed) {
+		bomberman.image.style.height = bomberman.image.style.width = cellSize
+		bomberman.drawx = document.getElementById('td' + bomberman.y+bomberman.x).offsetLeft + document.getElementById('mainTable').offsetLeft
+		bomberman.drawy = document.getElementById('td' + bomberman.y+bomberman.x).offsetTop + document.getElementById('mainTable').offsetTop
+		bomberman.image.style.left = bomberman.drawx
+		bomberman.image.style.top = bomberman.drawy
+	}
+}
+
+function setCellClassImage(obj, image, className) {
+	if (obj) {
+		if (!detectIE()) {
+			if (image == '')
+				obj.removeAttribute('background')
+			else 
+				obj.setAttribute('background', image)
+		} else
+			obj.className = className
+	}
 }
 
 //TODO: remove these test functions
