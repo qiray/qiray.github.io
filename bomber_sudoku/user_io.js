@@ -159,7 +159,8 @@ function showSettings() {
 		'</td></tr>' +
 	'</table></div>'
 	showInfo(400, 275, '5px', text)
-	cellSizeSlider = new slider('rangeDiv', 300, 25, 65, 1, setCellSize)
+	var maxSize = Math.floor(window.innerWidth/10)
+	cellSizeSlider = new slider('rangeDiv', 300, 30, maxSize, 1, setCellSize)
 	cellSizeSlider.setValue(cellSize)
 	document.getElementById('info').onmouseup = cellSizeSlider.mouseUp
 	document.getElementById('popupOverlay').onmouseup = cellSizeSlider.mouseUp
@@ -207,6 +208,9 @@ function showAboutInfo() {
 function showMainMenu() {
 	clearInterval(sudokuTimerInterval)
 	clearInterval(bombermanTimer)
+	for (var i = 0; i < bombs.length; i++)
+		if (bombs[i])
+			bombs[i].destroy()
 	document.getElementById('all').style.display = 'none'
 	document.getElementById('mainMenu').style.display = 'block'
 	document.getElementById('info').onclick = function() { return }

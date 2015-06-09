@@ -1,5 +1,8 @@
 
-//source code from http://easywebscripts.net/javascript/slider.php
+/*
+ * Source code from http://easywebscripts.net/javascript/slider.php
+ * Some modifications were added by Yaroslav Zotov in 2015.
+ */
 
 function slider(elemId, sliderWidth, range1, range2, step, funcToImplement) {
 	var func = funcToImplement
@@ -49,6 +52,8 @@ function slider(elemId, sliderWidth, range1, range2, step, funcToImplement) {
 		slider.addEventListener("click", sliderClick, true);
 		knob.addEventListener("mouseup", endCoord, true);
 		slider.addEventListener("mouseup", endCoord, true);
+		knob.addEventListener("touchstart", startCoord, true);
+		knob.addEventListener("touchend", endCoord, true);
 		//slider.addEventListener("mouseout", endCoord, true);
 	}
 
@@ -93,12 +98,22 @@ function slider(elemId, sliderWidth, range1, range2, step, funcToImplement) {
 		if(isIE) {
 			offsX = event.clientX - parseInt(knob.style.left);
 			slider.onmousemove = mov;
+			slider.ontouchmove = touchMov;
 		}
 		else {
 			slider.addEventListener("mousemove", mov, true);
+			slider.addEventListener("touchmove", touchMov, true);
 		}
 	}
 	
+	function touchMov(e) {
+		//alert('x: ' + e.touches[0].pageX + ', y: ' + e.touches[0].pageY)
+		var x;
+		if(isIE) x = event.clientX-offsX;
+		else x = e.touches[0].pageX-sliderOffset-knobWidth/2;
+		setValue(x);
+	}
+		
 	function mov(e) {
 		var x;
 		if(isIE) x = event.clientX-offsX;
@@ -107,8 +122,13 @@ function slider(elemId, sliderWidth, range1, range2, step, funcToImplement) {
 	}
 
 	function endCoord() {
-		if(isIE) slider.onmousemove = null;	
-		else slider.removeEventListener("mousemove", mov, true);
+		if(isIE) {
+			slider.onmousemove = null;
+			slider.ontouchmove = null;
+		} else {
+			slider.removeEventListener("mousemove", mov, true);
+			slider.removeEventListener("touchmove", touchMov, true);
+		}
 	}
 
 	// объявляем функции setValue2 и getValue как методы класса

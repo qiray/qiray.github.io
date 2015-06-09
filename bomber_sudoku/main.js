@@ -279,11 +279,9 @@ function checkFilling(y, x) {
 }
 
 function setCellSize(value) {
-	cellSize = value
-	if (cellSize > 70)
-		cellSize = 70
-	if (cellSize < 25)
-		cellSize = 25
+	cellSize = parseInt(value)
+	if (cellSize < 30)
+		cellSize = 30
 	cellHalfSize = Math.floor(cellSize/2)
 	cellSizeWithBorders = 1.12*cellSize
 	document.getElementById('cellSizeSpan').innerHTML = cellSize

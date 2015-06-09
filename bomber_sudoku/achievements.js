@@ -10,6 +10,7 @@ var playerInfo = {
 		medium: 0,
 		hard: 0
 	},
+	cellSize: 0,
 	achievements: []
 }
 
@@ -61,9 +62,13 @@ function checkAchievements() {
 function loadFormVK() {
 	if (vkInited)
 		VK.api('storage.get', {key: 'playerInfo', user_id: current_id}, function(data) {
-console.log(data)
-			if (data.response != '')
+			console.log(data)
+			if (data.response != '') {
 				playerInfo = JSON.parse(data.response)
+				cellSize = playerInfo.cellSize
+				cellHalfSize = Math.floor(cellSize/2)
+				cellSizeWithBorders = 1.12*cellSize
+			}
 		})
 }
 

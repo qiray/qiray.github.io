@@ -1,18 +1,33 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-<meta charset="utf-8">
-<TITLE>Bombersudoku!</TITLE>
-<SCRIPT type="text/javascript" language="JavaScript" src="main.js"></SCRIPT>
-<SCRIPT type="text/javascript" language="JavaScript" src="user_io.js"></SCRIPT>
-<SCRIPT type="text/javascript" language="JavaScript" src="generate_field.js"></SCRIPT>
-<SCRIPT type="text/javascript" language="JavaScript" src="solver.js"></SCRIPT>
-<SCRIPT type="text/javascript" language="JavaScript" src="bomberman.js"></SCRIPT>
-<SCRIPT type="text/javascript" language="JavaScript" src="bomb.js"></SCRIPT>
-<SCRIPT type="text/javascript" language="JavaScript" src="achievements.js"></SCRIPT>
-<SCRIPT type="text/javascript" language="JavaScript" src="slider.js"></SCRIPT>
-<script src="http://vk.com/js/api/xd_connection.js?2"  type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" href="range.css"/>
+	<!--<meta content='width=450, maximum-scale=1.0, user-scalable=0' name='viewport'/> -->
+	<meta charset="utf-8">
+	<TITLE>Bombersudoku!</TITLE>
+	<SCRIPT type="text/javascript" language="JavaScript" src="main.js"></SCRIPT>
+	<SCRIPT type="text/javascript" language="JavaScript" src="user_io.js"></SCRIPT>
+	<SCRIPT type="text/javascript" language="JavaScript" src="generate_field.js"></SCRIPT>
+	<SCRIPT type="text/javascript" language="JavaScript" src="solver.js"></SCRIPT>
+	<SCRIPT type="text/javascript" language="JavaScript" src="bomberman.js"></SCRIPT>
+	<SCRIPT type="text/javascript" language="JavaScript" src="bomb.js"></SCRIPT>
+	<SCRIPT type="text/javascript" language="JavaScript" src="achievements.js"></SCRIPT>
+	<SCRIPT type="text/javascript" language="JavaScript" src="slider.js"></SCRIPT>
+	<script src="http://vk.com/js/api/xd_connection.js?2"  type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="range.css"/>
+	<style type="text/css">
+		.wallIEFixBackgroundSize {
+			filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/wall.jpg', sizingMethod='scale');
+			-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/wall.jpg', sizingMethod='scale')";
+		}
+		.targetIEFixBackgroundSize {
+			filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/target.png', sizingMethod='scale');
+			-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/target.png', sizingMethod='scale')";
+		}
+		.explosionIEFixBackgroundSize {
+			filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/explosion.png', sizingMethod='scale');
+			-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/explosion.png', sizingMethod='scale')";
+		}
+	</style>
 </HEAD>
 <BODY onload="resize();" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
 
@@ -45,8 +60,8 @@ You win!
 	<td width = '33%' align = "center">
 		<input type="button" id="hint" style="width: 150px; height: 45px;" value="В главное меню" onClick="showMainMenu()">
 	</td>
-	<td width = '33%' align = "center" style = 'font-size: 10pt;'>
-		Прошло времени: <span id="timer">00:00</span>
+	<td width = '33%' align = "center">
+		<span id="timer">00:00</span>
 	</td>	
 	<td width = '33%' align = "center">
 		<input type="button" id="hint" style="width: 150px; height: 45px;" value="Подсказки" onClick="showHints()">
