@@ -25,6 +25,7 @@ var version = '1.0'
 var vkInited = 0, current_id = 0 //for VK API
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 1.12*cellSize
 var cellSizeSlider = undefined
+var buttonsSizeAboveMainTable = 250 //TODO: change this size
 
 if (!Array.prototype.indexOf) { //IE is awesome
 	Array.prototype.indexOf = function(obj, start) {
@@ -312,6 +313,7 @@ function setCellSize(value) {
 		for (var j = 0; j < 9; j++) {
 			document.getElementById('td' + i + j).setAttribute('width', cellSize)
 			document.getElementById('td' + i + j).setAttribute('height', cellSize)
+			document.getElementById('td' + i + j).style.fontSize = cellSize/2 + 'px'
 		}
 	for (var i = 0; i < bombs.length; i++)
 		if (bombs[i]) {

@@ -160,8 +160,12 @@ function showSettings() {
 	'</table></div>'
 	showInfo(400, 275, '5px', text)
 	var maxSize = Math.floor(Math.min(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth, 
-	                                  window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight)/10.5)
+	                                  (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) - buttonsSizeAboveMainTable)/10.5)
+	if (maxSize < 30)
+		maxSize = 30
 	cellSizeSlider = new slider('rangeDiv', 300, 30, maxSize, 1, setCellSize)
+	if (cellSize < 30 || cellSize > maxSize)
+		cellSize = maxSize
 	cellSizeSlider.setValue(cellSize)
 	document.getElementById('info').onmouseup = cellSizeSlider.mouseUp
 	document.getElementById('popupOverlay').onmouseup = cellSizeSlider.mouseUp
