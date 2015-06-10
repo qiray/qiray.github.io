@@ -36,12 +36,12 @@
 
 <div id="popup" style='position: fixed; _position:absolute; top:0px; left: 0px; z-index:11; display:none;'>
 <script type="text/javascript" language="JavaScript">
-document.write('<table border = 1 style = "border:solid; border-color: #000000; background-color: #E0EEE0; border-radius:10px; font-size: 14pt">')
+document.write('<table width = "240" border = 1 style = "border:solid; border-color: #000000; background-color: #E0EEE0; border-radius:10px; font-size: 14pt">')
 		for (var i = 0; i < 3; i++) {
 			document.write('<tr align = "center">')
 			for (var j = 0; j < 3; j++) {
 				var digit = i*3 + j + 1
-				document.write('<td style="border:solid 1px" height = "75" width = "75" onclick="enterDigit(' + digit + ')"><b>' + digit + '</b></td>')
+				document.write('<td style="border:solid 1px;" height = "75" width = "75" onclick="enterDigit(' + digit + ')"><b>' + digit + '</b></td>')
 			}
 			document.write('</tr>')
 		}
