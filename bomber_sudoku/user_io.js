@@ -81,18 +81,24 @@ function showInfo(width, height, fontSize, text) {
 
 function showPopup() {
 	var x = currentIndex%9, y = Math.floor(currentIndex/9)
-	var obj = document.getElementById('td' + y + x).getBoundingClientRect()
+	var tdobj = document.getElementById('td' + y + x).getBoundingClientRect()
 	var mainTable = document.getElementById('mainTable'), mainTableRect = mainTable.getBoundingClientRect()
-	document.getElementById('popup').style.left = obj.left
-	document.getElementById('popup').style.top = obj.top
+	var left = tdobj.left - 115 + cellHalfSize, top = tdobj.top - 150 + cellHalfSize
+	var popupWindow = document.getElementById('popup')
+	popupWindow.style.left = left
+	popupWindow.style.top = top
 	document.getElementById('popupOverlay').style.display = 'block'
-	document.getElementById('popup').style.display = 'block'
-	var height = document.getElementById('popup').offsetHeight
-	var width = document.getElementById('popup').offsetWidth
-	if (obj.left + width > mainTable.offsetWidth + mainTableRect.left)
-		document.getElementById('popup').style.left = mainTable.offsetWidth + mainTableRect.left - width
-	if (obj.top + height > mainTable.offsetHeight + mainTableRect.top)
-		document.getElementById('popup').style.top = mainTable.offsetHeight + mainTableRect.top - height
+	popupWindow.style.display = 'block'
+	var height = popupWindow.offsetHeight
+	var width = popupWindow.offsetWidth
+	if (left < mainTableRect.left)
+		popupWindow.style.left = mainTableRect.left
+	if (top < mainTableRect.top)
+		popupWindow.style.top = mainTableRect.top	
+	if (left + width > mainTable.offsetWidth + mainTableRect.left)
+		popupWindow.style.left = mainTable.offsetWidth + mainTableRect.left - width
+	if (top + height > mainTable.offsetHeight + mainTableRect.top)
+		popupWindow.style.top = mainTable.offsetHeight + mainTableRect.top - height
 	popupVisible = 1
 }
 
