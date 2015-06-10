@@ -33,10 +33,6 @@ function enterDigit(digit) {
 
 function clickObject (y, x) {
 	var index = y*9 + x
-	if (mouseWall) { //TODO: remove after test
-		setWall(x, y)
-		return
-	}	
 	if (!initialData[index]) {//Don't allow to modify initial digits.
 		currentIndex = index
 		showPopup()
@@ -47,10 +43,6 @@ function handleClick(obj) {
 	if (startTimer == 0)
 		return
 	var index = parseInt(parseInt(obj.id.charAt(2))*9 + parseInt(obj.id.charAt(3))), flag = false
-	if (mouseWall) { //TODO: remove after test
-		setWall(parseInt(obj.id.charAt(3)), parseInt(obj.id.charAt(2)))
-		return
-	}
 	if (!initialData[index]) {//Don't allow to modify initial digits.
 		currentIndex = index
 		showPopup()

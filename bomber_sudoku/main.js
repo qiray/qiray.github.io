@@ -11,7 +11,7 @@ var data = new Array(9) //this array is used to display digits
 var initData = [[2,5,7,1,3,9,4,8,6],[9,6,3,8,5,4,1,7,2],[1,8,4,6,7,2,9,5,3],[6,1,2,7,9,8,5,3,4],[7,3,5,4,2,1,8,6,9],[4,9,8,5,6,3,7,2,1],[3,4,6,9,8,5,2,1,7],[8,7,1,2,4,6,3,9,5],[5,2,9,3,1,7,6,4,8]] //Awesome initial data. This array will be transformed to make new start conditions.
 var trueData = new Array(9) //this array contains true digits (not inputed by user)
 var initialData = new Array(81) //contains bool data: true if this cell is initially occupied with digit, else false
-var trivial = 22, easy = 32, medium = 42, hard = 52, ultra = 58 //some preseted difficult levels
+var trivial = 22, easy = 32, medium = 40, hard = 50, ultra = 54 //some preseted difficult levels
 var difficultLevel = trivial//medium //number of cells to remove
 var remainingCells = 0
 var currentIndex = 0 //for correct processing of popup window with digits to select
@@ -25,7 +25,7 @@ var version = '1.0'
 var vkInited = 0, current_id = 0 //for VK API
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 1.12*cellSize
 var cellSizeSlider = undefined
-var buttonsSizeAboveMainTable = 250 //TODO: change this size
+var buttonsSizeAboveMainTable = 50 //height of main menu and hints button
 
 if (!Array.prototype.indexOf) { //IE is awesome
 	Array.prototype.indexOf = function(obj, start) {
@@ -177,15 +177,6 @@ function init_game() {
 			hidePopup()
 	}
 	redraw()
-	//TODO: remove
-	document.getElementById("speedRange").value = document.getElementById('speedSpan').innerHTML = bomberman.speed
-	document.getElementById("timerRange").value = document.getElementById('timerSpan').innerHTML = defaultBombTimer
-	document.getElementById("powerRange").value = document.getElementById('powerSpan').innerHTML = defaultBombPower
-	document.getElementById("wallRange").value = document.getElementById('wallSpan').innerHTML = wallsToBuild
-	document.getElementById('wallCheck').checked = false
-	mouseWall = 0
-	startStop = 1
-	document.getElementById('startStopButton').value = 'Стоп'
 }
 
 function victory() {
@@ -227,8 +218,7 @@ function redraw() {
 
 function game_cycle() {
 	checkAchievements()
-	if (startStop) //TODO: remove after tests
-		bomberman.AI()
+	bomberman.AI()
 	for (var i = 0; i < hintedCells.length; i++) {
 		if (hintedCells[i].timer > 0) 
 			hintedCells[i].timer -= game_delay
@@ -306,7 +296,10 @@ function setCellSize(value) {
 	cellSizeWithBorders = 1.12*cellSize
 	if (document.getElementById('cellSizeSpan'))
 		document.getElementById('cellSizeSpan').innerHTML = cellSize
-	document.getElementById('mainTable').setAttribute('width', 10*cellSize) 
+	document.getElementById('mainTable').setAttribute('width', 10*cellSize)
+	var size = cellSize < 45 ? 45 : cellSize
+	document.getElementById('buttonsTable').setAttribute('width', 10*size)
+	document.getElementById('buttonsTable').style.marginLeft = -5*size
 	document.getElementById('mainTable').setAttribute('height', 10*cellSize) 
 	document.getElementById('mainTable').style.left = (document.getElementById('all').clientWidth - document.getElementById('mainTable').clientWidth)/2
 	for (var i = 0; i < 9; i++)
@@ -340,61 +333,4 @@ function setCellClassImage(obj, image, className) {
 		} else
 			obj.className = className
 	}
-}
-
-//TODO: remove these test functions
-
-var mouseWall = 0, startStop = 1
-
-function setSpeed() {
-	if (bomberman)
-		bomberman.speed = parseInt(document.getElementById("speedRange").value)
-	document.getElementById('speedSpan').innerHTML = bomberman.speed
-}
-
-function setPower() {
-	defaultBombPower = parseInt(document.getElementById("powerRange").value)
-	document.getElementById('powerSpan').innerHTML = defaultBombPower
-}
-
-function setTimer() {
-	defaultBombTimer = parseInt(document.getElementById("timerRange").value)
-	document.getElementById('timerSpan').innerHTML = defaultBombTimer
-}
-
-function setWallRange() {
-	wallsToBuild = parseInt(document.getElementById("wallRange").value)
-	document.getElementById('wallSpan').innerHTML = wallsToBuild
-}
-
-function switchMouseWall() {
-	if (document.getElementById('wallCheck').checked)
-		mouseWall = 1
-	else
-		mouseWall = 0
-}
-
-function switchStartStop() {
-	startStop = startStop == 0 ? 1 : 0
-	document.getElementById('startStopButton').value = startStop == 1 ? 'Стоп' : 'Старт'
-}
-
-function showSolution() {
-	var text = ''
-	var remain = remainingCells
-	var tempData = new Array (9)
-	for (var i = 0; i < 9; i++) {
-		tempData[i] = new Array (9)
-		for (var j = 0; j < 9; j++)
-			tempData[i][j] = data[i][j]
-	}
-	if (solveSudoku(tempData, remain, 1, undefined)) {
-		for (var i = 0; i < 9; i++) {
-			for (var j = 0; j < 9; j++)
-				text += tempData[i][j] + ' '
-			text += '\n'
-		}
-	} else
-		text = 'Не могу решить.'
-	alert (text)
 }

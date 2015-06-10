@@ -55,27 +55,19 @@ You win!
 </div>
 <div id="all" style = 'display:none; position: absolute; top:0px; left:50%; margin-left: -225px; width: 450px;'>
 <br>
-<table width="450">
+<table id = 'buttonsTable' width="450" style = "position: relative; left:50%;">
 <tr>
-	<td width = '33%' align = "center">
-		<input type="button" id="hint" style="width: 150px; height: 45px;" value="В главное меню" onClick="showMainMenu()">
+	<td width = '33%' align = "left">
+		<input type="button" style="width: 150px; height: 45px;" value="В главное меню" onClick="showMainMenu()">
 	</td>
 	<td width = '33%' align = "center">
 		<span style = "line-height: 45px;" id="timer">00:00</span>
 	</td>	
-	<td width = '33%' align = "center">
+	<td width = '33%' align = "right">
 		<input type="button" id="hint" style="width: 150px; height: 45px;" value="Подсказки" onClick="showHints()">
 	</td>	
 </tr>
 </table>
-<!--TODO: remove these test objects -->
-<input type = 'button' value = 'Показать решение' onclick = 'showSolution()'><br>
-Скорость: <input type="range" min="1" max="10" id="speedRange" oninput="setSpeed()" value="1"><span id = 'speedSpan'>0</span><br>
-Мощность бомб: <input type="range" min="1" max="8" id="powerRange" oninput="setPower()" value="2"><span id = 'powerSpan'>0</span><br>
-Таймер бомб: <input type="range" min="1000" max="10000" step = '100' id="timerRange" oninput="setTimer()" value="3000"><span id = 'timerSpan'>0</span><br>
-Стен в награду: <input type="range" min="0" max="9" id="wallRange" oninput="setWallRange()" value="3"><span id = 'wallSpan'>3</span><br>
-Ставить стены мышкой: <input type = 'checkbox' id = 'wallCheck' onchange = 'switchMouseWall()'><br>
-&nbsp<input type = 'button' id = 'startStopButton' value = 'Стоп' onclick = 'switchStartStop()'>
 <script type="text/javascript" language="JavaScript">
 document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 + '" width = "' + cellSize*10 + '" style = "position: relative; font-size: 14pt">')
 		init_data();
