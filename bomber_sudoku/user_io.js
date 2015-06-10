@@ -82,8 +82,7 @@ function showInfo(width, height, fontSize, text) {
 function showPopup() {
 	var x = currentIndex%9, y = Math.floor(currentIndex/9)
 	var tdobj = document.getElementById('td' + y + x).getBoundingClientRect()
-	var mainTable = document.getElementById('mainTable'), mainTableRect = mainTable.getBoundingClientRect()
-	var left = tdobj.left - 115 + cellHalfSize, top = tdobj.top - 150 + cellHalfSize
+	var left = tdobj.left - 120 + cellHalfSize, top = tdobj.top - 110 + cellHalfSize //TODO: change these sizes when popup windows size changes
 	var popupWindow = document.getElementById('popup')
 	popupWindow.style.left = left
 	popupWindow.style.top = top
@@ -91,14 +90,16 @@ function showPopup() {
 	popupWindow.style.display = 'block'
 	var height = popupWindow.offsetHeight
 	var width = popupWindow.offsetWidth
-	if (left < mainTableRect.left)
-		popupWindow.style.left = mainTableRect.left
-	if (top < mainTableRect.top)
-		popupWindow.style.top = mainTableRect.top	
-	if (left + width > mainTable.offsetWidth + mainTableRect.left)
-		popupWindow.style.left = mainTable.offsetWidth + mainTableRect.left - width
-	if (top + height > mainTable.offsetHeight + mainTableRect.top)
-		popupWindow.style.top = mainTable.offsetHeight + mainTableRect.top - height
+	var windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+	var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+	if (left < 0)
+		popupWindow.style.left = 0
+	if (top < 0)
+		popupWindow.style.top = 0	
+	if (left + width > windowWidth)
+		popupWindow.style.left = windowWidth - width
+	if (top + height > windowHeight)
+		popupWindow.style.top = windowHeight - height
 	popupVisible = 1
 }
 
