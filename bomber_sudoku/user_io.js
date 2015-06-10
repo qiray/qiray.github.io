@@ -114,6 +114,9 @@ function difficultyTostring(level) {
 function startNewGame() {
 	document.getElementById('all').style.display = 'block'
 	document.getElementById('mainTable').style.left = (document.getElementById('all').clientWidth - document.getElementById('mainTable').clientWidth)/2
+	var size = cellSize < 45 ? 45 : cellSize
+	document.getElementById('buttonsTable').setAttribute('width', 10*size)
+	document.getElementById('buttonsTable').style.marginLeft = -5*size	
 	init_game()
 	document.getElementById('mainMenu').style.display = 'none'
 }
