@@ -69,7 +69,7 @@ function resize() {
 	overlay.style.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth//  10
 	var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 	overlay.style.height = height > size ? height : size
-	setCellSize(cellSize)
+	//setCellSize(cellSize)
 }
 
 function newGame() {
