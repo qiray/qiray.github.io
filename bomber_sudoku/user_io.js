@@ -219,8 +219,9 @@ function showAboutInfo() {
 	'<p>Автор идеи</p><h4>Данил Михайлов</h4>' +
 	'<p>Разработчик</p><h4>Ярослав Зотов</h4>' + 
 	'<p>Тестирование</p><h4>Данил Михайлов</h4>' + 
-	'<p>Спрайты</p><h4><a target = "_blank" href = "http://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-bomberman-inspired-sprites--gamedev-8541">Michael James Williams</a></h4>'
-	showInfo(250, 320, '12px', text)
+	'<p>Спрайты и изображения</p><h4><a target = "_blank" href = "http://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-bomberman-inspired-sprites--gamedev-8541">Michael James Williams</a><br>' + 
+	'<a target = "_blank" href = "https://openclipart.org">openclipart.org</a></h4>'
+	showInfo(250, 370, '16px', text)
 }
 
 function showMainMenu() {
