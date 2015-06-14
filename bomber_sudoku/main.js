@@ -26,6 +26,7 @@ var vkInited = 0, current_id = 0 //for VK API
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 1.12*cellSize
 var cellSizeSlider = undefined
 var buttonsSizeAboveMainTable = 50 //height of main menu and hints button
+var wrongDigits = 0
 
 if (!Array.prototype.indexOf) { //IE is awesome
 	Array.prototype.indexOf = function(obj, start) {
@@ -121,6 +122,16 @@ function init_data() {
 				tmp.src = bombermanPaths[j] + i + '.png'
 				bombermanTextures.push(tmp)
 			}
+	if (achievementsImages.length == 0)
+		for (var i = 0; i < achievements.length; i++) {
+			var tmp = new Image(cellSize, cellSize)
+			tmp.src = achievements[i].img
+			achievementsImages.push(tmp)			
+		}
+	if (!teleportImage) {
+		teleportImage = new Image(cellSize, cellSize)
+		teleportImage.src = 'images/fireball.png'
+	}
 }
 
 function initNumberOfHints(one, stop, check) {
@@ -149,6 +160,7 @@ function setHints() {
 function init_game() {
 	init_data()
 	remainingCells = 0
+	wrongDigits = 0
 	newGame() //generate new field
 	setHints()
 	if (!walls)
@@ -172,8 +184,9 @@ function init_game() {
 		clearInterval(bombermanTimer)
 	bombermanTimer = setInterval('game_cycle()', game_delay)
 	sudokuTimerInterval = setInterval("gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString(gameTimer)", 1000) //
-	document.getElementById('info').onclick = function(e) { 
-		if ((event.srcElement || e.target) == document.getElementById('info'))
+	document.getElementById('info').onclick = function(e) {
+		var target = window.event ? window.event.srcElement : e.target
+		if (target == document.getElementById('info'))
 			hidePopup()
 	}
 	redraw()

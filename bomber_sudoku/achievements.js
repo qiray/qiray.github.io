@@ -14,6 +14,8 @@ var playerInfo = {
 	achievements: []
 }
 
+var achievementsImages = []
+
 function checkBombermanDestroyed() {
 	if (bomberman.surrenderTimer) {
 		var sum = 0
@@ -38,7 +40,8 @@ var achievements = [
 	{id: 8, img: 'images/achievements/corporal.png', name: 'Ветеран', description: 'Пройти 30 уровней', condition: function() {return playerInfo.statistics.victories >= 30 } },
 	{id: 9, img: 'images/achievements/sargeant.png', name: 'Я легенда', description: 'Пройти 50 уровней', condition: function() {return playerInfo.statistics.victories >= 50 } },
 	{id: 10, img: 'images/achievements/radacinaHandcuffs.png', name: 'Попался!', description: 'Запереть бомбермена меньше чем 25-ю стенами', condition: checkBombermanDestroyed },
-	{id: 11, img: 'images/achievements/SierpinskiTriangle.png', name: 'Рекурсия', description: 'Получить все достижения', condition: function() {return playerInfo.achievements.length == achievements.length - 1} }
+	{id: 11, img: 'images/achievements/sniper.png', name: 'Снайпер', description: 'Пройти уровень без единой ошибки', condition: function() { return wrongDigits == 0 && remainingCells == 0 } },
+	{id: 12, img: 'images/achievements/SierpinskiTriangle.png', name: 'Рекурсия', description: 'Получить все достижения', condition: function() {return playerInfo.achievements.length == achievements.length - 1} }
 ]
 
 function checkAchievements() {

@@ -21,6 +21,7 @@ var directions = {
 
 var bombermanTextures = [], bombermanTexturesLength = 8
 var bombermanPaths = ['images/Bomberman/Front/', 'images/Bomberman/Back/', 'images/Bomberman/Left/', 'images/Bomberman/Right/']
+var teleportImage = undefined
 
 function roundTheWorld(coords) {
 	if (coords.x < 0)
@@ -48,6 +49,7 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.wayIndex = 0
 	this.destroyed = 0
 	this.surrenderTimer = 0
+	this.teleportTimer = 0
 	this.needToPlantBomb = 1
 	this.nextTargetx = this.nextTargety = -1
 	this.setDirection()
@@ -147,29 +149,7 @@ Bomberman.prototype.checkDirection = function () {
 	
 	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x] &&
 		 walls[this.way[this.wayIndex].y*9 + this.way[this.wayIndex].x]) {
-		var list = []
-		for (var i = 0; i < 81; i++)
-			if(!walls[i])
-				list.push(i)
-		if(list.length > 0) {
-			this.direction = directions.wait
-			this.way = []
-			var index = Math.floor(Math.random()*list.length)
-			this.x = list[index]%9
-			this.y = Math.floor(list[index]/9)
-			console.log('Teleport: x = ' + this.x + ' y = ' + this.y)
-			this.drawx = document.getElementById('td' + this.y + this.x).offsetLeft + document.getElementById('mainTable').offsetLeft
-			this.drawy = document.getElementById('td' + this.y + this.x).offsetTop + document.getElementById('mainTable').offsetTop
-			if (this.nextTargety != -1 && this.nextTargetx != -1) {
-				setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), '', '')
-				if (walls[this.nextTargety*9 + this.nextTargetx])
-					setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
-			}
-			setCellClassImage(document.getElementById('td' + this.targety + this.targetx), '', '')
-			if (walls[this.targety*9 + this.targetx])
-				setCellClassImage(document.getElementById('td' + this.targety + this.target), 'images/wall.jpg', 'wallIEFixBackgroundSize')
-		} else
-			this.surrenderTimer = this.surrenderTimer == 0 ? 1 : this.surrenderTimer
+		this.teleport() 
 		return
 	}	
 	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x]) { //there is a wall so we need to recalc the way
@@ -298,7 +278,7 @@ Bomberman.prototype.plantBomb = function(power, timer) {
 	bombs[i] = new Bomb(i, this.x, this.y, power, timer)
 }
 
-Bomberman.prototype.surrenderAnimation = function()  {
+Bomberman.prototype.surrenderAnimation = function() {
 	if (this.surrenderTimer < 7)
 		this.drawy -= 15 - this.surrenderTimer
 	else
@@ -307,6 +287,43 @@ Bomberman.prototype.surrenderAnimation = function()  {
 	this.draw()
 	if (this.drawy > document.getElementById('mainTable').offsetTop + document.getElementById('td' + 8 + this.x).offsetTop + cellHalfSize) //bomberman fell too deep
 		this.destroy()
+}
+
+Bomberman.prototype.teleportAnimation = function() {
+	if (this.teleportTimer < 3)
+		this.image.src = 'images/fireball.png'
+	else if (this.teleportTimer < 5) {
+		this.drawx = document.getElementById('td' + this.y + this.x).offsetLeft + document.getElementById('mainTable').offsetLeft
+		this.drawy = document.getElementById('td' + this.y + this.x).offsetTop + document.getElementById('mainTable').offsetTop		
+	} else 
+		this.teleportTimer = -1
+	this.teleportTimer++
+	this.draw()	
+}
+
+Bomberman.prototype.teleport = function() {
+	var list = []
+	for (var i = 0; i < 81; i++)
+		if(!walls[i])
+			list.push(i)
+	if(list.length > 0) {
+		this.direction = directions.wait
+		this.way = []			
+		var index = Math.floor(Math.random()*list.length)
+		this.x = list[index]%9
+		this.y = Math.floor(list[index]/9)
+		console.log('Teleport: x = ' + this.x + ' y = ' + this.y)
+		this.teleportTimer = this.teleportTimer == 0 ? 1 : this.teleportTimer
+		if (this.nextTargety != -1 && this.nextTargetx != -1) {
+			setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), '', '')
+			if (walls[this.nextTargety*9 + this.nextTargetx])
+				setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
+		}
+		setCellClassImage(document.getElementById('td' + this.targety + this.targetx), '', '')
+		if (walls[this.targety*9 + this.targetx])
+			setCellClassImage(document.getElementById('td' + this.targety + this.target), 'images/wall.jpg', 'wallIEFixBackgroundSize')	
+	} else
+		this.surrenderTimer = this.surrenderTimer == 0 ? 1 : this.surrenderTimer
 }
 
 Bomberman.prototype.possibleMoves = function(result, searchFinish, finish) {
@@ -372,6 +389,10 @@ Bomberman.prototype.AI = function() {
 		this.surrenderAnimation()
 		return
 	}
+	if (this.teleportTimer) {
+		this.teleportAnimation()
+		return
+	}	
 	if (this.waitTimer > 0) {
 		this.waitTimer--
 		return

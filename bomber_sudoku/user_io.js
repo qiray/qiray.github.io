@@ -12,8 +12,10 @@ function handleKey(event) {
 function enterDigit(digit) {
 	var x = currentIndex%9, y = Math.floor(currentIndex/9)
 	if (digit == 0) { //clear cell
-		if (data[y][x] != '&nbsp')
+		if (data[y][x] != '&nbsp') {
 			remainingCells++
+			wrongDigits = 1 //user cleared inputed digit
+		}
 		data[y][x] = document.getElementById('td' + y + x).innerHTML = '&nbsp'
 	}
 	else {
@@ -23,6 +25,8 @@ function enterDigit(digit) {
 		}
 		if (data[y][x] == '&nbsp')
 			remainingCells--
+		else if (data[y][x] != digit)//user changed inputed digit
+			wrongDigits = 1
 		data[y][x] = document.getElementById('td' + y + x).innerHTML = digit
 	}
 	hidePopup()
