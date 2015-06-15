@@ -21,6 +21,7 @@ function enterDigit(digit) {
 	else {
 		if (wrongDigit(currentIndex, digit)) {
 			showInfo(200, 80, '80px', "Неверная цифра!")
+			wrongDigits = 1
 			return
 		}
 		if (data[y][x] == '&nbsp')
