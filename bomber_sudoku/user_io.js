@@ -16,7 +16,7 @@ function enterDigit(digit) {
 			remainingCells++
 			wrongDigits = 1 //user cleared inputed digit
 		}
-		data[y][x] = document.getElementById('td' + y + x).innerHTML = '&nbsp'
+		data[y][x] = getElement('td' + y + x).innerHTML = '&nbsp'
 	}
 	else {
 		if (wrongDigit(currentIndex, digit)) {
@@ -27,7 +27,7 @@ function enterDigit(digit) {
 			remainingCells--
 		else if (data[y][x] != digit)//user changed inputed digit
 			wrongDigits = 1
-		data[y][x] = document.getElementById('td' + y + x).innerHTML = digit
+		data[y][x] = getElement('td' + y + x).innerHTML = digit
 	}
 	hidePopup()
 	checkFilling(y, x)
@@ -71,9 +71,9 @@ function wrongDigit(index, digit) {
 
 function showInfo(width, height, fontSize, text) {
 	popupVisible = 1
-	document.getElementById('popupOverlay').style.display = 'block'
-	document.getElementById('popup').style.display = 'none'
-	var info = document.getElementById('info')
+	getElement('popupOverlay').style.display = 'block'
+	getElement('popup').style.display = 'none'
+	var info = getElement('info')
 	info.style.width = width
 	info.style.height = height
 	info.style.lineHeight = fontSize
@@ -85,12 +85,12 @@ function showInfo(width, height, fontSize, text) {
 
 function showPopup() {
 	var x = currentIndex%9, y = Math.floor(currentIndex/9)
-	var tdobj = document.getElementById('td' + y + x).getBoundingClientRect()
+	var tdobj = getElement('td' + y + x).getBoundingClientRect()
 	var left = tdobj.left - 120 + cellHalfSize, top = tdobj.top - 110 + cellHalfSize //TODO: change these sizes when popup windows size changes
-	var popupWindow = document.getElementById('popup')
+	var popupWindow = getElement('popup')
 	popupWindow.style.left = left
 	popupWindow.style.top = top
-	document.getElementById('popupOverlay').style.display = 'block'
+	getElement('popupOverlay').style.display = 'block'
 	popupWindow.style.display = 'block'
 	var height = popupWindow.offsetHeight
 	var width = popupWindow.offsetWidth
@@ -108,9 +108,9 @@ function showPopup() {
 }
 
 function hidePopup() {
-	document.getElementById('popupOverlay').style.display = 'none'
-	document.getElementById('popup').style.display = 'none'
-	document.getElementById('info').style.display = 'none'
+	getElement('popupOverlay').style.display = 'none'
+	getElement('popup').style.display = 'none'
+	getElement('info').style.display = 'none'
 	popupVisible = 0
 }
 
@@ -134,13 +134,13 @@ function difficultyTostring(level) {
 //main menu actions
 
 function startNewGame() {
-	document.getElementById('all').style.display = 'block'
-	document.getElementById('mainTable').style.left = (document.getElementById('all').clientWidth - document.getElementById('mainTable').clientWidth)/2
+	getElement('all').style.display = 'block'
+	getElement('mainTable').style.left = (getElement('all').clientWidth - getElement('mainTable').clientWidth)/2
 	var size = cellSize < 45 ? 45 : cellSize
-	document.getElementById('buttonsTable').setAttribute('width', 10*size)
-	document.getElementById('buttonsTable').style.marginLeft = -5*size	
+	getElement('buttonsTable').setAttribute('width', 10*size)
+	getElement('buttonsTable').style.marginLeft = -5*size	
 	init_game()
-	document.getElementById('mainMenu').style.display = 'none'
+	getElement('mainMenu').style.display = 'none'
 }
 
 function showAchievements() {
@@ -184,12 +184,13 @@ function showSettings() {
 	if (cellSize < 30 || cellSize > maxSize)
 		cellSize = maxSize
 	cellSizeSlider.setValue(cellSize)
-	document.getElementById('info').onmouseup = cellSizeSlider.mouseUp
-	document.getElementById('popupOverlay').onmouseup = cellSizeSlider.mouseUp
+	getElement('info').onmouseup = cellSizeSlider.mouseUp
+	getElement('popupOverlay').onmouseup = cellSizeSlider.mouseUp
 }
 
 function setDifficulty(level) {
 	difficultLevel = level
+	defaultBombPower = difficultLevel == hard ? 3 : 2
 	hidePopup()
 	showSettings()
 }
@@ -234,9 +235,9 @@ function showMainMenu() {
 	for (var i = 0; i < bombs.length; i++)
 		if (bombs[i])
 			bombs[i].destroy()
-	document.getElementById('all').style.display = 'none'
-	document.getElementById('mainMenu').style.display = 'block'
-	document.getElementById('info').onclick = function() { return }
+	getElement('all').style.display = 'none'
+	getElement('mainMenu').style.display = 'block'
+	getElement('info').onclick = function() { return }
 }
 
 //hints
@@ -244,7 +245,7 @@ function showMainMenu() {
 function oneDigitHint() {
 	if (remainingCells == 0 || startTimer == 0)
 		return
-	document.getElementById('hint').blur()
+	getElement('hint').blur()
 	if (oneDigitHints == 0) {
 		showInfo(200, 80, '80px', "Больше нет подсказок")
 		return
@@ -260,8 +261,8 @@ function oneDigitHint() {
 	index = Math.floor(Math.random() * list.length)
 	var x = list[index]%9, y = Math.floor(list[index]/9)
 	hintedCells.push({x: x, y: y, timer: 5000})
-	document.getElementById('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
-	document.getElementById('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
+	getElement('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
+	getElement('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
 	showInfo(200, 80, '80px', "Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
 	checkFilling(y, x)
 	if (--remainingCells == 0) //victory checking
@@ -300,7 +301,7 @@ function checkSolvability() { //awesome word
 function showHints() {
 	if (remainingCells == 0 || startTimer == 0)
 		return
-	document.getElementById('hint').blur()
+	getElement('hint').blur()
 	var text = '<div align = "center"><br><input type = "button" style = "width: 300px; height: 75px;" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()">' +
 		'<input type = "button" style = "width: 300px; height: 75px;" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)">' +
 		'<input type = "button" style = "width: 300px; height: 75px;" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></div>'

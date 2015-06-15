@@ -11,7 +11,7 @@ var data = new Array(9) //this array is used to display digits
 var initData = [[2,5,7,1,3,9,4,8,6],[9,6,3,8,5,4,1,7,2],[1,8,4,6,7,2,9,5,3],[6,1,2,7,9,8,5,3,4],[7,3,5,4,2,1,8,6,9],[4,9,8,5,6,3,7,2,1],[3,4,6,9,8,5,2,1,7],[8,7,1,2,4,6,3,9,5],[5,2,9,3,1,7,6,4,8]] //Awesome initial data. This array will be transformed to make new start conditions.
 var trueData = new Array(9) //this array contains true digits (not inputed by user)
 var initialData = new Array(81) //contains bool data: true if this cell is initially occupied with digit, else false
-var trivial = 22, easy = 32, medium = 40, hard = 50, ultra = 54 //some preseted difficult levels
+var trivial = 22, easy = 32, medium = 40, hard = 39, ultra = 50 //some preseted difficult levels
 var difficultLevel = trivial//medium //number of cells to remove
 var remainingCells = 0
 var currentIndex = 0 //for correct processing of popup window with digits to select
@@ -26,7 +26,7 @@ var vkInited = 0, current_id = 0 //for VK API
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 1.12*cellSize
 var cellSizeSlider = undefined
 var buttonsSizeAboveMainTable = 50 //height of main menu and hints button
-var wrongDigits = 0
+var wrongDigits = 0, bombPlantedFlag = 0
 
 if (!Array.prototype.indexOf) { //IE is awesome
 	Array.prototype.indexOf = function(obj, start) {
@@ -65,8 +65,8 @@ function gameTimerToString(timerValue) {
 }
 
 function resize() {
-	var divAll = document.getElementById('all'), size = document.getElementById('all').clientHeight
-	var overlay = document.getElementById('popupOverlay')
+	var divAll = getElement('all'), size = getElement('all').clientHeight
+	var overlay = getElement('popupOverlay')
 	overlay.style.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth//  10
 	var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
 	overlay.style.height = height > size ? height : size
@@ -81,7 +81,7 @@ function newGame() {
 	for(i = 0; i < 9; i++)
 		for(j = 0; j < 9; j++)	{
 			data[i][j] = trueData[i][j]
-			var obj = document.getElementById('td' + i + j)
+			var obj = getElement('td' + i + j)
 			if (obj != null) {
 				obj.removeAttribute('bgcolor') //to remove color from 'hinted' cells
 				obj.removeAttribute('background') //remove walls
@@ -94,7 +94,7 @@ function newGame() {
 	popupVisible = 0
 	gameTimer = 0
 	startTimer = 1
-	document.getElementById('timer').innerHTML = '00:00'
+	getElement('timer').innerHTML = '00:00'
 }
 
 function init_data() {
@@ -159,8 +159,7 @@ function setHints() {
 
 function init_game() {
 	init_data()
-	remainingCells = 0
-	wrongDigits = 0
+	remainingCells = wrongDigits = bombPlantedFlag = 0
 	newGame() //generate new field
 	setHints()
 	if (!walls)
@@ -177,27 +176,27 @@ function init_game() {
 	for (var i = 0; i < 9; i++)
 		squareWalls[i] = colWalls[i] = rowWalls[i] = 0
 	hintedCells = []
-	if (bomberman && !bomberman.destroyed) //remove old bomberman data
+	if (bomberman && !(bomberman.status & statuses.destroyed)) //remove old bomberman data
 		bomberman.destroy()
 	bomberman = new Bomberman(0, 0, 0, 1, 0, 0)
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
 	bombermanTimer = setInterval('game_cycle()', game_delay)
-	sudokuTimerInterval = setInterval("gameTimer++; document.getElementById('timer').innerHTML = gameTimerToString(gameTimer)", 1000) //
-	document.getElementById('info').onclick = function(e) {
+	sudokuTimerInterval = setInterval("gameTimer++; getElement('timer').innerHTML = gameTimerToString(gameTimer)", 1000) //
+	getElement('info').onclick = function(e) {
 		var target = window.event ? window.event.srcElement : e.target
-		if (target == document.getElementById('info'))
+		if (target == getElement('info'))
 			hidePopup()
 	}
 	redraw()
 }
 
 function victory() {
-	if (bomberman.surrenderTimer == 0)
-		bomberman.surrenderTimer = 1
+	if (bomberman.status & statuses.surrender)
+		bomberman.status |= statuses.surrender
 	clearInterval(sudokuTimerInterval)
 	startTimer = 0
-	document.getElementById('info').style.lineHeight = '40px'
+	getElement('info').style.lineHeight = '40px'
 	showInfo(200, 80, '40px', "Вы выиграли! <br>Ваше время - " + gameTimerToString(gameTimer))
 	playerInfo.statistics.victories++
 	playerInfo.statistics.totalTime += gameTimer
@@ -224,7 +223,7 @@ function victory() {
 function redraw() {
 	for(var i = 0; i < 9; i++)
 		for(var j = 0; j < 9; j++)
-			document.getElementById('td' + i+j).innerHTML = "<b>" + data[i][j] + "</b>"
+			getElement('td' + i+j).innerHTML = "<b>" + data[i][j] + "</b>"
 }
 
 //Game with bomberman logic
@@ -236,7 +235,7 @@ function game_cycle() {
 		if (hintedCells[i].timer > 0) 
 			hintedCells[i].timer -= game_delay
 		else if (hintedCells[i].x != -1) {
-			document.getElementById('td' + hintedCells[i].y + hintedCells[i].x).removeAttribute('bgcolor')
+			getElement('td' + hintedCells[i].y + hintedCells[i].x).removeAttribute('bgcolor')
 			hintedCells[i].x = hintedCells[i].y = -1
 		}
 	}
@@ -250,7 +249,7 @@ function game_cycle() {
 
 function setWall(x, y) {
 	walls[y*9 + x] = 1
-	document.getElementById('td' + y + x).setAttribute('background', 'images/wall.jpg')
+	setCellClassImage(getElement('td' + y + x), 'images/wall.jpg', 'wallIEFixBackgroundSize')
 }
 
 function setNWalls(wallsToBuild, starty, startx, maxY, maxX) {
@@ -307,30 +306,30 @@ function setCellSize(value) {
 		cellSize = 30
 	cellHalfSize = Math.floor(cellSize/2)
 	cellSizeWithBorders = 1.12*cellSize
-	if (document.getElementById('cellSizeSpan'))
-		document.getElementById('cellSizeSpan').innerHTML = cellSize
-	document.getElementById('mainTable').setAttribute('width', 10*cellSize)
+	if (getElement('cellSizeSpan'))
+		getElement('cellSizeSpan').innerHTML = cellSize
+	getElement('mainTable').setAttribute('width', 10*cellSize)
 	var size = cellSize < 45 ? 45 : cellSize
-	document.getElementById('buttonsTable').setAttribute('width', 10*size)
-	document.getElementById('buttonsTable').style.marginLeft = -5*size
-	document.getElementById('mainTable').setAttribute('height', 10*cellSize) 
-	document.getElementById('mainTable').style.left = (document.getElementById('all').clientWidth - document.getElementById('mainTable').clientWidth)/2
+	getElement('buttonsTable').setAttribute('width', 10*size)
+	getElement('buttonsTable').style.marginLeft = -5*size
+	getElement('mainTable').setAttribute('height', 10*cellSize) 
+	getElement('mainTable').style.left = (getElement('all').clientWidth - getElement('mainTable').clientWidth)/2
 	for (var i = 0; i < 9; i++)
 		for (var j = 0; j < 9; j++) {
-			document.getElementById('td' + i + j).setAttribute('width', cellSize)
-			document.getElementById('td' + i + j).setAttribute('height', cellSize)
-			document.getElementById('td' + i + j).style.fontSize = cellSize/2 + 'px'
+			getElement('td' + i + j).setAttribute('width', cellSize)
+			getElement('td' + i + j).setAttribute('height', cellSize)
+			getElement('td' + i + j).style.fontSize = cellSize/2 + 'px'
 		}
 	for (var i = 0; i < bombs.length; i++)
 		if (bombs[i]) {
-			bombs[i].image.style.left = bombs[i].drawx = document.getElementById('td' + bombs[i].y+bombs[i].x).offsetLeft + document.getElementById('mainTable').offsetLeft
-			bombs[i].image.style.top = bombs[i].drawy = document.getElementById('td' + bombs[i].y+bombs[i].x).offsetTop + document.getElementById('mainTable').offsetTop
+			bombs[i].image.style.left = bombs[i].drawx = getElement('td' + bombs[i].y+bombs[i].x).offsetLeft + getElement('mainTable').offsetLeft
+			bombs[i].image.style.top = bombs[i].drawy = getElement('td' + bombs[i].y+bombs[i].x).offsetTop + getElement('mainTable').offsetTop
 			bombs[i].image.style.height = bombs[i].image.style.width = cellSize
 		}
-	if (bomberman && !bomberman.destroyed) {
+	if (bomberman && !(bomberman.status & statuses.destroyed)) {
 		bomberman.image.style.height = bomberman.image.style.width = cellSize
-		bomberman.drawx = document.getElementById('td' + bomberman.y+bomberman.x).offsetLeft + document.getElementById('mainTable').offsetLeft
-		bomberman.drawy = document.getElementById('td' + bomberman.y+bomberman.x).offsetTop + document.getElementById('mainTable').offsetTop
+		bomberman.drawx = getElement('td' + bomberman.y+bomberman.x).offsetLeft + getElement('mainTable').offsetLeft
+		bomberman.drawy = getElement('td' + bomberman.y+bomberman.x).offsetTop + getElement('mainTable').offsetTop
 		bomberman.image.style.left = bomberman.drawx
 		bomberman.image.style.top = bomberman.drawy
 	}
@@ -346,4 +345,13 @@ function setCellClassImage(obj, image, className) {
 		} else
 			obj.className = className
 	}
+}
+
+function checkWallTexture(y, x) {
+	if (walls[y*9 + x])
+		setCellClassImage(getElement('td' + y + x), 'images/wall.jpg', 'wallIEFixBackgroundSize')
+}
+
+function getElement(id) {
+	return document.getElementById(id)
 }

@@ -19,6 +19,14 @@ var directions = {
 	wait: 0
 }
 
+var statuses = {
+	surrender: 1,
+	teleport: 2,
+	destroyed: 4,
+	needToPlantBomb: 8,
+	badPhrases: 16
+}
+
 var bombermanTextures = [], bombermanTexturesLength = 8
 var bombermanPaths = ['images/Bomberman/Front/', 'images/Bomberman/Back/', 'images/Bomberman/Left/', 'images/Bomberman/Right/']
 var teleportImage = undefined
@@ -38,8 +46,8 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.id = id
 	this.x = x
 	this.y = y
-	this.drawx = document.getElementById('td' + y+x).offsetLeft + document.getElementById('mainTable').offsetLeft
-	this.drawy = document.getElementById('td' + y+x).offsetTop + document.getElementById('mainTable').offsetTop
+	this.drawx = getElement('td' + y+x).offsetLeft + getElement('mainTable').offsetLeft
+	this.drawy = getElement('td' + y+x).offsetTop + getElement('mainTable').offsetTop
 	this.speed = speed
 	this.direction = directions.wait //default
 	this.targetx = targetx
@@ -47,10 +55,8 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.waitTimer = 0
 	this.way = []
 	this.wayIndex = 0
-	this.destroyed = 0
-	this.surrenderTimer = 0
-	this.teleportTimer = 0
-	this.needToPlantBomb = 1
+	this.status = statuses.needToPlantBomb
+	this.animationTimer = 0
 	this.nextTargetx = this.nextTargety = -1
 	this.setDirection()
 
@@ -64,22 +70,28 @@ function Bomberman(id, x, y, speed, targetx, targety) {
 	this.image.style.top = this.drawy
 	this.image.style.zIndex = 9
 	this.image.onclick = function () { clickObject (y, x) }
-	document.getElementById('all').appendChild(this.image)
-	setCellClassImage(document.getElementById('td' + this.targety + this.targetx), targetImagePath, 'targetIEFixBackgroundSize')
+	getElement('all').appendChild(this.image)
+	setCellClassImage(getElement('td' + this.targety + this.targetx), targetImagePath, 'targetIEFixBackgroundSize')
 }
 
 Bomberman.prototype.destroy = function() {
-	var element = document.getElementById('bomberman' + this.id)
+	var element = getElement('bomberman' + this.id)
 	element.parentNode.removeChild(element)
-	setCellClassImage(document.getElementById('td' + this.targety + this.targetx), '', '')
+	var image = getElement('badThoughts' + this.id)
+	if (image) //remove
+		image.parentNode.removeChild(image)	
+	setCellClassImage(getElement('td' + this.targety + this.targetx), '', '')
 	if (this.nextTargetx != -1 && this.nextTargety != -1) {
-		setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), '', '')
-		if (walls[this.nextTargety*9 + this.nextTargetx])
-			setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
+		setCellClassImage(getElement('td' + this.nextTargety + this.nextTargetx), '', '')
+		checkWallTexture(this.nextTargety, this.nextTargetx)
 	}
-	if (walls[this.targety*9 + this.targetx])
-		setCellClassImage(document.getElementById('td' + this.targety + this.targetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
-	this.destroyed = 1
+	checkWallTexture(this.targety, this.targetx)
+	this.status |= statuses.destroyed
+}
+
+Bomberman.prototype.clearWay = function () {
+	this.way = []
+	this.direction = directions.wait
 }
 
 Bomberman.prototype.generateWay = function () {
@@ -114,57 +126,49 @@ Bomberman.prototype.generateWay = function () {
 	return this.way
 }
 
-Bomberman.prototype.checkDirection = function () {
-	if (this.drawx < document.getElementById('mainTable').offsetLeft - cellHalfSize)
-		this.drawx = document.getElementById('td' + this.y + 8).offsetLeft + document.getElementById('mainTable').offsetLeft + cellHalfSize
-	if (this.drawy < document.getElementById('mainTable').offsetTop - cellHalfSize)
-		this.drawy = document.getElementById('td' + 8 + this.x).offsetTop + document.getElementById('mainTable').offsetTop + cellHalfSize
-	if (this.drawx > document.getElementById('mainTable').offsetLeft + document.getElementById('td' + this.y + 8).offsetLeft + cellHalfSize)
-		this.drawx = document.getElementById('mainTable').offsetLeft - cellHalfSize
-	if (this.drawy > document.getElementById('mainTable').offsetTop + document.getElementById('td' + 8 + this.x).offsetTop + cellHalfSize)
-		this.drawy = document.getElementById('mainTable').offsetTop - cellHalfSize
-		
-	var targetDrawX = document.getElementById('td' + this.targety + this.targetx).offsetLeft + document.getElementById('mainTable').offsetLeft
-	var targetDrawY = document.getElementById('td' + this.targety + this.targetx).offsetTop + document.getElementById('mainTable').offsetTop
+Bomberman.prototype.checkOutOfBorders = function () {
+	if (this.drawx < getElement('mainTable').offsetLeft - cellHalfSize)
+		this.drawx = getElement('td' + this.y + 8).offsetLeft + getElement('mainTable').offsetLeft + cellHalfSize
+	if (this.drawy < getElement('mainTable').offsetTop - cellHalfSize)
+		this.drawy = getElement('td' + 8 + this.x).offsetTop + getElement('mainTable').offsetTop + cellHalfSize
+	if (this.drawx > getElement('mainTable').offsetLeft + getElement('td' + this.y + 8).offsetLeft + cellHalfSize)
+		this.drawx = getElement('mainTable').offsetLeft - cellHalfSize
+	if (this.drawy > getElement('mainTable').offsetTop + getElement('td' + 8 + this.x).offsetTop + cellHalfSize)
+		this.drawy = getElement('mainTable').offsetTop - cellHalfSize
+}
+
+Bomberman.prototype.checkTargetReached = function () {
+	var targetDrawX = getElement('td' + this.targety + this.targetx).offsetLeft + getElement('mainTable').offsetLeft
+	var targetDrawY = getElement('td' + this.targety + this.targetx).offsetTop + getElement('mainTable').offsetTop
 	if (Math.abs(this.drawx - targetDrawX) <= this.speed/2 && Math.abs(this.drawy - targetDrawY) <= this.speed/2) { //target reached
-		this.direction = directions.wait
-		this.way = []
+		this.clearWay()
 		this.x = this.targetx
 		this.y = this.targety
-		if (this.needToPlantBomb) 
+		if (this.status & statuses.needToPlantBomb) 
 			this.plantBomb(defaultBombPower, defaultBombTimer)
 		else 
 			this.setTarget(this.nextTargetx, this.nextTargety, 1)
-		return
-	}
-	
-	var drawx = this.drawx - document.getElementById('mainTable').offsetLeft, drawy = this.drawy - document.getElementById('mainTable').offsetTop
-	this.image.onclick = function () {
-		if (drawx < 0 || drawx > document.getElementById('td' + 8 + 8).offsetLeft || drawy < 0 || drawy > document.getElementById('td' + 8 + 8).offsetTop)
-			return
-		var x = (drawx + cellHalfSize)/cellSizeWithBorders
-		var y = (drawy + cellHalfSize)/cellSizeWithBorders
-		clickObject(Math.floor(y), Math.floor(x))
-	}
-	
-	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x] &&
-		 walls[this.way[this.wayIndex].y*9 + this.way[this.wayIndex].x]) {
-		this.teleport() 
-		return
-	}	
+		return true
+	} else 
+		return false
+}
+
+Bomberman.prototype.checkWallFound = function () {
 	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x]) { //there is a wall so we need to recalc the way
-		console.log(1)
+		console.log('Wall found')
 		this.x = this.way[this.wayIndex + 1].x
 		this.y = this.way[this.wayIndex + 1].y
 		this.nextTargetx = this.targetx
 		this.nextTargety = this.targety
 		this.setTarget(this.way[this.wayIndex].x, this.way[this.wayIndex].y, 0)
-		return
-	}
-	if (this.wayIndex >= this.way.length - 2)
-		return
-	var nextx = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetLeft + document.getElementById('mainTable').offsetLeft
-	var nexty = document.getElementById('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetTop + document.getElementById('mainTable').offsetTop	
+		return true
+	} else
+		return false
+}
+
+Bomberman.prototype.checkNextCellReached = function () {
+	var nextx = getElement('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetLeft + getElement('mainTable').offsetLeft
+	var nexty = getElement('td' + this.way[this.wayIndex + 1].y + this.way[this.wayIndex + 1].x).offsetTop + getElement('mainTable').offsetTop	
 	if ((this.direction == directions.left || this.direction == directions.right) && Math.abs(this.drawx - nextx) <= this.speed/2
 		|| (this.direction == directions.down || this.direction == directions.up) && Math.abs(this.drawy - nexty) <= this.speed/2) { //next cell reached
 		this.wayIndex++
@@ -172,12 +176,37 @@ Bomberman.prototype.checkDirection = function () {
 		this.x = this.way[this.wayIndex].x
 		this.y = this.way[this.wayIndex].y
 		if (walls[this.targety*9 + this.targetx]) {
-			console.log(2)
-			this.direction = directions.wait
-			this.way = []
-			return
+			console.log('Our target is a wall')
+			this.status |= statuses.badPhrases
+			this.clearWay()
 		}
+	}	
+}
+
+Bomberman.prototype.checkDirection = function () {
+	this.checkOutOfBorders()
+	if (this.checkTargetReached())
+		return
+	
+	var drawx = this.drawx - getElement('mainTable').offsetLeft, drawy = this.drawy - getElement('mainTable').offsetTop
+	this.image.onclick = function () {
+		if (drawx < 0 || drawx > getElement('td' + 8 + 8).offsetLeft || drawy < 0 || drawy > getElement('td' + 8 + 8).offsetTop)
+			return
+		var x = (drawx + cellHalfSize)/cellSizeWithBorders
+		var y = (drawy + cellHalfSize)/cellSizeWithBorders
+		clickObject(Math.floor(y), Math.floor(x))
 	}
+	
+	if (this.wayIndex <= this.way.length - 2 && walls[this.way[this.wayIndex + 1].y*9 + this.way[this.wayIndex + 1].x] &&
+	    walls[this.way[this.wayIndex].y*9 + this.way[this.wayIndex].x]) {
+		this.teleport() 
+		return
+	}
+	if (this.checkWallFound())
+		return
+	if (this.wayIndex >= this.way.length - 2)
+		return
+	this.checkNextCellReached()
 }
 
 Bomberman.prototype.move = function () {
@@ -236,10 +265,10 @@ Bomberman.prototype.setDirection = function() {
 }
 
 Bomberman.prototype.setTarget = function(targetx, targety, needToPlantBomb) {
-	this.needToPlantBomb = needToPlantBomb
+	this.status = needToPlantBomb ? (this.status | statuses.needToPlantBomb) : (this.status & ~statuses.needToPlantBomb)
 	this.wayIndex = 0
 	var oldtargetx = this.targetx, oldtargety = this.targety
-	if (!this.needToPlantBomb && this.nextTargetx != -1 && this.nextTargety != -1) {
+	if (!(this.status & statuses.needToPlantBomb) && this.nextTargetx != -1 && this.nextTargety != -1) {
 		oldtargetx = this.nextTargetx
 		oldtargety = this.nextTargety
 	}
@@ -247,19 +276,17 @@ Bomberman.prototype.setTarget = function(targetx, targety, needToPlantBomb) {
 	this.targety = targety
 	console.log('target: x = ' + targetx + ' y = ' + targety + ' bomb = ' + needToPlantBomb)
 	if (targetx == this.x && targety == this.y) {
-		this.direction = directions.wait
-		this.way = []
+		this.clearWay()
 		return
 	}
 	this.way = this.generateWay()
 	if (this.way.length == 0)
 		this.direction = directions.wait
-	if (this.needToPlantBomb) {
-		setCellClassImage(document.getElementById('td' + oldtargety + oldtargetx), '', '')
-		if (walls[oldtargety*9 + oldtargetx])
-			setCellClassImage(document.getElementById('td' + oldtargety + oldtargetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
+	if (this.status & statuses.needToPlantBomb) {
+		setCellClassImage(getElement('td' + oldtargety + oldtargetx), '', '')
+		checkWallTexture(oldtargety, oldtargetx)
 		if (!walls[this.targety*9 + this.targetx])
-			setCellClassImage(document.getElementById('td' + this.targety + this.targetx), targetImagePath, 'targetIEFixBackgroundSize')
+			setCellClassImage(getElement('td' + this.targety + this.targetx), targetImagePath, 'targetIEFixBackgroundSize')
 		this.nextTargetx = this.nextTargety = -1
 	}
 	this.setDirection()
@@ -276,29 +303,55 @@ Bomberman.prototype.plantBomb = function(power, timer) {
 		if (!bombs[i])
 			break
 	bombs[i] = new Bomb(i, this.x, this.y, power, timer)
+	bombPlantedFlag++
 }
 
 Bomberman.prototype.surrenderAnimation = function() {
-	if (this.surrenderTimer < 7)
-		this.drawy -= 15 - this.surrenderTimer
+	if (this.animationTimer < 7)
+		this.drawy -= 15 - this.animationTimer
 	else
-		this.drawy += 15 + (this.surrenderTimer - 7)
-	this.surrenderTimer++
+		this.drawy += 15 + (this.animationTimer - 7)
+	this.animationTimer++
 	this.draw()
-	if (this.drawy > document.getElementById('mainTable').offsetTop + document.getElementById('td' + 8 + this.x).offsetTop + cellHalfSize) //bomberman fell too deep
+	if (this.drawy > getElement('mainTable').offsetTop + getElement('td' + 8 + this.x).offsetTop + cellHalfSize) //bomberman fell too deep
 		this.destroy()
 }
 
 Bomberman.prototype.teleportAnimation = function() {
-	if (this.teleportTimer < 3)
+	if (this.animationTimer < 3)
 		this.image.src = 'images/fireball.png'
-	else if (this.teleportTimer < 5) {
-		this.drawx = document.getElementById('td' + this.y + this.x).offsetLeft + document.getElementById('mainTable').offsetLeft
-		this.drawy = document.getElementById('td' + this.y + this.x).offsetTop + document.getElementById('mainTable').offsetTop		
-	} else 
-		this.teleportTimer = -1
-	this.teleportTimer++
-	this.draw()	
+	else if (this.animationTimer < 5) {
+		this.drawx = getElement('td' + this.y + this.x).offsetLeft + getElement('mainTable').offsetLeft
+		this.drawy = getElement('td' + this.y + this.x).offsetTop + getElement('mainTable').offsetTop
+	} else {
+		this.status &= ~statuses.teleport
+		this.animationTimer = -1
+	}
+	this.animationTimer++
+	this.draw()
+}
+
+Bomberman.prototype.badPhrasesAnimation = function() {
+	var image = getElement('badThoughts' + this.id)
+	if (!image) { //create
+		image = new Image(cellSize, cellSize)
+		image.src = 'images/badThoughts.png'
+		image.id = 'badThoughts' + this.id
+		image.style.position = 'absolute'
+		image.style.left = this.drawx + cellSize/2
+		image.style.top = this.drawy - cellSize/2
+		image.style.zIndex = 10
+		getElement('all').appendChild(image)
+	}
+	if (this.animationTimer < 16) {
+		image.style.left = this.drawx + cellSize/2
+		image.style.top = this.drawy - cellSize/2
+		this.animationTimer++
+	} else {
+		image.parentNode.removeChild(image)
+		this.animationTimer = 0
+		this.status &= ~statuses.badPhrases
+	}
 }
 
 Bomberman.prototype.teleport = function() {
@@ -307,23 +360,20 @@ Bomberman.prototype.teleport = function() {
 		if(!walls[i])
 			list.push(i)
 	if(list.length > 0) {
-		this.direction = directions.wait
-		this.way = []			
+		this.clearWay()
 		var index = Math.floor(Math.random()*list.length)
 		this.x = list[index]%9
 		this.y = Math.floor(list[index]/9)
 		console.log('Teleport: x = ' + this.x + ' y = ' + this.y)
-		this.teleportTimer = this.teleportTimer == 0 ? 1 : this.teleportTimer
+		this.status |= statuses.teleport
 		if (this.nextTargety != -1 && this.nextTargetx != -1) {
-			setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), '', '')
-			if (walls[this.nextTargety*9 + this.nextTargetx])
-				setCellClassImage(document.getElementById('td' + this.nextTargety + this.nextTargetx), 'images/wall.jpg', 'wallIEFixBackgroundSize')
+			setCellClassImage(getElement('td' + this.nextTargety + this.nextTargetx), '', '')
+			checkWallTexture(this.nextTargety, this.nextTargetx)
 		}
-		setCellClassImage(document.getElementById('td' + this.targety + this.targetx), '', '')
-		if (walls[this.targety*9 + this.targetx])
-			setCellClassImage(document.getElementById('td' + this.targety + this.target), 'images/wall.jpg', 'wallIEFixBackgroundSize')	
+		setCellClassImage(getElement('td' + this.targety + this.targetx), '', '')
+		checkWallTexture(this.targety, this.targetx)
 	} else
-		this.surrenderTimer = this.surrenderTimer == 0 ? 1 : this.surrenderTimer
+		this.status |= statuses.surrender
 }
 
 Bomberman.prototype.possibleMoves = function(result, searchFinish, finish) {
@@ -369,7 +419,7 @@ Bomberman.prototype.findNewTarget = function() {
 	var list = []
 	this.possibleMoves(list)
 	if (list.length <= 3) {
-		this.surrenderTimer = this.surrenderTimer == 0 ? 1 : this.surrenderTimer
+		this.status |= statuses.surrender
 		return
 	}
 	var nextTargetIndex = list.indexOf(this.nextTargety*9 + this.nextTargetx)
@@ -383,16 +433,18 @@ Bomberman.prototype.findNewTarget = function() {
 }
 
 Bomberman.prototype.AI = function() {
-	if (this.destroyed)
+	if (this.status & statuses.destroyed)
 		return
-	if (this.surrenderTimer) {
+	if (this.status & statuses.surrender) {
 		this.surrenderAnimation()
 		return
 	}
-	if (this.teleportTimer) {
+	if (this.status & statuses.teleport) {
 		this.teleportAnimation()
 		return
-	}	
+	}
+	if (this.status & statuses.badPhrases)
+		this.badPhrasesAnimation()
 	if (this.waitTimer > 0) {
 		this.waitTimer--
 		return

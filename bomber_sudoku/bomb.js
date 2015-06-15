@@ -11,8 +11,8 @@ function Bomb(id, x, y, power, timer) {
 	this.powerTact = 0
 	this.timer = timer
 	this.explosionWallFlag = 0  
-	this.drawx = document.getElementById('td' + y+x).offsetLeft + document.getElementById('mainTable').offsetLeft
-	this.drawy = document.getElementById('td' + y+x).offsetTop + document.getElementById('mainTable').offsetTop
+	this.drawx = getElement('td' + y+x).offsetLeft + getElement('mainTable').offsetLeft
+	this.drawy = getElement('td' + y+x).offsetTop + getElement('mainTable').offsetTop
 	
 	this.image = new Image(cellSize, cellSize)
 	this.image.src = 'images/bomb.png'
@@ -22,7 +22,7 @@ function Bomb(id, x, y, power, timer) {
 	this.image.style.top = this.drawy
 	this.image.style.zIndex = 8
 	this.image.onclick = function () { clickObject(y, x) }
-	document.getElementById('all').appendChild(this.image)
+	getElement('all').appendChild(this.image)
 }
 
 Bomb.prototype.process = function() {
@@ -32,24 +32,24 @@ Bomb.prototype.process = function() {
 }
 
 Bomb.prototype.destroy = function() {
-	var element = document.getElementById('bomb' + this.id)
+	var element = getElement('bomb' + this.id)
 	element.parentNode.removeChild(element)
 	for (var i = this.x - this.power; i <= this.x + this.power; i++) {
 		var coords = {x: i, y: this.y}
 		roundTheWorld(coords)
 		if (walls[9*this.y + coords.x])
 			continue
-		setCellClassImage(document.getElementById('td' + this.y + coords.x), '', '')  //remove explosions
+		setCellClassImage(getElement('td' + this.y + coords.x), '', '')  //remove explosions
 	}
 	for (var i = this.y - this.power; i <= this.y + this.power; i++) {
 		var coords = {x: this.x, y: i}
 		roundTheWorld(coords)
 		if (walls[9*coords.y + this.x])
 			continue
-		setCellClassImage(document.getElementById('td' + coords.y + this.x), '', '')  //remove explosions
+		setCellClassImage(getElement('td' + coords.y + this.x), '', '')  //remove explosions
 	}
-	if (!walls[bomberman.targety*9 + bomberman.targetx] && !bomberman.destroyed)
-		setCellClassImage(document.getElementById('td' + bomberman.targety + bomberman.targetx), targetImagePath, 'targetIEFixBackgroundSize')
+	if (!walls[bomberman.targety*9 + bomberman.targetx] && !(bomberman.status & statuses.destroyed))
+		setCellClassImage(getElement('td' + bomberman.targety + bomberman.targetx), targetImagePath, 'targetIEFixBackgroundSize')
 	bombs[this.id] = undefined
 }
 
@@ -87,11 +87,11 @@ Bomb.prototype.explode = function() {
 function destroyCell(x, y) {
 	if (walls[9*y + x])
 		return
-	document.getElementById('td' + y + x).removeAttribute('bgcolor')
-	setCellClassImage(document.getElementById('td' + y + x), explosionImageText, 'explosionIEFixBackgroundSize')
+	getElement('td' + y + x).removeAttribute('bgcolor')
+	setCellClassImage(getElement('td' + y + x), explosionImageText, 'explosionIEFixBackgroundSize')
 	if (data[y][x] != '&nbsp')
 		remainingCells++
-	document.getElementById('td' + y + x).innerHTML = data[y][x] = '&nbsp'
+	getElement('td' + y + x).innerHTML = data[y][x] = '&nbsp'
 	initialData[9*y + x] = false
 	for (var i = 0; i < bombs.length; i++)
 		if (bombs[i] && bombs[i].x == x && bombs[i].y == y && bombs[i].timer > 0) { //explode another bombs
