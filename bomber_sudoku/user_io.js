@@ -41,7 +41,7 @@ function clickObject (y, x) {
 	if (!initialData[index]) {//Don't allow to modify initial digits.
 		currentIndex = index
 		showPopup()
-	} 
+	}
 }
 
 function handleClick(obj) {
@@ -51,7 +51,7 @@ function handleClick(obj) {
 	if (!initialData[index]) {//Don't allow to modify initial digits.
 		currentIndex = index
 		showPopup()
-	}	
+	}
 }
 
 function wrongDigit(index, digit) {
@@ -239,6 +239,34 @@ function showMainMenu() {
 	getElement('all').style.display = 'none'
 	getElement('mainMenu').style.display = 'block'
 	getElement('info').onclick = function() { return }
+}
+
+function startPause() {
+	showInfo(200,100, '100px', '<b>Пауза</b>')
+	getElement('all').style.display = 'none'
+	clearInterval(sudokuTimerInterval)
+	clearInterval(bombermanTimer)
+	if (detectIE()) {
+		getElement('info').onclick = stopPause
+		getElement('popupOverlay').onclick = stopPause
+	} else {
+		getElement('info').addEventListener("click", stopPause, true)
+		getElement('popupOverlay').addEventListener("click", stopPause, true)
+	}
+}
+
+function stopPause() {
+	getElement('all').style.display = 'block'
+	bombermanTimer = setInterval('game_cycle()', game_delay)
+	sudokuTimerInterval = setInterval("gameTimer++; getElement('timer').innerHTML = gameTimerToString(gameTimer)", 1000)
+	if (detectIE()) {
+		getElement('info').onclick = hidePopup
+		getElement('popupOverlay').onclick = hidePopup
+	} else {
+		getElement('info').removeEventListener("click", stopPause, true)
+		getElement('popupOverlay').removeEventListener("click", stopPause, true)
+	}
+	hidePopup()
 }
 
 //hints

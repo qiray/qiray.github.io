@@ -25,7 +25,7 @@ var version = '1.0'
 var vkInited = 0, current_id = 0 //for VK API
 var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 1.12*cellSize
 var cellSizeSlider = undefined
-var buttonsSizeAboveMainTable = 50 //height of main menu and hints button
+var buttonsSizeAboveMainTable = 110 //height of main menu and hints button
 var wrongDigits = 0, bombPlantedFlag = 0
 
 if (!Array.prototype.indexOf) { //IE is awesome

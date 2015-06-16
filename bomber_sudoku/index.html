@@ -61,11 +61,14 @@ You win!
 		<input type="button" style="width: 150px; height: 45px;" value="В главное меню" onClick="showMainMenu()">
 	</td>
 	<td width = '33%' align = "center">
-		<span style = "line-height: 45px;" id="timer">00:00</span>
-	</td>	
+		<input type="button" style="width: 135px; height: 45px;" value="Пауза" onClick="startPause()">
+	</td>
 	<td width = '33%' align = "right">
 		<input type="button" id="hint" style="width: 150px; height: 45px;" value="Подсказки" onClick="showHints()">
-	</td>	
+	</td>
+</tr>
+<tr>
+	<td colspan = '3' align = "center"><span style = "line-height: 45px;" id="timer">00:00</span></td>
 </tr>
 </table>
 <script type="text/javascript" language="JavaScript">
@@ -129,11 +132,7 @@ document.write('</table>')
 			vkInited = 0
 		else
 			vkInited = 1
-		/*VK.api('storage.get', {key: 'time', user_id: current_id}, function(data) {
-			console.log(data)
-			if (data.response != '')
-				console.log('Best time = ' + data.response)
-		})*/
+		loadFormVK()
 
 	}, function() {
 		console.log('fail')

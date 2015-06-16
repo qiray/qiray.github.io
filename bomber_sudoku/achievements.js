@@ -60,6 +60,7 @@ function checkAchievements() {
 				'</tr>' +
 			'</table>'
 			showInfo(300, 200, '20px', text)
+			saveToVK()
 			return
 		}
 }
