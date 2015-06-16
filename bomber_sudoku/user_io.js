@@ -206,7 +206,7 @@ function setDifficultyMenu() {
 }
 
 function showRules() {
-	var text = '<div style = "font-family: Arial; font-size: 18px"><p align="justify" style = "margin: 10px 20px; text-indent: 20px;">В этой игре вам нужно решить классическую игру судоку: ' +
+	var text = '<div onclick = "hidePopup()" style = "font-family: Arial; font-size: 16px"><p align="justify" style = "margin: 10px 20px; text-indent: 20px;">В этой игре вам нужно решить классическую игру судоку: ' +
 	'требуется заполнить свободные клетки цифрами от 1 до 9 так, ' + 
 	'чтобы в каждой строке, в каждом столбце и в каждом малом квадрате 3×3 ' + 
 	'каждая цифра встречалась бы только один раз.</p>' + 
@@ -217,7 +217,7 @@ function showRules() {
 	'вы получаете бонус: стены, которые ограничивают передвижение бомбермена и взрывные волны. ' + 
 	'Также в вашем распоряжении имеется несколько видов подсказок.</p>' +
 	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">Вы готовы? Тогда вперед!</p></div>'
-	showInfo(450, 365, '18px', text)
+	showInfo(450, 330, '18px', text)
 }
 
 function showAboutInfo() {
@@ -242,6 +242,8 @@ function showMainMenu() {
 }
 
 function startPause() {
+	if (getElement('mainMenu').style.display != 'none')
+		return
 	showInfo(200,100, '100px', '<b>Пауза</b>')
 	getElement('all').style.display = 'none'
 	clearInterval(sudokuTimerInterval)
@@ -256,6 +258,8 @@ function startPause() {
 }
 
 function stopPause() {
+	if (getElement('mainMenu').style.display != 'none')
+		return	
 	getElement('all').style.display = 'block'
 	bombermanTimer = setInterval('game_cycle()', game_delay)
 	sudokuTimerInterval = setInterval("gameTimer++; getElement('timer').innerHTML = gameTimerToString(gameTimer)", 1000)

@@ -29,7 +29,7 @@
 		}
 	</style>
 </HEAD>
-<BODY onload="resize();" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
+<BODY onload="resize();" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)" onblur = 'startPause()'>
 
 <div id="popupOverlay" style='position: fixed; _position:absolute; top:0px; left:0px; width: 450px; height: 600px; background-color: lightgrey; z-index:10; opacity:0.5; filter: alpha(opacity=50); display:none' onclick="hidePopup()">
 </div>
