@@ -72,7 +72,7 @@ You win!
 </tr>
 </table>
 <script type="text/javascript" language="JavaScript">
-document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 + '" width = "' + cellSize*10 + '" style = "border-collapse: separate; empty-cells: show; position: relative; font-size: 14pt">')
+document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 + '" width = "' + cellSize*10 + '" style = "empty-cells: show; position: relative; font-size: 14pt">')
 		init_data();
 		var i,j
 		for(i = 0; i < 9; i++) {
@@ -118,14 +118,11 @@ document.write('</table>')
 	</table>
 </div>
 <script type="text/javascript">
-	if (detectIE())
-		window.onblur = function(e) {
+	window.onblur = function(e) { 
 		var target = window.event ? window.event.srcElement : e.target
 			if (target == window)
 				startPause()
-		}
-	else
-		window.onblur = startPause
+	}
 	VK.init(function() {
 		var info = document.location.search.substr(1).split("&")
 		console.log(info)
