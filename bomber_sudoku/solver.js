@@ -2,9 +2,9 @@
 function findVariantsForCell(tempData, y, x) {
 	var variants = [1,2,3,4,5,6,7,8,9]
 	for (var i = 0; i < 9; i++) {
-		if (tempData[y][i] != "&nbsp" && variants.indexOf(tempData[y][i]) != -1)
+		if (tempData[y][i] != "" && variants.indexOf(tempData[y][i]) != -1)
 			variants.splice(variants.indexOf(tempData[y][i]), 1)
-		if (tempData[i][x] != "&nbsp" && variants.indexOf(tempData[i][x]) != -1)
+		if (tempData[i][x] != "" && variants.indexOf(tempData[i][x]) != -1)
 			variants.splice(variants.indexOf(tempData[i][x]), 1)
 	}
 	var col =  Math.floor(x/3), row = Math.floor(y/3)
@@ -17,12 +17,12 @@ function findVariantsForCell(tempData, y, x) {
 	return variants
 }
 
-function tryToSolve(tempData, y, x) { //Try to find correct digit for tempData[i][j]. If success return found digit else return "&nbsp"
+function tryToSolve(tempData, y, x) { //Try to find correct digit for tempData[i][j]. If success return found digit else return ""
 	var variants = findVariantsForCell(tempData, y, x) 
 	if (variants.length == 1)
 		return variants[0]
 	else
-		return "&nbsp"
+		return ""
 }
 
 function backtrackingSolve(tempData, remain) { //TODO: maybe add another simple algorithms
@@ -31,7 +31,7 @@ function backtrackingSolve(tempData, remain) { //TODO: maybe add another simple 
 		if (currentX != -1 && currentY != -1)
 			break
 		for (var j = 0; j < 9; j++)
-			if (tempData[i][j] == "&nbsp") {
+			if (tempData[i][j] == "") {
 				var len = findVariantsForCell(tempData, i, j).length
 				if (len == 0)
 					return false
@@ -53,7 +53,7 @@ function backtrackingSolve(tempData, remain) { //TODO: maybe add another simple 
 		if (solveSudoku(tempData, remain, 1, list))
 			return true
 		for (var i = 0; i < list.length; i++)
-			tempData[list[i].y][list[i].x] = '&nbsp'
+			tempData[list[i].y][list[i].x] = ''
 	}
 	return false
 }
@@ -63,9 +63,9 @@ function solveSudoku(tempData, remain, useBacktracking, list) { //return true if
 		var prevRemain = remain //save previous number of remaining cells
 		for (var i = 0; i < 9; i++)
 			for (var j = 0; j < 9; j++)
-				if (tempData[i][j] == "&nbsp") {
+				if (tempData[i][j] == "") {
 					tempData[i][j] = tryToSolve(tempData, i, j)
-					if (tempData[i][j] != "&nbsp") { //reduce numer of remaining cells
+					if (tempData[i][j] != "") { //reduce numer of remaining cells
 						remain--
 						if (list)
 							list.push({x : j, y : i})
@@ -88,7 +88,7 @@ function canSolve(index) { //return true if this field can be solved else return
 		for(j = 0; j < 9; j++)
 			tempData[i][j] = data[i][j]
 	}
-	tempData[Math.floor(index/9)][index%9] = "&nbsp"
+	tempData[Math.floor(index/9)][index%9] = ""
 	if (solveSudoku(tempData, remain, 0, undefined))
 		return true
 	else
@@ -105,5 +105,5 @@ function removeOneCell() {
 			index = Math.floor(Math.random() * 81)
 	}
 	initialData[index] = false
-	data[Math.floor(index/9)][index%9] = "&nbsp"
+	data[Math.floor(index/9)][index%9] = ""
 }

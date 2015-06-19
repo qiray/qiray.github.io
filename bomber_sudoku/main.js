@@ -271,7 +271,7 @@ function checkFilling(y, x) {
 	if (!squareWalls[row*3 + col]) {
 		for (var i = col*3; i < col*3 + 3; i++)
 			for (var j = row*3; j < row*3 + 3; j++)
-				if (data[j][i] != '&nbsp')
+				if (data[j][i] != '')
 					sum++
 		if (sum == 9) { //square is filled
 			squareWalls[row*3 + col] = 1
@@ -281,7 +281,7 @@ function checkFilling(y, x) {
 	sum = 0
 	if (!rowWalls[y]) {
 		for (var i = 0; i < 9; i++)
-			if (data[y][i] != '&nbsp')
+			if (data[y][i] != '')
 				sum++
 		if (sum == 9) { //row is filled
 			rowWalls[y] = 1
@@ -291,7 +291,7 @@ function checkFilling(y, x) {
 	sum = 0
 	if (!colWalls[x]) {
 		for (var i = 0; i < 9; i++)
-			if (data[i][x] != '&nbsp')
+			if (data[i][x] != '')
 				sum++
 		if (sum == 9) { //col is filled
 			colWalls[x] = 1
