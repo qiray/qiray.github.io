@@ -119,9 +119,9 @@ document.write('</table>')
 </div>
 <script type="text/javascript">
 	if (detectIE())
-		window.onblur = function(e) {
+		document.onfocueout = function(e) {
 		var target = window.event ? window.event.srcElement : e.target
-			if (target == window)
+			if (target == document)
 				startPause()
 		}
 	else

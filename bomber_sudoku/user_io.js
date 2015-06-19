@@ -12,11 +12,11 @@ function handleKey(event) {
 function enterDigit(digit) {
 	var x = currentIndex%9, y = Math.floor(currentIndex/9)
 	if (digit == 0) { //clear cell
-		if (data[y][x] != '') {
+		if (data[y][x] != '&nbsp') {
 			remainingCells++
 			wrongDigits = 1 //user cleared inputed digit
 		}
-		data[y][x] = getElement('td' + y + x).innerHTML = ''
+		data[y][x] = getElement('td' + y + x).innerHTML = '&nbsp'
 	}
 	else {
 		if (wrongDigit(currentIndex, digit)) {
@@ -24,7 +24,7 @@ function enterDigit(digit) {
 			wrongDigits = 1
 			return
 		}
-		if (data[y][x] == '')
+		if (data[y][x] == '&nbsp')
 			remainingCells--
 		else if (data[y][x] != digit)//user changed inputed digit
 			wrongDigits = 1
@@ -288,7 +288,7 @@ function oneDigitHint() {
 	for (var i = 0; i < 9; i++) //y
 		for (var j = 0; j < 9; j++) { //x
 			index = 9*i + j
-			if (data[i][j] == "") 
+			if (data[i][j] == "&nbsp") 
 				list.push(index)
 		}
 	index = Math.floor(Math.random() * list.length)
