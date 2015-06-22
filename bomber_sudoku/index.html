@@ -29,7 +29,7 @@
 		}
 	</style>
 </HEAD>
-<BODY onload="resize();" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
+<BODY onload="resize(); loadComplete()" onresize="resize()" onkeypress="handleKey(event)" onkeydown="handleKey(event)">
 
 <div id="popupOverlay" style='position: fixed; _position:absolute; top:0px; left:0px; width: 450px; height: 600px; background-color: lightgrey; z-index:10; opacity:0.5; filter: alpha(opacity=50); display:none' onclick="hidePopup()">
 </div>
@@ -95,7 +95,17 @@ document.write('<table id = "mainTable" border = "1" height = "' + cellSize*10 +
 document.write('</table>')
 </script>
 </div>
-<div id="mainMenu" style = 'display:block; position: absolute; top:25px; left:50%; margin-left: -225px; width: 450px; height: 400px; background-color: rgba(255, 255, 255, 0.5); border-radius: 10px;'>
+<div style = 'display:block; position: absolute; top:64px; left:50%; margin-left: -225px; width: 450px; height: 400px;' id = 'loading'>
+<pre style = 'text-align: center;'>
+  _                    _ _                   
+ | |    ___   __ _  __| (_)_ __   __ _       
+ | |   / _ \ / _` |/ _` | | '_ \ / _` |      
+ | |__| (_) | (_| | (_| | | | | | (_| |_ _ _ 
+ |_____\___/ \__,_|\__,_|_|_| |_|\__, (_|_|_)
+                                 |___/       
+</pre>
+</div>
+<div id="mainMenu" style = 'display:none; position: absolute; top:25px; left:50%; margin-left: -225px; width: 450px; height: 400px; background-color: rgba(255, 255, 255, 0.5); border-radius: 10px;'>
 	<table width = "450">
 		<tr align = "center">
 			<td style = 'font-size: 18pt'>Bombersudoku <script type="text/javascript" language="JavaScript">document.write(version)</script></td>

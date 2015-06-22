@@ -242,7 +242,7 @@ function showMainMenu() {
 }
 
 function startPause() {
-	if (getElement('mainMenu').style.display != 'none')
+	if (getElement('mainMenu').style.display != 'none' || getElement('loading').style.display != 'none')
 		return
 	showInfo(200,100, '100px', '<b>Пауза</b>')
 	getElement('all').style.display = 'none'
@@ -259,7 +259,7 @@ function startPause() {
 
 function stopPause() {
 	if (getElement('mainMenu').style.display != 'none')
-		return	
+		return
 	getElement('all').style.display = 'block'
 	bombermanTimer = setInterval('game_cycle()', game_delay)
 	sudokuTimerInterval = setInterval("gameTimer++; getElement('timer').innerHTML = gameTimerToString(gameTimer)", 1000)

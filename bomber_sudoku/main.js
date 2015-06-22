@@ -355,3 +355,8 @@ function checkWallTexture(y, x) {
 function getElement(id) {
 	return document.getElementById(id)
 }
+
+function loadComplete() {
+	getElement('loading').style.display = 'none'
+	getElement('mainMenu').style.display = 'block'
+}
