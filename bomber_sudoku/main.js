@@ -237,7 +237,7 @@ function timerFunction() {
 
 function game_cycle() {
 	checkAchievements()
-	if (startTimer/* || remainingCells == 0*/)
+	if (startTimer || remainingCells == 0)
 		bomberman.AI()
 	for (var i = 0; i < hintedCells.length; i++) {
 		if (hintedCells[i].timer > 0) 
