@@ -192,7 +192,7 @@ function init_game() {
 }
 
 function victory() {
-	if (bomberman.status & statuses.surrender)
+	if (!(bomberman.status & statuses.surrender))
 		bomberman.status |= statuses.surrender
 	clearInterval(sudokuTimerInterval)
 	startTimer = 0
@@ -237,8 +237,6 @@ function timerFunction() {
 
 function game_cycle() {
 	checkAchievements()
-	if (!startTimer)
-		return
 	bomberman.AI()
 	for (var i = 0; i < hintedCells.length; i++) {
 		if (hintedCells[i].timer > 0) 
