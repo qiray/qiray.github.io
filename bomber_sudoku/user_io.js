@@ -262,6 +262,7 @@ function stopPause() {
 	if (getElement('mainMenu').style.display != 'none')
 		return
 	getElement('all').style.display = 'block'
+	startTimer = 1
 	if (detectIE()) {
 		getElement('info').onclick = hidePopup
 		getElement('popupOverlay').onclick = hidePopup
