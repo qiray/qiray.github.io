@@ -182,7 +182,7 @@ function init_game() {
 	if (bombermanTimer)
 		clearInterval(bombermanTimer)
 	bombermanTimer = setInterval('game_cycle()', game_delay)
-	sudokuTimerInterval = setInterval("gameTimer++; getElement('timer').innerHTML = gameTimerToString(gameTimer)", 1000) //
+	sudokuTimerInterval = setInterval('timerFunction()', 1000) //
 	getElement('info').onclick = function(e) {
 		var target = window.event ? window.event.srcElement : e.target
 		if (target == getElement('info'))
@@ -228,8 +228,17 @@ function redraw() {
 
 //Game with bomberman logic
 
+function timerFunction() {
+	if (startTimer) {
+		gameTimer++
+		getElement('timer').innerHTML = gameTimerToString(gameTimer)
+	}
+}
+
 function game_cycle() {
 	checkAchievements()
+	if (!startTimer)
+		return
 	bomberman.AI()
 	for (var i = 0; i < hintedCells.length; i++) {
 		if (hintedCells[i].timer > 0) 

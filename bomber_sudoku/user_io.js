@@ -248,8 +248,7 @@ function startPause() {
 		return
 	showInfo(200,100, '100px', '<b>Пауза</b>')
 	getElement('all').style.display = 'none'
-	clearInterval(sudokuTimerInterval)
-	clearInterval(bombermanTimer)
+	startTimer = 0
 	if (detectIE()) {
 		getElement('info').onclick = stopPause
 		getElement('popupOverlay').onclick = stopPause
@@ -263,8 +262,7 @@ function stopPause() {
 	if (getElement('mainMenu').style.display != 'none')
 		return
 	getElement('all').style.display = 'block'
-	bombermanTimer = setInterval('game_cycle()', game_delay)
-	sudokuTimerInterval = setInterval("gameTimer++; getElement('timer').innerHTML = gameTimerToString(gameTimer)", 1000)
+	startTimer = 1
 	if (detectIE()) {
 		getElement('info').onclick = hidePopup
 		getElement('popupOverlay').onclick = hidePopup
