@@ -89,9 +89,10 @@ function destroyCell(x, y) {
 		return
 	getElement('td' + y + x).removeAttribute('bgcolor')
 	setCellClassImage(getElement('td' + y + x), explosionImageText, 'explosionIEFixBackgroundSize')
-	if (data[y][x] != '&nbsp')
+	if (data[y][x] != 0)
 		remainingCells++
-	getElement('td' + y + x).innerHTML = data[y][x] = '&nbsp'
+	getElement('td' + y + x).innerHTML = '<pre> </pre>'
+	data[y][x] = 0
 	initialData[9*y + x] = false
 	for (var i = 0; i < bombs.length; i++)
 		if (bombs[i] && bombs[i].x == x && bombs[i].y == y && bombs[i].timer > 0) { //explode another bombs

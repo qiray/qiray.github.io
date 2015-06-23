@@ -12,11 +12,12 @@ function handleKey(event) {
 function enterDigit(digit) {
 	var x = currentIndex%9, y = Math.floor(currentIndex/9)
 	if (digit == 0) { //clear cell
-		if (data[y][x] != '&nbsp') {
+		if (data[y][x] != 0) {
 			remainingCells++
 			wrongDigits = 1 //user cleared inputed digit
 		}
-		data[y][x] = getElement('td' + y + x).innerHTML = '&nbsp'
+		data[y][x] = 0
+		getElement('td' + y + x).innerHTML = '<pre> </pre>'
 	}
 	else {
 		if (wrongDigit(currentIndex, digit)) {
@@ -24,11 +25,12 @@ function enterDigit(digit) {
 			wrongDigits = 1
 			return
 		}
-		if (data[y][x] == '&nbsp')
+		if (data[y][x] == 0)
 			remainingCells--
 		else if (data[y][x] != digit)//user changed inputed digit
 			wrongDigits = 1
-		data[y][x] = getElement('td' + y + x).innerHTML = digit
+		data[y][x] = digit
+		getElement('td' + y + x).innerHTML = '<pre>' + digit + '</pre>'
 	}
 	hidePopup()
 	checkFilling(y, x)
@@ -288,13 +290,14 @@ function oneDigitHint() {
 	for (var i = 0; i < 9; i++) //y
 		for (var j = 0; j < 9; j++) { //x
 			index = 9*i + j
-			if (data[i][j] == "&nbsp") 
+			if (data[i][j] == 0) 
 				list.push(index)
 		}
 	index = Math.floor(Math.random() * list.length)
 	var x = list[index]%9, y = Math.floor(list[index]/9)
 	hintedCells.push({x: x, y: y, timer: 5000})
-	getElement('td' + y + x).innerHTML = data[y][x] = trueData[y][x]
+	data[y][x] = trueData[y][x]
+	getElement('td' + y + x).innerHTML = '<pre>' + (data[y][x] == 0 ? ' ' : "<b>" + data[y][x] + "</b>") + '</pre>'
 	getElement('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
 	showInfo(200, 80, '80px', "Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
 	checkFilling(y, x)
