@@ -59,7 +59,7 @@ function checkAchievements() {
 				'<td><h3>' + achievements[i].name + '</h3>' + achievements[i].description + '</td>' +
 				'</tr>' +
 			'</table>'
-			showInfo(300, 200, '20px', text)
+			showInfo(300, 220, '20px', text)
 			saveToVK()
 			return
 		}
