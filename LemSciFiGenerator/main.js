@@ -44,22 +44,22 @@ var nodes = {}
 function initNodes() {
 	document.getElementById('generatedText').value = ''
 	
-	nodes['Earth'] = new Node(earthTexts, ['naturalСataclysm', 'scientists', 'alienInvasion', 'comet'])
+	nodes['Earth'] = new Node(earthTexts, ['naturalCataclysm', 'scientists', 'alienInvasion', 'comet'])
 	
-	nodes['naturalСataclysm'] = new Node([selection, ' сгорает.', ' замерзает.', ' падает на Солнце.'], ['naturalСataclysmEveryoneDies', 'naturalСataclysmNotEveryoneDies'])
+	nodes['naturalCataclysm'] = new Node(naturalCataclysmTexts, ['naturalCataclysmEveryoneDies', 'naturalCataclysmNotEveryoneDies'])
 	nodes['scientists'] = new Node([selection, '. Ученые'], ['scientistsCreate', 'scientistsOpen'])
 	nodes['alienInvasion'] = new Node([selection, ' подвергается нашествию '], ['smallMartians', 'bigMartians'])
 	nodes['comet'] = new Node([selection, ' сталкивается с огромной кометой '], ['cometDestroy', 'cometNotDestroy', 'cometNotDestroyBut'])
 	
-	nodes['naturalСataclysmEveryoneDies'] = new Node([selection, ' Все гибнут.'], undefined)
-	nodes['naturalСataclysmNotEveryoneDies'] = new Node([selection, ' Почти все гибнут.'], undefined)
+	nodes['naturalCataclysmEveryoneDies'] = new Node([selection, ' Все гибнут.'], undefined)
+	nodes['naturalCataclysmNotEveryoneDies'] = new Node([selection, ' Почти все гибнут.'], undefined)
 	nodes['scientistsCreate'] = new Node([selection, ' создают '], ['small', 'big'])
 	nodes['scientistsOpen'] = new Node([selection, ' открывают '], ['small', 'big'])
 	nodes['smallMartians'] = new Node([selection, 'маленьких '], ['Martians'])
 	nodes['bigMartians'] = new Node([selection, 'больших '], ['Martians'])
 	nodes['cometDestroy'] = new Node([selection, 'и разрушается.'], undefined)
 	nodes['cometNotDestroy'] = new Node([selection, 'и не разрушается.'], undefined)
-	nodes['cometNotDestroyBut'] = new Node([selection, 'и не разрушается, но...'], ['naturalСataclysmEveryoneDies', 'naturalСataclysmNotEveryoneDies'])
+	nodes['cometNotDestroyBut'] = new Node([selection, 'и не разрушается, но...'], ['naturalCataclysmEveryoneDies', 'naturalCataclysmNotEveryoneDies'])
 	
 	nodes['small'] = new Node([selection, 'маленьких '], ['insects', 'reptiles', 'robots', 'aliens', 'strangeThings'])
 	nodes['big'] = new Node([selection, 'больших '], ['insects', 'reptiles', 'robots', 'aliens', 'strangeThings'])
@@ -74,7 +74,7 @@ function initNodes() {
 	nodes['which'] = new Node([selection, ', которые'], ['wantWomen', 'friends', 'friendsButDontUnderstand', 'dontUnderstand', 'understand', 'food'])
 	
 	nodes['wantWomen'] = new Node([selection, ' желают наших женщин.'], ['stealWomen', 'radioactive', 'notRadioactive'])
-	nodes['friends'] = new Node([selection, ' ведут себя дружелюбно.'], ['radioactive', 'notRadioactive'])
+	nodes['friends'] = new Node([selection, ' ведут себя дружелюбно.'], [undefined, 'radioactive', 'notRadioactive'])
 	nodes['friendsButDontUnderstand'] = new Node([selection, ' ведут себя дружелюбно, но их никто не понимает.'], ['radioactive', 'notRadioactive'])
 	nodes['dontUnderstand'] = new Node([selection, ' не понимают нас.'], ['radioactive', 'notRadioactive'])
 	nodes['understand'] = new Node([selection, ' отлично понимают нас.'], ['radioactive', 'notRadioactive'])
@@ -122,5 +122,7 @@ function generateSciFiText(start) {
 		text += node.getText()
 		node = node.getNextNode()
 	}
+	var year = years[getRandomInt(0, years.length - 1)]
+	text = text.replace('%year', year)
 	document.getElementById('generatedText').value = text
 }
