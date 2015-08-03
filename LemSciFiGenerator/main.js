@@ -47,12 +47,12 @@ function initNodes() {
 	nodes['Earth'] = new Node(earthTexts, ['naturalCataclysm', 'scientists', 'alienInvasion', 'comet'])
 	
 	nodes['naturalCataclysm'] = new Node(naturalCataclysmTexts, ['naturalCataclysmEveryoneDies', 'naturalCataclysmNotEveryoneDies'])
-	nodes['scientists'] = new Node([selection, '. Ученые'], ['scientistsCreate', 'scientistsOpen'])
-	nodes['alienInvasion'] = new Node([selection, ' подвергается нашествию '], ['smallMartians', 'bigMartians'])
-	nodes['comet'] = new Node([selection, ' сталкивается с огромной кометой '], ['cometDestroy', 'cometNotDestroy', 'cometNotDestroyBut'])
+	nodes['scientists'] = new Node(scientistTexts, ['scientistsCreate', 'scientistsOpen'])
+	nodes['alienInvasion'] = new Node(alienInvasionTexts, ['smallMartians', 'bigMartians'])
+	nodes['comet'] = new Node(cometTexts, ['cometDestroy', 'cometNotDestroy', 'cometNotDestroyBut'])
 	
-	nodes['naturalCataclysmEveryoneDies'] = new Node([selection, ' Все гибнут.'], undefined)
-	nodes['naturalCataclysmNotEveryoneDies'] = new Node([selection, ' Почти все гибнут.'], undefined)
+	nodes['naturalCataclysmEveryoneDies'] = new Node(naturalCataclysmEveryoneDiesTexts, undefined)
+	nodes['naturalCataclysmNotEveryoneDies'] = new Node(naturalCataclysmNotEveryoneDiesTexts, undefined)
 	nodes['scientistsCreate'] = new Node([selection, ' создают '], ['small', 'big'])
 	nodes['scientistsOpen'] = new Node([selection, ' открывают '], ['small', 'big'])
 	nodes['smallMartians'] = new Node([selection, 'маленьких '], ['Martians'])
