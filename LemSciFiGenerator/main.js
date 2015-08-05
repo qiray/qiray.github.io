@@ -124,5 +124,6 @@ function generateSciFiText(start) {
 	}
 	var year = years[getRandomInt(0, years.length - 1)]
 	text = text.replace('%year', year)
-	document.getElementById('generatedText').value = text
+	text = '<p>' + text.replace(/\n([ \t]*\n)+/g, '</p><p>') + '</p>';
+	document.getElementById('generatedText').innerHTML = text
 }
