@@ -74,8 +74,8 @@ function loadFormVK() {
 				cellSize = playerInfo.cellSize
 				cellHalfSize = Math.floor(cellSize/2)
 				cellSizeWithBorders = 1.12*cellSize
-				setDifficulty(playerInfo.difficultLevel)
-				hidePopup()
+				difficultLevel = playerInfo.difficultLevel
+				defaultBombPower = difficultLevel == hard ? 3 : 2
 			}
 		})
 }
