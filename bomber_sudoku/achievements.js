@@ -68,13 +68,14 @@ function checkAchievements() {
 function loadFormVK() {
 	if (vkInited)
 		VK.api('storage.get', {key: 'playerInfo', user_id: current_id}, function(data) {
-			console.log(data)
+			console.log(data, data.response)
 			if (data.response != '') {
 				playerInfo = JSON.parse(data.response)
 				cellSize = playerInfo.cellSize
 				cellHalfSize = Math.floor(cellSize/2)
 				cellSizeWithBorders = 1.12*cellSize
 				setDifficulty(playerInfo.difficultLevel)
+				hidePopup()
 			}
 		})
 }
