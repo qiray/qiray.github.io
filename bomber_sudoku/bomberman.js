@@ -30,6 +30,7 @@ var statuses = {
 var bombermanTextures = [], bombermanTexturesLength = 8
 var bombermanPaths = ['images/Bomberman/Front/', 'images/Bomberman/Back/', 'images/Bomberman/Left/', 'images/Bomberman/Right/']
 var teleportImage = undefined
+var badThoughtsImage = undefined
 
 function roundTheWorld(coords) {
 	if (coords.x < 0)

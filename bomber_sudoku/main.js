@@ -132,6 +132,10 @@ function init_data() {
 		teleportImage = new Image(cellSize, cellSize)
 		teleportImage.src = 'images/fireball.png'
 	}
+	if (!badThoughtsImage) {
+		badThoughtsImage = new Image(cellSize, cellSize)
+		badThoughtsImage.src = 'images/badThoughts.png'
+	}
 }
 
 function initNumberOfHints(one, stop, check) {
