@@ -10,7 +10,7 @@ var playerInfo = {
 		medium: 0,
 		hard: 0
 	},
-	cellSize: 0,
+	cellSize: 45,
 	difficultLevel: trivial,
 	achievements: []
 }
@@ -71,7 +71,7 @@ function loadFormVK() {
 			console.log(data, data.response)
 			if (data.response != '') {
 				playerInfo = JSON.parse(data.response)
-				cellSize = playerInfo.cellSize
+				cellSize = playerInfo.cellSize == 0 ? 45 : playerInfo.cellSize
 				cellHalfSize = Math.floor(cellSize/2)
 				cellSizeWithBorders = 1.12*cellSize
 				difficultLevel = playerInfo.difficultLevel
@@ -82,6 +82,7 @@ function loadFormVK() {
 
 function saveToVK() {
 	if (vkInited) {
+		playerInfo.cellSize = cellSize
 		var text = JSON.stringify(playerInfo)
 		VK.api('storage.set', {key: 'playerInfo', value: text, user_id: current_id}, function() {})
 	}
