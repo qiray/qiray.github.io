@@ -42,7 +42,7 @@ var achievements = [
 	{id: 9, img: 'images/achievements/sargeant.png', name: 'Я легенда', description: 'Пройти 50 уровней', condition: function() {return playerInfo.statistics.victories >= 50 } },
 	{id: 10, img: 'images/achievements/radacinaHandcuffs.png', name: 'Попался!', description: 'Запереть бомбермена меньше чем 25-ю стенами', condition: checkBombermanDestroyed },
 	{id: 11, img: 'images/achievements/sniper.png', name: 'Снайпер', description: 'Пройти уровень без единой ошибки', condition: function() { return wrongDigits == 0 && remainingCells == 0 } },
-	{id: 12, img: 'images/achievements/noBomb.png', name: 'Проверено, бомб нет', description: 'Пройти уровень, помешав бомбермену поставить бомбы', condition: function() { return bombPlantedFlag == 0 && remainingCells == 0 } },
+	{id: 12, img: 'images/achievements/noBomb.png', name: 'Проверено, бомб нет', description: 'Пройти уровень, не дав бомбермену поставить бомбы', condition: function() { return bombPlantedFlag == 0 && remainingCells == 0 } },
 	{id: 13, img: 'images/achievements/SierpinskiTriangle.png', name: 'Рекурсия', description: 'Получить все достижения', condition: function() {return playerInfo.achievements.length == achievements.length - 1} }
 ]
 
