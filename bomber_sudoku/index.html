@@ -128,15 +128,6 @@ document.write('</table>')
 	</table>
 </div>
 <script type="text/javascript">
-	if (detectIE())
-		document.onfocusout = function(e) {
-		var target = window.event ? window.event.srcElement : e.target
-		console.log(target)
-			if (target == document)
-				startPause()
-		}
-	else
-		window.onblur = startPause
 	VK.init(function() {
 		var info = document.location.search.substr(1).split("&")
 		console.log(info)
