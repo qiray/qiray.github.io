@@ -27,6 +27,7 @@ var cellSize = 45, cellHalfSize = Math.floor(cellSize/2), cellSizeWithBorders = 
 var cellSizeSlider = undefined
 var buttonsSizeAboveMainTable = 110 //height of main menu and hints button
 var wrongDigits = 0, bombPlantedFlag = 0
+var settingsMenuActive = false
 
 if (!Array.prototype.indexOf) { //IE is awesome
 	Array.prototype.indexOf = function(obj, start) {

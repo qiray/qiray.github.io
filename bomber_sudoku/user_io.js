@@ -111,10 +111,13 @@ function showPopup() {
 }
 
 function hidePopup() {
+	if (settingsMenuActive)
+		saveToVK()
 	getElement('popupOverlay').style.display = 'none'
 	getElement('popup').style.display = 'none'
 	getElement('info').style.display = 'none'
 	popupVisible = 0
+	settingsMenuActive = false
 }
 
 function difficultyTostring(level) {
@@ -170,6 +173,7 @@ function showAchievements() {
 }
 
 function showSettings() {
+	settingsMenuActive = true
 	var text = '<div onselectstart="return false;" unselectable="on" style = "-o-user-select:none;-moz-user-select: -moz-none;-khtml-user-select: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;">' + 
 	'<h3 style = "margin: 20px">Настройки:</h3><table width = "400">' +
 		'<tr align = "center"><td>' + 
