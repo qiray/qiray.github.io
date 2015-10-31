@@ -87,3 +87,9 @@ function saveToVK() {
 		VK.api('storage.set', {key: 'playerInfo', value: text, user_id: current_id}, function() {})
 	}
 }
+
+function tellFriends() {
+	if (vkInited) {
+		VK.api('wall.post', {owner_id: current_id, from_group: '1', message: 'Bombersudoku - объединение классического судоку и Bomberman. Я уже играю, присоединяйся: vk.com/app5120532', attachments: 'photo9921766_388085077', version: '5.37'}, function() {})
+	}	
+}

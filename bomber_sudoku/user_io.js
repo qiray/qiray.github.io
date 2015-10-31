@@ -144,6 +144,7 @@ function startNewGame() {
 	getElement('buttonsTable').style.marginLeft = -5*size	
 	init_game()
 	getElement('mainMenu').style.display = 'none'
+	getElement('tellFriendsButton').style.display = 'none'
 }
 
 function showAchievements() {
@@ -240,6 +241,7 @@ function showMainMenu() {
 			bombs[i].destroy()
 	getElement('all').style.display = 'none'
 	getElement('mainMenu').style.display = 'block'
+	getElement('tellFriendsButton').style.display = 'block'
 	getElement('info').onclick = function() { return }
 }
 
