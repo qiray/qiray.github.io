@@ -10,6 +10,8 @@ document.getElementById('generateButton').addEventListener('click', function() {
 	var boxes = [];
 	var canvas = document.getElementById("canvas");
 	var ctx = canvas.getContext('2d');
+	ctx.font = fontSize + 'px Monospace';
+	ctx.textAlign = 'left';
 	for (var i in lines) {
 		if (lines[i].length == 0)
 			continue;
