@@ -57,24 +57,8 @@ function playerProcess(player) {
 	player.velX *= game.friction;
 	player.velY += game.gravity;
 	player.grounded = false;
-/*
-var boxes = []; //EXAMPLE!
-// dimensions
-boxes.push({
-    x: 0,
-    y: 0,
-    img: '###',
-    width: 10,
-    height: height
-});
-boxes.push({
-    x: 0,
-    y: height - 2,
-    width: width,
-    height: 50
-});
-});
-*/
+	
+	var boxes = game.levels[game.player.currentLevel];
 	for (var i = 0; i < boxes.length; i++) { //TODO: boxes from level
 		var dir = colCheck(player, boxes[i]);
 		if (dir === "l" || dir === "r") {

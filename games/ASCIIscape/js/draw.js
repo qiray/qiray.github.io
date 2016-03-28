@@ -13,7 +13,8 @@ function drawObject(obj) {
 
 function redraw() {
 	game.ctx.clearRect(0, 0, canvas.width, canvas.height);
-	for (var y in game.levels[game.player.currentLevel])
-		drawText(game.ctx, fontSize, lineHeight, game.levels[game.player.currentLevel][y], 0 ,y*lineHeight);
+	var boxes = game.levels[game.player.currentLevel];
+	for (var i in boxes)
+		drawText(game.ctx, fontSize, lineHeight, boxes[i].img, boxes[i].x, boxes[i].y);
 	drawObject(game.player);
 }

@@ -15,6 +15,8 @@ document.getElementById('generateButton').addEventListener('click', function() {
 			continue;
 		var arr = lines[i].split(' ');
 		for (var j in arr) {
+			if (arr[j].length == 0)
+				continue;
 			boxes.push({
 				x : 0, 
 				y : i*lineHeight, 
