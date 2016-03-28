@@ -28,8 +28,6 @@ function Game(canvasObject) {
 	this.gravity = 0.2;
 }
 
-var game; 
-
 function init() {
 	game = new Game(document.getElementById("canvas"));
 }
@@ -65,6 +63,7 @@ var boxes = []; //EXAMPLE!
 boxes.push({
     x: 0,
     y: 0,
+    img: '###',
     width: 10,
     height: height
 });
@@ -90,7 +89,7 @@ boxes.push({
 
 	}
 
-	if(player.grounded){
+	if (player.grounded) {
 		player.velY = 0;
 	}
 
