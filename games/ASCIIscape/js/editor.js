@@ -35,7 +35,6 @@ document.getElementById('generateButton').addEventListener('click', function() {
 		if (lines[i].length == 0)
 			continue;
 		var arr = stringSplitSpacesPos(lines[i]);
-		console.log(i, arr);
 		for (var j in arr) {
 			boxes.push({
 				x : ctx.measureText(Array(arr[j].index + 1).join("a")).width, 
@@ -46,5 +45,5 @@ document.getElementById('generateButton').addEventListener('click', function() {
 			});
 		}
 	}
-	document.getElementById('outputBoxes').value = JSON.stringify(boxes);
+	document.getElementById('outputBoxes').value = JSON.stringify(boxes).replace(/},/g, "},\n");
 })

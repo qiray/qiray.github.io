@@ -7,14 +7,25 @@ function drawText(ctx, fontSize, lineHeight, text, x ,y) {
 		ctx.fillText(lines[k], x, y + k*lineHeight);
 }
 
-function drawObject(obj) {
-	drawText(game.ctx, fontSize, lineHeight, obj.img, obj.x, obj.y);
+function drawObject(game, obj) {
+	drawText(game.ctx, fontSize, lineHeight, obj.img, obj.x - game.screen.x, obj.y - game.screen.y);
+}
+
+function onScreen(screen, box) {
+	return (screen.x < box.x + box.width &&
+		screen.x + screen.width > box.x &&
+		screen.y < box.y + box.height &&
+		screen.height + screen.y > box.y);
 }
 
 function redraw() {
-	game.ctx.clearRect(0, 0, canvas.width, canvas.height);
+	game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
 	var boxes = game.levels[game.player.currentLevel];
-	for (var i in boxes)
-		drawText(game.ctx, fontSize, lineHeight, boxes[i].img, boxes[i].x, boxes[i].y);
-	drawObject(game.player);
+	for (var i in boxes) {
+		if (onScreen(game.screen, boxes[i]))
+			drawObject(game, boxes[i]);
+			//drawText(game.ctx, fontSize, lineHeight, boxes[i].img, boxes[i].x, boxes[i].y);
+	}
+	drawObject(game, game.player);
+game.ctx.strokeRect(0, 0, game.screen.width, game.screen.height);
 }

@@ -9,7 +9,7 @@ function Game(canvasObject) {
 		currentLevel : 0, 
 		img : '\\o/', 
 		x : 10, 
-		y : 80,
+		y : 40,
 		speed : 3,
 		jumping: false, //TODO: make 1 status
 		grounded: false,
@@ -23,9 +23,28 @@ function Game(canvasObject) {
 	this.units = [];
 	this.canvas = canvasObject;
 	this.ctx = this.canvas.getContext('2d');
+	this.ctx.font = fontSize + 'px Monospace';
+	this.ctx.textAlign = 'left';
+	this.screen = {width : 80*this.ctx.measureText("a").width, height : 25*lineHeight, x : 0, y : 0};
+	this.canvas.width = this.screen.width;
+	this.canvas.height = this.screen.height;
 	this.keys = [];
 	this.friction = 0.8;
 	this.gravity = 0.2;
+}
+
+function moveScreen(game) {
+	game.screen.x = game.player.x - game.screen.width/2;
+	game.screen.y = game.player.y - game.screen.height/2;
+	var max = 1000000; //TODO: load from level
+	if (game.screen.x < 0)
+		game.screen.x = 0;
+	if (game.screen.y < 0)
+		game.screen.y = 0;
+	if (game.screen.x + game.screen.width > max)
+		game.screen.x = max - game.screen.width;
+	if (game.screen.y + game.screen.height > max)
+		game.screen.y = max - game.screen.height;
 }
 
 function init() {
@@ -59,7 +78,7 @@ function playerProcess(player) {
 	player.grounded = false;
 	
 	var boxes = game.levels[game.player.currentLevel];
-	for (var i = 0; i < boxes.length; i++) { //TODO: boxes from level
+	for (var i = 0; i < boxes.length; i++) {
 		var dir = colCheck(player, boxes[i]);
 		if (dir === "l" || dir === "r") {
 			player.velX = 0;
@@ -84,6 +103,7 @@ function playerProcess(player) {
 function game_cycle() {
 	checkControls(game.player);
 	playerProcess(game.player);
+	moveScreen(game);
 	redraw();
 	requestAnimationFrame(game_cycle);
 }
