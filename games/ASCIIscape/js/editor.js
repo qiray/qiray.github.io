@@ -4,6 +4,25 @@ window.addEventListener("load",function(){
 	document.getElementById('outputBoxes').value = '';
 });
 
+function stringSplitSpacesPos(str) {
+	var len = str.length, block = -1, i;
+	var result = [];
+	for (i = 0; i < len; i++) {
+		if (str[i] == ' ') {
+			if (block >= 0) {
+				result.push({index : block, text : str.substring(block, i)});
+				block = -1;
+			}
+			continue;
+		}
+		if (block < 0)
+			block = i;
+	}
+	if (block >= 0)
+		result.push({index : block, text : str.substring(block, i)});
+	return result;
+}
+
 document.getElementById('generateButton').addEventListener('click', function() {
 	var text = document.getElementById('inputASCII').value;
 	var lines = text.split('\n');
@@ -15,15 +34,14 @@ document.getElementById('generateButton').addEventListener('click', function() {
 	for (var i in lines) {
 		if (lines[i].length == 0)
 			continue;
-		var arr = lines[i].split(' ');
+		var arr = stringSplitSpacesPos(lines[i]);
+		console.log(i, arr);
 		for (var j in arr) {
-			if (arr[j].length == 0)
-				continue;
 			boxes.push({
-				x : 0, 
+				x : ctx.measureText(Array(arr[j].index + 1).join("a")).width, 
 				y : i*lineHeight, 
-				img : arr[j],
-				width : ctx.measureText(arr[j]).width,
+				img : arr[j].text,
+				width : ctx.measureText(arr[j].text).width,
 				height : lineHeight
 			});
 		}
