@@ -11,16 +11,22 @@ function Game(canvasObject) {
 		x : 10, 
 		y : 40,
 		speed : 3,
-		jumping: false, //TODO: make 1 status
-		grounded: false,
+		status : statuses.none,
 		velX: 0,
 		velY: 0,
 		height: fontSize,
 		width: lineHeight
 	};
 	this.levels = [level1];
-	this.objects = [];
-	this.units = [];
+	this.maxWidth = 0;
+	this.maxHeight = 0;
+	var boxes = this.levels[this.player.currentLevel];
+	for (var i in boxes) { //TODO: load levels
+		if (boxes[i].y + boxes[i].height > this.maxHeight)
+			this.maxHeight = boxes[i].y + boxes[i].height;
+		if (boxes[i].x + boxes[i].width > this.maxWidth)
+			this.maxWidth = boxes[i].x + boxes[i].width;
+	}
 	this.canvas = canvasObject;
 	this.ctx = this.canvas.getContext('2d');
 	this.ctx.font = fontSize + 'px Monospace';
@@ -36,26 +42,25 @@ function Game(canvasObject) {
 function moveScreen(game) {
 	game.screen.x = game.player.x - game.screen.width/2;
 	game.screen.y = game.player.y - game.screen.height/2;
-	var max = 1000000; //TODO: load from level
 	if (game.screen.x < 0)
 		game.screen.x = 0;
 	if (game.screen.y < 0)
 		game.screen.y = 0;
-	if (game.screen.x + game.screen.width > max)
-		game.screen.x = max - game.screen.width;
-	if (game.screen.y + game.screen.height > max)
-		game.screen.y = max - game.screen.height;
+	if (game.screen.x + game.screen.width > game.maxWidth)
+		game.screen.x = game.maxWidth - game.screen.width;
+	if (game.screen.y + game.screen.height > game.maxHeight)
+		game.screen.y = game.maxHeight - game.screen.height;
 }
 
 function init() {
 	game = new Game(document.getElementById("canvas"));
 }
 
-function checkControls(player) {
+function checkControls(game, player) {
 	if (game.keys[38] || game.keys[32] || game.keys[87]) {// up arrow or space
-		if (!player.jumping && player.grounded) {
-			player.jumping = true;
-			player.grounded = false;
+		if (player.status & statuses.grounded && !(player.status & statuses.jumping)) {
+			player.status |= statuses.jumping;
+			player.status &= ~statuses.grounded;
 			player.velY = -player.speed * 2;
 		}
 	}
@@ -75,36 +80,35 @@ function playerProcess(player) {
 	var width = game.canvas.width, height = game.canvas.height;
 	player.velX *= game.friction;
 	player.velY += game.gravity;
-	player.grounded = false;
+	player.status &= ~statuses.grounded
 	
 	var boxes = game.levels[game.player.currentLevel];
 	for (var i = 0; i < boxes.length; i++) {
 		var dir = colCheck(player, boxes[i]);
 		if (dir === "l" || dir === "r") {
 			player.velX = 0;
-			player.jumping = false;
+			player.status &= ~statuses.jumping;
 		} else if (dir === "b") {
-			player.grounded = true;
-			player.jumping = false;
+			player.status |= statuses.grounded;
+			player.status &= ~statuses.jumping;
 		} else if (dir === "t") {
-			player.velY *= -1;
+			player.velY = 0;
 		}
 
 	}
 
-	if (player.grounded) {
+	if (player.status & statuses.grounded)
 		player.velY = 0;
-	}
 
 	player.x += player.velX;
 	player.y += player.velY;
 }
 
 function game_cycle() {
-	checkControls(game.player);
+	checkControls(game, game.player);
 	playerProcess(game.player);
 	moveScreen(game);
-	redraw();
+	redraw(game);
 	requestAnimationFrame(game_cycle);
 }
 

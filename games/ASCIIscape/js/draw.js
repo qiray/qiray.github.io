@@ -18,7 +18,7 @@ function onScreen(screen, box) {
 		screen.height + screen.y > box.y);
 }
 
-function redraw() {
+function redraw(game) {
 	game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
 	var boxes = game.levels[game.player.currentLevel];
 	for (var i in boxes) {
