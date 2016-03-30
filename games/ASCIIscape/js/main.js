@@ -14,8 +14,8 @@ function Game(canvasObject) {
 		status : statuses.none,
 		velX: 0,
 		velY: 0,
-		height: fontSize,
-		width: lineHeight
+		height: lineHeight, //TODO: calc from img
+		width: fontSize
 	};
 	this.levels = [level1];
 	this.maxWidth = 0;
@@ -37,6 +37,10 @@ function Game(canvasObject) {
 	this.keys = [];
 	this.friction = 0.8;
 	this.gravity = 0.2;
+}
+
+Game.prototype.playerFire = function() {
+	//TODO: add fireballs, arrows, etc
 }
 
 function moveScreen(game) {
@@ -74,11 +78,16 @@ function checkControls(game, player) {
 			player.velX--;
 		}
 	}
+	if (game.keys[70]) { //'f' is for fire
+		game.playerFire();
+	}
 }
 
 function playerProcess(player) {
 	var width = game.canvas.width, height = game.canvas.height;
 	player.velX *= game.friction;
+	if (Math.abs(player.velX) < 1e-3)
+		player.velX = 0;
 	player.velY += game.gravity;
 	player.status &= ~statuses.grounded
 	
@@ -91,12 +100,11 @@ function playerProcess(player) {
 		} else if (dir === "b") {
 			player.status |= statuses.grounded;
 			player.status &= ~statuses.jumping;
+			player.y -= player.y + player.height - boxes[i].y; //to prevent from falling into object
 		} else if (dir === "t") {
 			player.velY = 0;
 		}
-
 	}
-
 	if (player.status & statuses.grounded)
 		player.velY = 0;
 
