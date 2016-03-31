@@ -18,6 +18,13 @@ function onScreen(screen, box) {
 		screen.height + screen.y > box.y);
 }
 
+function drawObjects(game) {
+	for (var i in game.objects) {
+		if (game.objects[i])
+			drawObject(game, game.objects[i]);
+	}	
+}
+
 function redraw(game) {
 	game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
 	var boxes = game.levels[game.player.currentLevel];
@@ -26,6 +33,7 @@ function redraw(game) {
 			drawObject(game, boxes[i]);
 			//drawText(game.ctx, fontSize, lineHeight, boxes[i].img, boxes[i].x, boxes[i].y);
 	}
+	drawObjects(game);
 	drawObject(game, game.player);
 game.ctx.strokeRect(0, 0, game.screen.width, game.screen.height);
 }

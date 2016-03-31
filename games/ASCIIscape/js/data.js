@@ -8,3 +8,16 @@ var statuses = {
 	jumping : 1,
 	grounded : 2
 }
+
+var dirs = {
+	up : 1,
+	right : 2,
+	down : 3,
+	left : 4
+}
+
+var objectTypes = {
+	fireball : 1,
+	npc : 2,
+	enemy : 3
+}

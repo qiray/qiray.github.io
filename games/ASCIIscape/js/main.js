@@ -10,6 +10,7 @@ function Game(canvasObject) {
 		img : '\\o/', 
 		x : 10, 
 		y : 40,
+		dir : dirs.right,
 		speed : 3,
 		verticalSpeed : 4,
 		status : statuses.none,
@@ -42,12 +43,20 @@ function Game(canvasObject) {
 		if (lines[k].length*onecharwidth > this.player.width)
 			this.player.width = lines[k].length*onecharwidth;
 	this.keys = [];
+	this.objects = [];
 	this.friction = 0.8;
 	this.gravity = 0.2;
 }
 
-Game.prototype.playerFire = function() {
-	//TODO: add fireballs, arrows, etc
+Game.prototype.playerFire = function() { //TODO: mana, timer or something similar
+	this.objects.push(new Object(objectTypes.fireball, this.player.x, this.player.y, {speed: 2, img: 'O', dir: this.player.dir})); //Object(type, x, y, params)
+}
+
+function obectsProcess(game) {
+	for (var i in game.objects) {
+		if (game.objects[i])
+			game.objects[i].process();
+	}
 }
 
 function moveScreen(game) {
@@ -69,6 +78,7 @@ function init() {
 
 function checkControls(game, player) {
 	if (game.keys[38] || game.keys[32] || game.keys[87]) {// up arrow or space
+		player.dir = dirs.up;
 		if (player.status & statuses.grounded && !(player.status & statuses.jumping)) {
 			player.status |= statuses.jumping;
 			player.status &= ~statuses.grounded;
@@ -85,11 +95,13 @@ function checkControls(game, player) {
 		player.status &= ~statuses.jumping;
 	}
 	if (game.keys[39] || game.keys[68]) { // right arrow
+		player.dir = dirs.right;
 		if (player.velX < player.speed) {
 			player.velX++;
 		}
 	}
 	if (game.keys[37] || game.keys[65]) { // left arrow
+		player.dir = dirs.left;
 		if (player.velX > -player.speed) {
 			player.velX--;
 		}
@@ -131,6 +143,7 @@ function playerProcess(player) {
 function game_cycle() {
 	checkControls(game, game.player);
 	playerProcess(game.player);
+	obectsProcess(game);
 	moveScreen(game);
 	redraw(game);
 	requestAnimationFrame(game_cycle);
