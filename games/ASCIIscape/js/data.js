@@ -1,5 +1,6 @@
 
 var fontSize = 12, lineHeight = 14;
+var onecharwidth;
 var game;
 
 var statuses = {

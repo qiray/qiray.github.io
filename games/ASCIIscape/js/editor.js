@@ -27,20 +27,16 @@ document.getElementById('generateBoxesButton').addEventListener('click', functio
 	var text = document.getElementById('ASCIItext').value;
 	var lines = text.split('\n');
 	var boxes = [];
-	var canvas = document.getElementById("canvas");
-	var ctx = canvas.getContext('2d');
-	ctx.font = fontSize + 'px Monospace';
-	ctx.textAlign = 'left';
 	for (var i in lines) {
 		if (lines[i].length == 0)
 			continue;
 		var arr = stringSplitSpacesPos(lines[i]);
 		for (var j in arr) {
 			boxes.push({
-				x : ctx.measureText(Array(arr[j].index + 1).join("a")).width, 
+				x : arr[j].index*onecharwidth, 
 				y : i*lineHeight, 
 				img : arr[j].text,
-				width : ctx.measureText(arr[j].text).width,
+				width : onecharwidth*arr[j].text.length,
 				height : lineHeight
 			});
 		}
@@ -53,11 +49,7 @@ document.getElementById('generateASCIIButton').addEventListener('click', functio
 		var boxes = JSON.parse(document.getElementById('boxesText').value);
 		var result = '';
 		var x = 0, y = 0;
-		var canvas = document.getElementById("canvas");
-		var ctx = canvas.getContext('2d');
-		ctx.font = fontSize + 'px Monospace';
-		ctx.textAlign = 'left';
-		var onecharwidth = ctx.measureText('#').width;
+
 		for (var i in boxes) {
 			if (y*lineHeight != boxes[i].y) { //new line
 				x = 0;
@@ -73,3 +65,9 @@ document.getElementById('generateASCIIButton').addEventListener('click', functio
 		alert('Error: ' + err.message);
 	}
 })
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext('2d');
+ctx.font = fontSize + 'px Monospace';
+ctx.textAlign = 'left';
+onecharwidth = ctx.measureText("#").width;

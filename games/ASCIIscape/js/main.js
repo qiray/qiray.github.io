@@ -11,10 +11,11 @@ function Game(canvasObject) {
 		x : 10, 
 		y : 40,
 		speed : 3,
+		verticalSpeed : 4,
 		status : statuses.none,
 		velX: 0,
 		velY: 0,
-		height: lineHeight, //TODO: calc from img
+		height: lineHeight,
 		width: fontSize
 	};
 	this.levels = [level1];
@@ -31,9 +32,15 @@ function Game(canvasObject) {
 	this.ctx = this.canvas.getContext('2d');
 	this.ctx.font = fontSize + 'px Monospace';
 	this.ctx.textAlign = 'left';
-	this.screen = {width : 80*this.ctx.measureText("a").width, height : 25*lineHeight, x : 0, y : 0};
+	onecharwidth = this.ctx.measureText("#").width;
+	this.screen = {width : 80*onecharwidth, height : 25*lineHeight, x : 0, y : 0};
 	this.canvas.width = this.screen.width;
 	this.canvas.height = this.screen.height;
+	var lines = this.player.img.split('\n');
+	this.player.height = lineHeight*lines.length;
+	for (var k in lines)
+		if (lines[k].length*onecharwidth > this.player.width)
+			this.player.width = lines[k].length*onecharwidth;
 	this.keys = [];
 	this.friction = 0.8;
 	this.gravity = 0.2;
@@ -65,8 +72,17 @@ function checkControls(game, player) {
 		if (player.status & statuses.grounded && !(player.status & statuses.jumping)) {
 			player.status |= statuses.jumping;
 			player.status &= ~statuses.grounded;
-			player.velY = -player.speed * 2;
+			if (player.velY > -player.verticalSpeed)
+				player.velY -= 0.5;
+		} 
+		if (player.status & statuses.jumping) {
+			if (player.velY > -player.verticalSpeed && player.velY < 0)
+				player.velY -= 0.5;
+			else 
+				player.status &= ~statuses.jumping;
 		}
+	} else {
+		player.status &= ~statuses.jumping;
 	}
 	if (game.keys[39] || game.keys[68]) { // right arrow
 		if (player.velX < player.speed) {
@@ -96,7 +112,7 @@ function playerProcess(player) {
 		var dir = colCheck(player, boxes[i]);
 		if (dir === "l" || dir === "r") {
 			player.velX = 0;
-			player.status &= ~statuses.jumping;
+			//player.status &= ~statuses.jumping;
 		} else if (dir === "b") {
 			player.status |= statuses.grounded;
 			player.status &= ~statuses.jumping;
