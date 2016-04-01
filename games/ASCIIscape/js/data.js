@@ -19,5 +19,6 @@ var dirs = {
 var objectTypes = {
 	fireball : 1,
 	npc : 2,
-	enemy : 3
+	enemy : 3,
+	background : 4
 }

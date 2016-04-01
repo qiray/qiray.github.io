@@ -27,13 +27,11 @@ function drawObjects(game) {
 
 function redraw(game) {
 	game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
-	var boxes = game.levels[game.player.currentLevel];
-	for (var i in boxes) {
-		if (onScreen(game.screen, boxes[i]))
-			drawObject(game, boxes[i]);
-			//drawText(game.ctx, fontSize, lineHeight, boxes[i].img, boxes[i].x, boxes[i].y);
+	for (var i in game.walls) {
+		if (onScreen(game.screen, game.walls[i]))
+			drawObject(game, game.walls[i]);
 	}
 	drawObjects(game);
 	drawObject(game, game.player);
-game.ctx.strokeRect(0, 0, game.screen.width, game.screen.height);
+	game.ctx.strokeRect(0, 0, game.screen.width, game.screen.height); //draw screen borders
 }

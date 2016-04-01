@@ -11,51 +11,60 @@ function Game(canvasObject) {
 		x : 10, 
 		y : 40,
 		dir : dirs.right,
+		mana : 100, //TODO: different timers for spells
 		speed : 3,
 		verticalSpeed : 4,
 		status : statuses.none,
 		velX: 0,
 		velY: 0,
 		height: lineHeight,
-		width: fontSize
+		width: 0
 	};
 	this.levels = [level1];
 	this.maxWidth = 0;
 	this.maxHeight = 0;
-	var boxes = this.levels[this.player.currentLevel];
-	for (var i in boxes) { //TODO: load levels
-		if (boxes[i].y + boxes[i].height > this.maxHeight)
-			this.maxHeight = boxes[i].y + boxes[i].height;
-		if (boxes[i].x + boxes[i].width > this.maxWidth)
-			this.maxWidth = boxes[i].x + boxes[i].width;
-	}
 	this.canvas = canvasObject;
 	this.ctx = this.canvas.getContext('2d');
 	this.ctx.font = fontSize + 'px Monospace';
 	this.ctx.textAlign = 'left';
 	onecharwidth = this.ctx.measureText("#").width;
+	this.loadLevel(this.player.currentLevel);
 	this.screen = {width : 80*onecharwidth, height : 25*lineHeight, x : 0, y : 0};
 	this.canvas.width = this.screen.width;
 	this.canvas.height = this.screen.height;
-	var lines = this.player.img.split('\n');
-	this.player.height = lineHeight*lines.length;
-	for (var k in lines)
-		if (lines[k].length*onecharwidth > this.player.width)
-			this.player.width = lines[k].length*onecharwidth;
+	setObjectSize(this.player);
 	this.keys = [];
-	this.objects = [];
 	this.friction = 0.8;
 	this.gravity = 0.2;
 }
 
-Game.prototype.playerFire = function() { //TODO: mana, timer or something similar
-	this.objects.push(new Object(objectTypes.fireball, this.player.x, this.player.y, {speed: 2, img: 'O', dir: this.player.dir})); //Object(type, x, y, params)
+Game.prototype.loadLevel = function(level) {
+	this.objects = this.levels[level].objects;
+	this.walls = this.levels[level].walls;
+	for (var i in this.walls) {
+		if (this.walls[i].y + this.walls[i].height > this.maxHeight)
+			this.maxHeight = this.walls[i].y + this.walls[i].height;
+		if (this.walls[i].x + this.walls[i].width > this.maxWidth)
+			this.maxWidth = this.walls[i].x + this.walls[i].width;
+	}
+}
+
+Game.prototype.playerFire = function() {
+	if (this.player.mana == 100) {
+		this.player.mana = 0;
+		pushToArray(this.objects, new Object(
+			objectTypes.fireball, 
+			this.player.x, 
+			this.player.y, 
+			{speed: 2, img: 'O', dir: this.player.dir})
+		);
+	}
 }
 
 function obectsProcess(game) {
 	for (var i in game.objects) {
 		if (game.objects[i])
-			game.objects[i].process();
+			game.objects[i].process(game);
 	}
 }
 
@@ -111,24 +120,24 @@ function checkControls(game, player) {
 	}
 }
 
-function playerProcess(player) {
-	var width = game.canvas.width, height = game.canvas.height;
+function playerProcess(game, player) {
+	if (player.mana < 100)
+		player.mana++;
 	player.velX *= game.friction;
 	if (Math.abs(player.velX) < 1e-3)
 		player.velX = 0;
 	player.velY += game.gravity;
 	player.status &= ~statuses.grounded
 	
-	var boxes = game.levels[game.player.currentLevel];
-	for (var i = 0; i < boxes.length; i++) {
-		var dir = colCheck(player, boxes[i]);
+	for (var i = 0; i < game.walls.length; i++) {
+		var dir = colCheck(player, game.walls[i]);
 		if (dir === "l" || dir === "r") {
 			player.velX = 0;
 			//player.status &= ~statuses.jumping;
 		} else if (dir === "b") {
 			player.status |= statuses.grounded;
 			player.status &= ~statuses.jumping;
-			player.y -= player.y + player.height - boxes[i].y; //to prevent from falling into object
+			//player.y -= player.y + player.height - game.walls[i].y; //to prevent from falling into object
 		} else if (dir === "t") {
 			player.velY = 0;
 		}
@@ -142,40 +151,9 @@ function playerProcess(player) {
 
 function game_cycle() {
 	checkControls(game, game.player);
-	playerProcess(game.player);
+	playerProcess(game, game.player);
 	obectsProcess(game);
 	moveScreen(game);
 	redraw(game);
 	requestAnimationFrame(game_cycle);
-}
-
-function colCheck(shapeA, shapeB) {
-	var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
-	vY = (shapeA.y + (shapeA.height / 2)) - (shapeB.y + (shapeB.height / 2)),
-	hWidths = (shapeA.width / 2) + (shapeB.width / 2),
-	hHeights = (shapeA.height / 2) + (shapeB.height / 2),
-	colDir = null;
-
-	if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
-		var oX = hWidths - Math.abs(vX),
-		oY = hHeights - Math.abs(vY);
-		if (oX >= oY) {
-			if (vY > 0) {
-				colDir = "t";
-				shapeA.y += oY;
-			} else {
-				colDir = "b";
-				shapeA.y -= oY;
-			}
-		} else {
-			if (vX > 0) {
-				colDir = "l";
-				shapeA.x += oX;
-			} else {
-				colDir = "r";
-				shapeA.x -= oX;
-			}
-		}
-	}
-	return colDir;
 }
