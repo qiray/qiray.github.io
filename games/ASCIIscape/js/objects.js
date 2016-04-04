@@ -6,11 +6,22 @@ function Object(type, x, y, params) {
 	switch (type) {
 		case objectTypes.fireball:
 			this.dir = params.dir;
-			this.img = params.img
+			this.img = params.img;
 			this.speed = params.speed;
 			break;
 		case objectTypes.background:
-			this.img = params.img
+			this.img = params.img;
+			break;
+		case objectTypes.enemy:
+			this.img = params.img;
+			this.dir = params.dir;
+			this.img = params.img;
+			this.speed = params.speed;
+			this.damage = params.damage;
+			this.range = params.range;
+			this.status = params.status;
+			this.target = params.target;
+			this.way = [];
 			break;
 		default:
 			break;
@@ -43,6 +54,12 @@ Object.prototype.process = function(game) {
 					game.objects[this.index] = undefined;
 					return;
 				}
+			}
+			break;
+		case objectTypes.enemy:
+			switch (this.status) {
+				case statuses.none:
+					break;
 			}
 			break;
 		default:

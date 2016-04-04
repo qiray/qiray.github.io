@@ -129,6 +129,9 @@ function playerProcess(game, player) {
 	player.velY += game.gravity;
 	player.status &= ~statuses.grounded
 	
+	player.x += player.velX;
+	player.y += player.velY;	
+	
 	for (var i = 0; i < game.walls.length; i++) {
 		var dir = colCheck(player, game.walls[i]);
 		if (dir === "l" || dir === "r") {
@@ -144,9 +147,6 @@ function playerProcess(game, player) {
 	}
 	if (player.status & statuses.grounded)
 		player.velY = 0;
-
-	player.x += player.velX;
-	player.y += player.velY;
 }
 
 function game_cycle() {
