@@ -12,6 +12,7 @@ function Game(canvasObject) {
 		y : 40,
 		dir : dirs.right,
 		mana : 100, //TODO: different timers for spells
+		damage : 50,
 		speed : 3,
 		verticalSpeed : 4,
 		status : statuses.none,
@@ -39,7 +40,12 @@ function Game(canvasObject) {
 }
 
 Game.prototype.loadLevel = function(level) {
-	this.objects = this.levels[level].objects;
+	this.objects = [];
+	var objs = this.levels[level].objects;
+	for (var i = 0; i < objs.length; i++) {
+		this.objects[i] = new Object(objs[i].type, objs[i].x, objs[i].y, objs[i].params);
+		this.objects[i].index = i;
+	}
 	this.walls = this.levels[level].walls;
 	for (var i in this.walls) {
 		if (this.walls[i].y + this.walls[i].height > this.maxHeight)
@@ -56,7 +62,7 @@ Game.prototype.playerFire = function() {
 			objectTypes.fireball, 
 			this.player.x, 
 			this.player.y, 
-			{speed: 2, img: 'O', dir: this.player.dir})
+			{speed: 2, img: 'O', dir: this.player.dir, damage : this.player.damage})
 		);
 	}
 }
@@ -123,30 +129,7 @@ function checkControls(game, player) {
 function playerProcess(game, player) {
 	if (player.mana < 100)
 		player.mana++;
-	player.velX *= game.friction;
-	if (Math.abs(player.velX) < 1e-3)
-		player.velX = 0;
-	player.velY += game.gravity;
-	player.status &= ~statuses.grounded
-	
-	player.x += player.velX;
-	player.y += player.velY;	
-	
-	for (var i = 0; i < game.walls.length; i++) {
-		var dir = colCheck(player, game.walls[i]);
-		if (dir === "l" || dir === "r") {
-			player.velX = 0;
-			//player.status &= ~statuses.jumping;
-		} else if (dir === "b") {
-			player.status |= statuses.grounded;
-			player.status &= ~statuses.jumping;
-			//player.y -= player.y + player.height - game.walls[i].y; //to prevent from falling into object
-		} else if (dir === "t") {
-			player.velY = 0;
-		}
-	}
-	if (player.status & statuses.grounded)
-		player.velY = 0;
+	physicsSim(game, player);
 }
 
 function game_cycle() {

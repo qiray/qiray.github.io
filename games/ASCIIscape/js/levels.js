@@ -1,9 +1,10 @@
 
 var level1 = {
 	objects : [
-		new Object(objectTypes.background, 80, 255 , {img : '/o\\\n |'}),
-		new Object(objectTypes.background, 120, 255 , {img : '/o\\\n |'}),
-		new Object(objectTypes.background, 160, 255 , {img : '/o\\\n |'})
+		{type : objectTypes.enemy, x : 80, y : 120, params : {img : 'W', hp : 100}},
+		{type : objectTypes.background, x : 80, y : 255, params : {img : '/o\\\n |'}},
+		{type : objectTypes.background, x : 120, y : 255, params : {img : '/o\\\n |'}},
+		{type : objectTypes.background, x : 160, y : 255, params : {img : '/o\\\n |'}},
 	],
 	walls : [
 		{"x":0,"y":0,"img":"################################################################################","width":560,"height":14},

@@ -1,4 +1,35 @@
 
+function clone(obj) {
+	var copy;
+	// Handle the 3 simple types, and null or undefined
+	if (null == obj || "object" != typeof obj) 
+		return obj;
+	// Handle Date
+	if (obj instanceof Date) {
+		copy = new Date();
+		copy.setTime(obj.getTime());
+		return copy;
+	}
+	// Handle Array
+	if (obj instanceof Array) {
+		copy = [];
+		for (var i = 0, len = obj.length; i < len; i++) {
+			copy[i] = clone(obj[i]);
+		}
+		return copy;
+	}
+	// Handle Object
+	if (obj instanceof Object) {
+		copy = {};
+		for (var attr in obj) {
+			if (obj.hasOwnProperty(attr)) 
+				copy[attr] = clone(obj[attr]);
+		}
+		return copy;
+	}
+	throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
 function setObjectSize(obj) {
 	var lines = obj.img.split('\n');
 	obj.height = lineHeight*lines.length;
@@ -50,4 +81,29 @@ function pushToArray(arr, val) {
 	if (typeof val === 'object')
 		val.index = arr.length;
 	arr.push(val);
+}
+
+function physicsSim(game, obj) {
+	obj.velX *= game.friction;
+	if (Math.abs(obj.velX) < 1e-3)
+		obj.velX = 0;
+	obj.velY += game.gravity;
+	obj.status &= ~statuses.grounded
+	
+	obj.x += obj.velX;
+	obj.y += obj.velY;
+	
+	for (var i = 0; i < game.walls.length; i++) {
+		var dir = colCheck(obj, game.walls[i]);
+		if (dir === "l" || dir === "r") {
+			obj.velX = 0;
+		} else if (dir === "b") {
+			obj.status |= statuses.grounded;
+			obj.status &= ~statuses.jumping;
+		} else if (dir === "t") {
+			obj.velY = 0;
+		}
+	}
+	if (obj.status & statuses.grounded)
+		obj.velY = 0;
 }

@@ -6,7 +6,9 @@ var game;
 var statuses = {
 	none : 0,
 	jumping : 1,
-	grounded : 2
+	grounded : 2,
+	moving : 4,
+	attacking : 8
 }
 
 var dirs = {
