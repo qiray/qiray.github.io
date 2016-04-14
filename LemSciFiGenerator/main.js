@@ -24,15 +24,7 @@ function deepText(obj) {
 }
 
 Node.prototype.getText = function() {
-	var txt = ''
 	return deepText(this.texts)
-	for (var i = 0; i < this.texts.length; i++) {
-		if (this.texts[i] instanceof Array)
-			txt += this.texts[i][getRandomInt(0, this.texts[i].length - 1)]
-		else
-			txt += this.texts[i]
-	}
-	return txt
 }
 
 Node.prototype.getNextNode = function() {
@@ -42,8 +34,6 @@ Node.prototype.getNextNode = function() {
 var nodes = {}
 
 function initNodes() {
-	document.getElementById('generatedText').value = ''
-	
 	nodes['Earth'] = new Node(earthTexts, ['naturalCataclysm', 'scientists', 'alienInvasion', 'comet'])
 	
 	nodes['naturalCataclysm'] = new Node(naturalCataclysmTexts, ['naturalCataclysmEveryoneDies', 'naturalCataclysmNotEveryoneDies'])
