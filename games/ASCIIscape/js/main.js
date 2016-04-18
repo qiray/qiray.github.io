@@ -11,6 +11,7 @@ function Game(canvasObject) {
 		x : 10, 
 		y : 40,
 		dir : dirs.right,
+		hp : 100,
 		mana : 100, //TODO: different timers for spells
 		damage : 50,
 		speed : 3,

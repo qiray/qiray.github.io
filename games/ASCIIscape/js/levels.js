@@ -1,7 +1,7 @@
 
 var level1 = {
 	objects : [
-		{type : objectTypes.enemy, x : 80, y : 120, params : {img : 'W', hp : 100}},
+		{type : objectTypes.enemy, x : 80, y : 120, params : {img : 'W', hp : 100, speed : 2, damage : 40, range : 0, maxAttackSpeed : 300}},
 		{type : objectTypes.background, x : 80, y : 255, params : {img : '/o\\\n |'}},
 		{type : objectTypes.background, x : 120, y : 255, params : {img : '/o\\\n |'}},
 		{type : objectTypes.background, x : 160, y : 255, params : {img : '/o\\\n |'}},

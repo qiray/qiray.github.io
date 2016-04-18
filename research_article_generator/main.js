@@ -37,15 +37,22 @@ function initNodes() {
 	nodes['theme'] = new Node(themeTexts, undefined);
 }
 
-function generateArticle() {
+function generateTitle(theme) {
 	var node = nodes['theme'];
 	var text = '';
 	while (node) {
 		text += node.getText();
 		node = node.getNextNode();
 	}
-	var theme = document.getElementById('articleTheme').value;
 	text = text.replace('%theme', theme);
-	text = '<p>' + text.replace(/\n([ \t]*\n)+/g, '</p><p>') + '</p>';
-	document.getElementById('generatedText').innerHTML = text;
+	text = text.replace(' :', ':');
+	text = '<p>' + text.replace(/\n([ \t]*\n)+/g, '</p><p>') + '</p>';	
+	return text;
+}
+
+function generateArticle() {
+	document.getElementById('generatedText').innerHTML = '';
+	for (var i = 0; i < 1; i++) {
+		document.getElementById('generatedText').innerHTML += generateTitle(document.getElementById('articleTheme').value);
+	}
 }

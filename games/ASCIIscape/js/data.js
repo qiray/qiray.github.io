@@ -4,11 +4,11 @@ var onecharwidth;
 var game;
 
 var statuses = {
-	none : 0,
-	jumping : 1,
-	grounded : 2,
-	moving : 4,
-	attacking : 8
+	none : 1,
+	jumping : 2,
+	grounded : 4,
+	moving : 8,
+	attacking : 16
 }
 
 var dirs = {
