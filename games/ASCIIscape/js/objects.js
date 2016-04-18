@@ -9,6 +9,7 @@ function Object(type, x, y, params) {
 		case objectTypes.enemy:
 			this.velX = this.velY = this.attackSpeed = 0;
 			this.status = statuses.none;
+			this.prevx = this.x;
 			break;
 		case objectTypes.fireball: //img, speed, dir, damage
 		case objectTypes.background: //img
@@ -20,7 +21,9 @@ function Object(type, x, y, params) {
 
 Object.prototype.move = function(game) {
 	var difx = this.x - game.player.x;
-	if (difx <= 0 && Math.abs(difx) < this.width + this.range || difx >= 0 && Math.abs(difx) < game.player.width + this.range) {
+	var dify = this.y - game.player.y;
+	if ((difx <= 0 && Math.abs(difx) < this.width + this.range || difx >= 0 && Math.abs(difx) < game.player.width + this.range)
+		&& Math.abs(dify) < 0.5*lineHeight) { //enemy is close to player
 		this.velX = 0; //Stop now!
 		this.status |= statuses.attacking;
 		this.status &= ~statuses.moving;
@@ -32,6 +35,11 @@ Object.prototype.move = function(game) {
 	if (this.dir == dirs.left)
 		if (this.velX > -this.speed)
 			this.velX--;
+	if (Math.abs(this.x - this.prevx) < 0.1) { //TODO: prevent from falling, moving into walls or running far away
+		this.status |= statuses.none;
+		this.status &= ~statuses.moving;	
+	}
+	this.prevx = this.x;
 }
 
 Object.prototype.searchPlayer = function(game) {
@@ -56,7 +64,9 @@ Object.prototype.attack = function(game) {
 		this.attackSpeed = this.maxAttackSpeed;
 	}
 	var difx = this.x - game.player.x;
-	if (!(difx <= 0 && Math.abs(difx) < this.width + this.range || difx >= 0 && Math.abs(difx) < game.player.width + this.range)) { //player is too fast, break attack
+	var dify = this.y - game.player.y;
+	if (!(difx <= 0 && Math.abs(difx) < this.width + this.range || difx >= 0 && Math.abs(difx) < game.player.width + this.range)
+		|| Math.abs(dify) > 0.5*lineHeight) { //player is too fast, break attack
 		this.status |= statuses.none;
 		this.status &= ~statuses.attacking;			
 	}
