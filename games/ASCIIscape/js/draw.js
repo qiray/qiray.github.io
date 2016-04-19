@@ -7,10 +7,6 @@ function drawText(ctx, fontSize, lineHeight, text, x ,y) {
 		ctx.fillText(lines[k], x, y + k*lineHeight);
 }
 
-function drawObject(game, obj) {
-	drawText(game.ctx, fontSize, lineHeight, obj.img, obj.x - game.screen.x, obj.y - game.screen.y);
-}
-
 function onScreen(screen, box) {
 	return (screen.x < box.x + box.width &&
 		screen.x + screen.width > box.x &&
@@ -18,20 +14,26 @@ function onScreen(screen, box) {
 		screen.height + screen.y > box.y);
 }
 
-function drawObjects(game) {
-	for (var i in game.objects) {
-		if (game.objects[i])
-			drawObject(game, game.objects[i]);
+Game.prototype.drawObject = function(obj) {
+	drawText(this.ctx, fontSize, lineHeight, obj.img, obj.x - this.screen.x, obj.y - this.screen.y);
+}
+
+Game.prototype.drawObjects = function() {
+	for (var i in this.objects) {
+		if (this.objects[i])
+			this.drawObject(this.objects[i]);
 	}	
 }
 
-function redraw(game) {
-	game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
-	for (var i in game.walls) {
-		if (onScreen(game.screen, game.walls[i]))
-			drawObject(game, game.walls[i]);
+Game.prototype.redraw = function() {
+	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	for (var i in this.walls) {
+		if (onScreen(this.screen, this.walls[i]))
+			this.drawObject(this.walls[i]);
 	}
-	drawObjects(game);
-	drawObject(game, game.player);
-	game.ctx.strokeRect(0, 0, game.screen.width, game.screen.height); //draw screen borders
+	this.drawObjects();
+	this.drawObject(this.player);
+	this.ctx.strokeRect(0, 0, this.screen.width, this.screen.height); //draw screen borders
+	document.getElementById('playersHP').innerHTML = this.player.hp;
+	document.getElementById('playersMana').innerHTML = this.player.mana;
 }

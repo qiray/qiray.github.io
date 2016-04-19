@@ -7,14 +7,20 @@
 	<script type="text/javascript" language="JavaScript" src="js/functions.js"></script>
 	<script type="text/javascript" language="JavaScript" src="js/objects.js"></script>
 	<script type="text/javascript" language="JavaScript" src="js/levels.js"></script>
-	<script type="text/javascript" language="JavaScript" src="js/draw.js"></script>
 	<script type="text/javascript" language="JavaScript" src="js/main.js"></script>
+	<script type="text/javascript" language="JavaScript" src="js/draw.js"></script>
 	<meta charset='utf-8' />
 </head>
 <body>
-	<canvas width='800' height='400' id='canvas'>
-		Your browser doesn't support HTML5. Please update it.
-	</canvas>
+	<div id = 'gameWindow'>
+		<div>
+			Player's hp: <span id = 'playersHP'>100</span>
+			Player's mana: <span id = 'playersMana'>100</span>
+		</div>
+		<canvas width='800' height='400' id='canvas'>
+			Your browser doesn't support HTML5. Please update it.
+		</canvas>
+	</div>
 	<script type="text/javascript" language="JavaScript" src="js/events.js"></script>
 </body>
 </HTML>

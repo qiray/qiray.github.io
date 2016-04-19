@@ -19,6 +19,13 @@ function Object(type, x, y, params) {
 	setObjectSize(this);
 }
 
+Object.prototype.isOnTheEdge = function() { //return true when object is on the edge (to prevent from falling)
+	if (this.dir == dirs.left && this.x - this.standingOn.x < 10 ||
+		this.dir == dirs.right && this.standingOn.x + this.standingOn.width - this.x - this.width < 10)
+		return true;
+	return false;
+}
+
 Object.prototype.move = function(game) {
 	var difx = this.x - game.player.x;
 	var dify = this.y - game.player.y;
@@ -35,9 +42,9 @@ Object.prototype.move = function(game) {
 	if (this.dir == dirs.left)
 		if (this.velX > -this.speed)
 			this.velX--;
-	if (Math.abs(this.x - this.prevx) < 0.1) { //TODO: prevent from falling, moving into walls or running far away
+	if (Math.abs(this.x - this.prevx) < 0.1 || this.isOnTheEdge()) {
 		this.status |= statuses.none;
-		this.status &= ~statuses.moving;	
+		this.status &= ~statuses.moving;
 	}
 	this.prevx = this.x;
 }
@@ -45,10 +52,12 @@ Object.prototype.move = function(game) {
 Object.prototype.searchPlayer = function(game) {
 	var difx = this.x - game.player.x;
 	var dify = this.y - game.player.y;
-	if (Math.abs(difx) < 0.5*game.screen.width) {
+	if (Math.abs(difx) < 0.5*game.screen.width && Math.abs(dify) < 2*lineHeight) {
 		this.dir = difx > 0 ? dirs.left : dirs.right;
-		this.status |= statuses.moving;
-		this.status &= ~statuses.none;
+		if (!this.isOnTheEdge()) {
+			this.status |= statuses.moving;
+			this.status &= ~statuses.none;
+		}
 	}
 }
 
@@ -66,7 +75,7 @@ Object.prototype.attack = function(game) {
 	var difx = this.x - game.player.x;
 	var dify = this.y - game.player.y;
 	if (!(difx <= 0 && Math.abs(difx) < this.width + this.range || difx >= 0 && Math.abs(difx) < game.player.width + this.range)
-		|| Math.abs(dify) > 0.5*lineHeight) { //player is too fast, break attack
+		|| Math.abs(dify) > 0.5*lineHeight) { //player is too far, break attack
 		this.status |= statuses.none;
 		this.status &= ~statuses.attacking;			
 	}
@@ -111,10 +120,11 @@ Object.prototype.process = function(game) {
 				game.objects[this.index] = undefined;
 				return;
 			}
-			physicsSim(game, this);
+			game.physicsSim(this);
 			if (this.attackSpeed > 0)
 				this.attackSpeed--;
 			if (this.status & statuses.moving) {
+				this.searchPlayer(game);//maybe not always
 				this.move(game);
 			}
 			if (this.status & statuses.attacking) {

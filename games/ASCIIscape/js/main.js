@@ -68,76 +68,101 @@ Game.prototype.playerFire = function() {
 	}
 }
 
-function obectsProcess(game) {
-	for (var i in game.objects) {
-		if (game.objects[i])
-			game.objects[i].process(game);
+Game.prototype.obectsProcess = function() {
+	for (var i in this.objects) {
+		if (this.objects[i])
+			this.objects[i].process(this);
 	}
 }
 
-function moveScreen(game) {
-	game.screen.x = game.player.x - game.screen.width/2;
-	game.screen.y = game.player.y - game.screen.height/2;
-	if (game.screen.x < 0)
-		game.screen.x = 0;
-	if (game.screen.y < 0)
-		game.screen.y = 0;
-	if (game.screen.x + game.screen.width > game.maxWidth)
-		game.screen.x = game.maxWidth - game.screen.width;
-	if (game.screen.y + game.screen.height > game.maxHeight)
-		game.screen.y = game.maxHeight - game.screen.height;
+Game.prototype.moveScreen = function() {
+	this.screen.x = this.player.x - this.screen.width/2;
+	this.screen.y = this.player.y - this.screen.height/2;
+	if (this.screen.x < 0)
+		this.screen.x = 0;
+	if (this.screen.y < 0)
+		this.screen.y = 0;
+	if (this.screen.x + this.screen.width > this.maxWidth)
+		this.screen.x = this.maxWidth - this.screen.width;
+	if (this.screen.y + this.screen.height > this.maxHeight)
+		this.screen.y = this.maxHeight - this.screen.height;
 }
 
 function init() {
 	game = new Game(document.getElementById("canvas"));
 }
 
-function checkControls(game, player) {
-	if (game.keys[38] || game.keys[32] || game.keys[87]) {// up arrow or space
-		player.dir = dirs.up;
-		if (player.status & statuses.grounded && !(player.status & statuses.jumping)) {
-			player.status |= statuses.jumping;
-			player.status &= ~statuses.grounded;
-			if (player.velY > -player.verticalSpeed)
-				player.velY -= 0.5;
+Game.prototype.checkControls = function() {
+	if (this.keys[38] || this.keys[32] || this.keys[87]) {// up arrow or space
+		this.player.dir = dirs.up;
+		if (this.player.status & statuses.grounded && !(this.player.status & statuses.jumping)) {
+			this.player.status |= statuses.jumping;
+			this.player.status &= ~statuses.grounded;
+			if (this.player.velY > -this.player.verticalSpeed)
+				this.player.velY -= 0.5;
 		} 
-		if (player.status & statuses.jumping) {
-			if (player.velY > -player.verticalSpeed && player.velY < 0)
-				player.velY -= 0.5;
+		if (this.player.status & statuses.jumping) {
+			if (this.player.velY > -this.player.verticalSpeed && this.player.velY < 0)
+				this.player.velY -= 0.5;
 			else 
-				player.status &= ~statuses.jumping;
+				this.player.status &= ~statuses.jumping;
 		}
 	} else {
-		player.status &= ~statuses.jumping;
+		this.player.status &= ~statuses.jumping;
 	}
-	if (game.keys[39] || game.keys[68]) { // right arrow
-		player.dir = dirs.right;
-		if (player.velX < player.speed) {
-			player.velX++;
+	if (this.keys[39] || this.keys[68]) { // right arrow
+		this.player.dir = dirs.right;
+		if (this.player.velX < this.player.speed) {
+			this.player.velX++;
 		}
 	}
-	if (game.keys[37] || game.keys[65]) { // left arrow
-		player.dir = dirs.left;
-		if (player.velX > -player.speed) {
-			player.velX--;
+	if (this.keys[37] || this.keys[65]) { // left arrow
+		this.player.dir = dirs.left;
+		if (this.player.velX > -this.player.speed) {
+			this.player.velX--;
 		}
 	}
-	if (game.keys[70]) { //'f' is for fire
-		game.playerFire();
+	if (this.keys[70]) { //'f' is for fire
+		this.playerFire();
 	}
 }
 
-function playerProcess(game, player) {
-	if (player.mana < 100)
-		player.mana++;
-	physicsSim(game, player);
+Game.prototype.playerProcess = function() {
+	if (this.player.mana < 100)
+		this.player.mana++;
+	this.physicsSim(this.player);
+}
+
+Game.prototype.physicsSim = function(obj) {
+	obj.velX *= this.friction;
+	if (Math.abs(obj.velX) < 1e-3)
+		obj.velX = 0;
+	obj.velY += this.gravity;
+	obj.status &= ~statuses.grounded
+	
+	obj.x += obj.velX;
+	obj.y += obj.velY;
+	
+	for (var i = 0; i < this.walls.length; i++) {
+		var dir = colCheck(obj, this.walls[i]);
+		if (dir === "l" || dir === "r") {
+			obj.velX = 0;
+		} else if (dir === "b") {
+			obj.status |= statuses.grounded;
+			obj.status &= ~statuses.jumping;
+		} else if (dir === "t") {
+			obj.velY = 0;
+		}
+	}
+	if (obj.status & statuses.grounded)
+		obj.velY = 0;
 }
 
 function game_cycle() {
-	checkControls(game, game.player);
-	playerProcess(game, game.player);
-	obectsProcess(game);
-	moveScreen(game);
-	redraw(game);
+	game.checkControls();
+	game.playerProcess();
+	game.obectsProcess();
+	game.moveScreen();
+	game.redraw();
 	requestAnimationFrame(game_cycle);
 }

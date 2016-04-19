@@ -56,6 +56,7 @@ function colCheck(shapeA, shapeB) {
 			} else {
 				colDir = "b";
 				shapeA.y -= oY;
+				shapeA.standingOn = shapeB; //to know where shapeA is standing now
 			}
 		} else {
 			if (vX > 0) {
@@ -81,29 +82,4 @@ function pushToArray(arr, val) {
 	if (typeof val === 'object')
 		val.index = arr.length;
 	arr.push(val);
-}
-
-function physicsSim(game, obj) {
-	obj.velX *= game.friction;
-	if (Math.abs(obj.velX) < 1e-3)
-		obj.velX = 0;
-	obj.velY += game.gravity;
-	obj.status &= ~statuses.grounded
-	
-	obj.x += obj.velX;
-	obj.y += obj.velY;
-	
-	for (var i = 0; i < game.walls.length; i++) {
-		var dir = colCheck(obj, game.walls[i]);
-		if (dir === "l" || dir === "r") {
-			obj.velX = 0;
-		} else if (dir === "b") {
-			obj.status |= statuses.grounded;
-			obj.status &= ~statuses.jumping;
-		} else if (dir === "t") {
-			obj.velY = 0;
-		}
-	}
-	if (obj.status & statuses.grounded)
-		obj.velY = 0;
 }
