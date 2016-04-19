@@ -31,10 +31,24 @@ Node.prototype.getNextNode = function() {
 	return this.next ? nodes[this.next[getRandomInt(0, this.next.length - 1)]] : nodes[this.next];
 }
 
-var nodes = {}
+var nodes = {}, words = {};
 
-function initNodes() {
-	nodes['theme'] = new Node(themeTexts, undefined);
+function randomProperty(obj) {
+    var keys = Object.keys(obj)
+    return obj[keys[ keys.length * Math.random() << 0]][0];
+}
+
+function initGenerator() {
+	nodes['theme'] = new Node(themeTexts, undefined); //init nodes
+	
+	//longtext = longtext.replace(/[,:;]/g, ''); //init words array
+	var tmp = longtext.split(' ');
+	var len = tmp.length - 1;
+	for (var i = 0; i < len; i++) {
+		if (!words[tmp[i]])
+			words[tmp[i]] = [];
+		words[tmp[i]].push(tmp[i + 1]);
+	} //TODO: correct sentences
 }
 
 function generateTitle(theme) {
@@ -48,6 +62,25 @@ function generateTitle(theme) {
 	text = text.replace(' :', ':');
 	text = '<p>' + text.replace(/\n([ \t]*\n)+/g, '</p><p>') + '</p>';	
 	return text;
+}
+
+function generateSentence() { //TODO: use
+	var result = "";
+	while (true) {
+		var word = randomProperty(words);
+		result = word;
+		var count = 1;
+		while (true) {
+			word = words[word][getRandomInt(0, words[word].length - 1)];
+			result += ' ' + word;
+			count++;
+			if (word.search(/[.!?]/) != -1 || count > 20)
+				break;
+		}
+		if (count > 6 && count <= 20)
+			break;
+	}
+	return result;
 }
 
 function generateArticle() {

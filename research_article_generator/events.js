@@ -1,6 +1,6 @@
 
 window.addEventListener("load", function(){
-	initNodes();
+	initGenerator();
 	document.getElementById('articleTheme').value = '';
 });
 
