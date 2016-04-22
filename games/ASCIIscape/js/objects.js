@@ -116,7 +116,7 @@ Object.prototype.process = function(game) {
 				}
 			break;
 		case objectTypes.enemy:
-			if (this.hp <= 0) {
+			if (this.hp <= 0) { //enemy's death
 				game.objects[this.index] = undefined;
 				return;
 			}

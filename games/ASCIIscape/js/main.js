@@ -14,6 +14,8 @@ function Game(canvasObject) {
 		hp : 100,
 		mana : 100, //TODO: different timers for spells
 		damage : 50,
+		attackSpeed : 0,
+		maxAttackSpeed : 50,
 		speed : 3,
 		verticalSpeed : 4,
 		status : statuses.none,
@@ -66,6 +68,20 @@ Game.prototype.playerFire = function() {
 			{speed: 2, img: 'O', dir: this.player.dir, damage : this.player.damage})
 		);
 	}
+}
+
+Game.prototype.playerAttack = function() {
+	if (this.player.attackSpeed == 0)
+		for (var i in this.objects) {
+			if (this.objects[i] && this.objects[i].type == objectTypes.enemy) {
+				if (Math.abs(this.player.y - this.objects[i].y) < 0.5*lineHeight &&
+					(this.player.dir == dirs.left && this.player.x - this.objects[i].x <= this.objects[i].width ||
+					this.player.dir == dirs.right && this.objects[i].x - this.player.x <= this.player.width))
+				this.objects[i].hp -= this.player.damage;
+				this.player.attackSpeed = this.player.maxAttackSpeed;
+				return;
+			}
+		}
 }
 
 Game.prototype.obectsProcess = function() {
@@ -125,11 +141,16 @@ Game.prototype.checkControls = function() {
 	if (this.keys[70]) { //'f' is for fire
 		this.playerFire();
 	}
+	if (this.keys[88]) { //'x' - attack
+		this.playerAttack();
+	}
 }
 
 Game.prototype.playerProcess = function() {
 	if (this.player.mana < 100)
 		this.player.mana++;
+	if (this.player.attackSpeed > 0)
+		this.player.attackSpeed--;
 	this.physicsSim(this.player);
 }
 
