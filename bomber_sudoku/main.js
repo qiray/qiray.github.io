@@ -202,7 +202,7 @@ function victory() {
 	clearInterval(sudokuTimerInterval)
 	startTimer = 0
 	getElement('info').style.lineHeight = '40px'
-	showInfo(200, 80, '40px', "Вы выиграли! <br>Ваше время - " + gameTimerToString(gameTimer))
+	showInfo(200, 80, '40px', translations[playerInfo.currentLanguage].youwon + "<br>" + translations[playerInfo.currentLanguage].time + ": " + gameTimerToString(gameTimer))
 	playerInfo.statistics.victories++
 	playerInfo.statistics.totalTime += gameTimer
 	switch (difficultLevel) {

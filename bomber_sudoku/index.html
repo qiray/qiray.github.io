@@ -4,6 +4,7 @@
 	<meta content='width=480, maximum-scale=1.0, user-scalable=0' name='viewport'/>
 	<meta charset="utf-8">
 	<TITLE>Bombersudoku!</TITLE>
+	<SCRIPT type="text/javascript" language="JavaScript" src="translations.js"></SCRIPT>
 	<SCRIPT type="text/javascript" language="JavaScript" src="main.js"></SCRIPT>
 	<SCRIPT type="text/javascript" language="JavaScript" src="user_io.js"></SCRIPT>
 	<SCRIPT type="text/javascript" language="JavaScript" src="generate_field.js"></SCRIPT>
@@ -45,7 +46,7 @@ document.write('<table width = "240" border = 1 style = "font-family: Arial; bor
 			}
 			document.write('</tr>')
 		}
-	document.write('<tr align = "center"><td style="border:solid 1px" height="75" onclick="enterDigit(0)"><b>Сброс</b></td><td style="border:solid 1px" height="75" colspan=2 onclick="hidePopup()"><b>Отмена</b></td></tr>')
+	document.write('<tr align = "center"><td style="border:solid 1px" height="75" onclick="enterDigit(0)"><b>' + translations[playerInfo.currentLanguage].deleteText + '</b></td><td style="border:solid 1px" height="75" colspan=2 onclick="hidePopup()"><b>' + translations[playerInfo.currentLanguage].cancel + '</b></td></tr>')
 document.write('</table>')
 </script>
 </div>
@@ -58,13 +59,13 @@ You win!
 <table id = 'buttonsTable' width="450" style = "position: relative; left:50%;">
 <tr>
 	<td width = '33%' align = "left">
-		<input type="button" style="width: 150px; height: 45px;" value="В главное меню" onClick="showMainMenu()">
+		<input type="button" style="width: 150px; height: 45px;" value="Main menu" onClick="showMainMenu()" id = 'mainMenuButton'>
 	</td>
 	<td width = '33%' align = "center">
-		<input type="button" style="width: 135px; height: 45px;" value="Пауза" onClick="startPause()">
+		<input type="button" style="width: 135px; height: 45px;" value="Pause" onClick="startPause()" id = 'pauseButton'>
 	</td>
 	<td width = '33%' align = "right">
-		<input type="button" id="hint" style="width: 150px; height: 45px;" value="Подсказки" onClick="showHints()">
+		<input type="button" style="width: 150px; height: 45px;" value="Tips" onClick="showHints()" id="hint">
 	</td>
 </tr>
 <tr>
@@ -111,23 +112,23 @@ document.write('</table>')
 			<td style = 'font-size: 18pt'>Bombersudoku <script type="text/javascript" language="JavaScript">document.write(version)</script></td>
 		</tr>
 		<tr align = "center">
-			<td><br><input type = "button" style = "width: 330px; height: 75px;" value = "Новая игра" onclick = "startNewGame()"></td>
+			<td><br><input type = "button" style = "width: 330px; height: 75px;" value = "New game" onclick = "startNewGame()" id = "newGameButton"></td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Достижения" onclick = "showAchievements()"></td>
+			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Achievements" onclick = "showAchievements()" id = "achievementsButton"></td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Настройки" onclick = "showSettings()"></td>
+			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Settings" onclick = "showSettings()" id = "settingsButton"></td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 330px; height: 75px;;" value = "Правила" onclick = "showRules()"></td>
+			<td><input type = "button" style = "width: 330px; height: 75px;;" value = "Rules" onclick = "showRules()" id = "rulesButton"></td>
 		</tr>
 		<tr align = "center">
-			<td><input type = "button" style = "width: 330px; height: 75px;" value = "Об игре" onclick = "showAboutInfo()"></td>
+			<td><input type = "button" style = "width: 330px; height: 75px;" value = "About" onclick = "showAboutInfo()" id = "aboutButton"></td>
 		</tr>
 	</table>
 </div>
-<input type = "button" id = 'tellFriendsButton' style = "display: block; position: absolute; bottom: 5px; right: 5px; width: 165px; height: 37px;" value = "Рассказать друзьям" onclick = "tellFriends()">
+<input type = "button" id = 'tellFriendsButton' style = "display: block; position: absolute; bottom: 5px; right: 5px; width: 165px; height: 37px;" value = "Share" onclick = "tellFriends()">
 <script type="text/javascript">
 	VK.init(function() {
 		var info = document.location.search.substr(1).split("&")

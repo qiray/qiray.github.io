@@ -21,7 +21,7 @@ function enterDigit(digit) {
 	}
 	else {
 		if (wrongDigit(currentIndex, digit)) {
-			showInfo(200, 80, '80px', "Неверная цифра!")
+			showInfo(200, 80, '80px', translations[playerInfo.currentLanguage].wrongDigit)
 			wrongDigits = 1
 			return
 		}
@@ -123,17 +123,17 @@ function hidePopup() {
 function difficultyTostring(level) {
 	switch (level) {
 		case trivial:
-			return 'Элементарно'
+			return translations[playerInfo.currentLanguage].trivial
 		case easy:
-			return 'Легко'
+			return translations[playerInfo.currentLanguage].easy
 		case medium:
-			return 'Норма'
+			return translations[playerInfo.currentLanguage].normal
 		case hard:
-			return 'Трудно'
+			return translations[playerInfo.currentLanguage].hard
 		case ultra:
-			return 'Ультра'
+			return translations[playerInfo.currentLanguage].ultra
 		default:
-			return 'Неизвестно'
+			return translations[playerInfo.currentLanguage].unknown
 	}
 }
 
@@ -151,22 +151,22 @@ function startNewGame() {
 }
 
 function showAchievements() {
-	var text = '<h2 style = "margin: 20px">Достижения</h2>' +
+	var text = '<h2 style = "margin: 20px">' + translations[playerInfo.currentLanguage].achievements + '</h2>' +
 		'<div style = "font-family: Arial; font-size: 16px; margin-top: -10px; margin-left:auto; margin-right:auto; padding: 10px; width: 370px; height: 245px; overflow-y: auto;">' + 
-		'<b>Лучшее время</b><br><table width = "350" style = "font-size: 12px;">' + 
+		'<b>' + translations[playerInfo.currentLanguage].highscore + '</b><br><table width = "350" style = "font-size: 12px;">' + 
 		'<tr>' +
 			'<td width = "25%">' + difficultyTostring(trivial) + '</td><td width = "25%">' + difficultyTostring(easy) + '</td><td width = "25%">' + difficultyTostring(medium) + '</td><td width = "25%">' + difficultyTostring(hard) + '</td>' +  
 		'</tr><tr>' +
-			'<td>' + (playerInfo.bestTime.trivial == 0 ? 'не пройдено' : gameTimerToString(playerInfo.bestTime.trivial)) + '</td>' + 
-			'<td>' + (playerInfo.bestTime.easy == 0 ? 'не пройдено' : gameTimerToString(playerInfo.bestTime.easy)) + '</td>' + 
-			'<td>' + (playerInfo.bestTime.medium == 0 ? 'не пройдено' : gameTimerToString(playerInfo.bestTime.medium)) + '</td>' + 
-			'<td>' + (playerInfo.bestTime.hard == 0 ? 'не пройдено' : gameTimerToString(playerInfo.bestTime.hard)) + '</td>' + 
+			'<td>' + (playerInfo.bestTime.trivial == 0 ? translations[playerInfo.currentLanguage].notCompleted : gameTimerToString(playerInfo.bestTime.trivial)) + '</td>' + 
+			'<td>' + (playerInfo.bestTime.easy == 0 ? translations[playerInfo.currentLanguage].notCompleted : gameTimerToString(playerInfo.bestTime.easy)) + '</td>' + 
+			'<td>' + (playerInfo.bestTime.medium == 0 ? translations[playerInfo.currentLanguage].notCompleted : gameTimerToString(playerInfo.bestTime.medium)) + '</td>' + 
+			'<td>' + (playerInfo.bestTime.hard == 0 ? translations[playerInfo.currentLanguage].notCompleted : gameTimerToString(playerInfo.bestTime.hard)) + '</td>' + 
 		'</tr></table>' + 
 		'<table width = "350">'
 	for (var i = 0; i < playerInfo.achievements.length; i++) {
 		var index = playerInfo.achievements[i]
 		text += '<tr align = "center"><td><img src="' + achievements[index].img +'" height="50" width="50"></td>' + 
-			'<td><b>' + achievements[index].name + '</b><br>' + achievements[index].description + '</td></tr>'
+			'<td><b>' + achievements[index].name() + '</b><br>' + achievements[index].description() + '</td></tr>'
 	}
 	text += '</table></div>'
 	showInfo(400, 330, '21px', text)
@@ -175,12 +175,12 @@ function showAchievements() {
 function showSettings() {
 	settingsMenuActive = true
 	var text = '<div onselectstart="return false;" unselectable="on" style = "-o-user-select:none;-moz-user-select: -moz-none;-khtml-user-select: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;">' + 
-	'<h3 style = "margin: 20px">Настройки:</h3><table width = "400">' +
+	'<h3 style = "margin: 20px">' + translations[playerInfo.currentLanguage].settings + ':</h3><table width = "400">' +
 		'<tr align = "center"><td>' + 
-		'<input type = "button" style = "width: 330px; height: 75px;" value = "Уровень сложности: ' + 
+		'<input type = "button" style = "width: 330px; height: 75px;" value = "' + translations[playerInfo.currentLanguage].difficulty + " " +
 			difficultyTostring(difficultLevel) + '" onclick = "setDifficultyMenu()">' +
 		'</td></tr><tr align = "center"><td>' +
-		'<br>Размер клетки поля<br><div id = "rangeDiv" align="left" style = "height: 50px; width: 300px;" ></div><br><span id = "cellSizeSpan">' + cellSize + '</span><br>' + 
+		'<br>' + translations[playerInfo.currentLanguage].cellSize + '<br><div id = "rangeDiv" align="left" style = "height: 50px; width: 300px;" ></div><br><span id = "cellSizeSpan">' + cellSize + '</span><br>' + 
 		'</td></tr>' +
 	'</table></div>'
 	showInfo(400, 275, '5px', text)
@@ -204,7 +204,7 @@ function setDifficulty(level) {
 }
 
 function setDifficultyMenu() {
-	var text = '<div align = "center">Выберите сложность:<br><input type = "button" style = "width: 350px; height: 70px;" value = "' + 
+	var text = '<div align = "center">' + translations[playerInfo.currentLanguage].chooseDifficulty + '<br><input type = "button" style = "width: 350px; height: 70px;" value = "' + 
 	difficultyTostring(trivial) + '" onclick = "setDifficulty(trivial)">' + 
 	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(easy) + '" onclick = "setDifficulty(easy)">' +
 	'<input type = "button" style = "width: 350px; height: 70px;" value = "' + difficultyTostring(medium) + '" onclick = "setDifficulty(medium)">' + 
@@ -213,26 +213,19 @@ function setDifficultyMenu() {
 }
 
 function showRules() {
-	var text = '<div onclick = "hidePopup()" style = "font-family: Arial; font-size: 16px"><p align="justify" style = "margin: 10px 20px; text-indent: 20px;">В этой игре вам нужно решить классическую игру судоку: ' +
-	'требуется заполнить свободные клетки цифрами от 1 до 9 так, ' + 
-	'чтобы в каждой строке, в каждом столбце и в каждом малом квадрате 3×3 ' + 
-	'каждая цифра встречалась бы только один раз.</p>' + 
-	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">Однако, ваш противник ' +
-	'постарается навредить вам: он ставит бомбы, которые уничтожают ближайшие цифры, и, таким образом, ' + 
-	'разрушают вашу игровую стратегию.</p>' +
-	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">При полном заполнении строки, столбца или квадрата 3×3 ' +
-	'вы получаете бонус: стены, которые ограничивают передвижение бомбермена и взрывные волны. ' + 
-	'Также в вашем распоряжении имеется несколько видов подсказок.</p>' +
-	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">Вы готовы? Тогда вперед!</p></div>'
+	var text = '<div onclick = "hidePopup()" style = "font-family: Arial; font-size: 16px"><p align="justify" style = "margin: 10px 20px; text-indent: 20px;">' + translations[playerInfo.currentLanguage].gameDescription1 + '</p>' + 
+	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">' + translations[playerInfo.currentLanguage].gameDescription2 + '</p>' +
+	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">' + translations[playerInfo.currentLanguage].gameDescription3 + '</p>' +
+	'<p align="justify" style = "margin: 10px 20px; text-indent: 20px;">' + translations[playerInfo.currentLanguage].gameDescription4 + '</p></div>'
 	showInfo(450, 330, '18px', text)
 }
 
 function showAboutInfo() {
 	var text = '<div style = "margin: 20px; font-size: 16pt">Bombersudoku ' + version + '</div>' +
-	'<p>Автор идеи</p><h4>Данил Михайлов</h4>' +
-	'<p>Разработчик</p><h4>Ярослав Зотов</h4>' + 
-	'<p>Тестирование</p><h4>Данил Михайлов</h4>' + 
-	'<p>Спрайты и изображения</p><h4><a target = "_blank" href = "http://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-bomberman-inspired-sprites--gamedev-8541">Michael James Williams</a><br>' + 
+	'<p>' + translations[playerInfo.currentLanguage].author + '</p><h4>' + translations[playerInfo.currentLanguage].authorName + '</h4>' +
+	'<p>' + translations[playerInfo.currentLanguage].developer + '</p><h4>' + translations[playerInfo.currentLanguage].developerName + '</h4>' + 
+	'<p>' + translations[playerInfo.currentLanguage].tester + '</p><h4>' + translations[playerInfo.currentLanguage].testerName + '</h4>' + 
+	'<p>' + translations[playerInfo.currentLanguage].images + '</p><h4><a target = "_blank" href = "http://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-bomberman-inspired-sprites--gamedev-8541">Michael James Williams</a><br>' + 
 	'<a target = "_blank" href = "https://openclipart.org">openclipart.org</a></h4>'
 	showInfo(250, 370, '16px', text)
 }
@@ -252,7 +245,7 @@ function showMainMenu() {
 function startPause() {
 	if (getElement('mainMenu').style.display != 'none' || getElement('loading').style.display != 'none')
 		return
-	showInfo(200,100, '100px', '<b>Пауза</b>')
+	showInfo(200,100, '100px', '<b>' + translations[playerInfo.currentLanguage].pause + '</b>')
 	getElement('all').style.display = 'none'
 	startTimer = 0
 	if (detectIE()) {
@@ -281,12 +274,16 @@ function stopPause() {
 
 //hints
 
+function noMoreTipsFunc() {
+	showInfo(200, 80, '80px', translations[playerInfo.currentLanguage].noMoreTips)
+}
+
 function oneDigitHint() {
 	if (remainingCells == 0 || startTimer == 0)
 		return
 	getElement('hint').blur()
 	if (oneDigitHints == 0) {
-		showInfo(200, 80, '80px', "Больше нет подсказок")
+		noMoreTipsFunc()
 		return
 	}
 	oneDigitHints--
@@ -303,7 +300,7 @@ function oneDigitHint() {
 	data[y][x] = trueData[y][x]
 	getElement('td' + y + x).innerHTML = '<pre>' + (data[y][x] == 0 ? ' ' : "<b>" + data[y][x] + "</b>") + '</pre>'
 	getElement('td' + y + x).setAttribute('bgcolor', '#B4CDCD')
-	showInfo(200, 80, '80px', "Подсказка: (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
+	showInfo(200, 80, '80px', translations[playerInfo.currentLanguage].tip + " (" + (x + 1) + ", " + (y + 1) + ') = ' + trueData[y][x])
 	checkFilling(y, x)
 	if (--remainingCells == 0) //victory checking
 		victory()
@@ -311,7 +308,7 @@ function oneDigitHint() {
 
 function stopBomberHint(time) {
 	if (stopBomberHints == 0) {
-		showInfo(200, 80, '80px', "Больше нет подсказок")
+		noMoreTipsFunc()
 		return
 	}
 	stopBomberHints--
@@ -321,7 +318,7 @@ function stopBomberHint(time) {
 
 function checkSolvability() { //awesome word
 	if (checkSolvabilityHints == 0) {
-		showInfo(200, 80, '80px', "Больше нет подсказок")
+		noMoreTipsFunc()
 		return
 	}
 	checkSolvabilityHints--
@@ -333,17 +330,17 @@ function checkSolvability() { //awesome word
 			tempData[i][j] = data[i][j]
 	}
 	if (solveSudoku(tempData, remain, 1, undefined))
-		showInfo(200, 80, '80px', 'Разрешимо')
+		showInfo(200, 80, '80px', translations[playerInfo.currentLanguage].solvable)
 	else
-		showInfo(200, 80, '80px', 'Неразрешимо')
+		showInfo(200, 80, '80px', translations[playerInfo.currentLanguage].unsolvable)
 }
 
 function showHints() {
 	if (remainingCells == 0 || startTimer == 0)
 		return
 	getElement('hint').blur()
-	var text = '<div align = "center"><br><input type = "button" style = "width: 300px; height: 75px;" value = "Показать 1 цифру (' + oneDigitHints + ')" onclick = "oneDigitHint()">' +
-		'<input type = "button" style = "width: 300px; height: 75px;" value = "Остановить бомбера на 10 секунд (' + stopBomberHints + ')" onclick = "stopBomberHint(10)">' +
-		'<input type = "button" style = "width: 300px; height: 75px;" value = "Проверить разрешимость (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></div>'
+	var text = '<div align = "center"><br><input type = "button" style = "width: 300px; height: 75px;" value = "' + translations[playerInfo.currentLanguage].show1digit + ' (' + oneDigitHints + ')" onclick = "oneDigitHint()">' +
+		'<input type = "button" style = "width: 300px; height: 75px;" value = "' + translations[playerInfo.currentLanguage].stopBomber + ' (' + stopBomberHints + ')" onclick = "stopBomberHint(10)">' +
+		'<input type = "button" style = "width: 300px; height: 75px;" value = "' + translations[playerInfo.currentLanguage].checkSolvability + ' (' + checkSolvabilityHints + ')" onclick = "checkSolvability()"></div>'
 	showInfo(340, 280, '25px', text)
 }
