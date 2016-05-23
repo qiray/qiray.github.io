@@ -12,7 +12,7 @@ var playerInfo = {
 	},
 	cellSize: 45,
 	difficultLevel: trivial,
-	currentLanguage: 'ru',
+	currentLanguage: 'en',
 	achievements: []
 }
 
@@ -75,7 +75,7 @@ function supports_html5_storage() {
 }
 
 function textToPlayerInfo(txt) {
-	if (!txt)
+	if (!txt || txt == 'null')
 		return;
 	playerInfo = JSON.parse(txt)
 	setLanguage(playerInfo.currentLanguage)
