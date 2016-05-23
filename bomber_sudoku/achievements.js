@@ -61,42 +61,103 @@ function checkAchievements() {
 				'</tr>' +
 			'</table>'
 			showInfo(300, 220, '20px', text)
-			saveToVK()
+			saveGame()
 			return
 		}
 }
 
-function loadFormVK() {
-	if (vkInited) {
-		VK.api('storage.get', {key: 'playerInfo', user_id: current_id}, function(data) {
-			console.log(data, data.response)
-			if (data.response != '') {
-				playerInfo = JSON.parse(data.response)
-				setLanguage(playerInfo.currentLanguage)
-				cellSize = playerInfo.cellSize == 0 ? 45 : playerInfo.cellSize
-				cellHalfSize = Math.floor(cellSize/2)
-				cellSizeWithBorders = 1.12*cellSize
-				difficultLevel = playerInfo.difficultLevel
-				defaultBombPower = difficultLevel == hard ? 3 : 2
-			}
-		})
-	} else {
-		//TODO: load from local storage!
+function supports_html5_storage() {
+	try {
+		return 'localStorage' in window && window['localStorage'] !== null;
+	} catch (e) {
+		return false;
 	}
 }
 
-function saveToVK() {
-	if (vkInited) {
-		playerInfo.cellSize = cellSize
-		var text = JSON.stringify(playerInfo)
+function textToPlayerInfo(txt) {
+	if (!txt)
+		return;
+	playerInfo = JSON.parse(txt)
+	setLanguage(playerInfo.currentLanguage)
+	cellSize = playerInfo.cellSize == 0 ? 45 : playerInfo.cellSize
+	cellHalfSize = Math.floor(cellSize/2)
+	cellSizeWithBorders = 1.12*cellSize
+	difficultLevel = playerInfo.difficultLevel
+	defaultBombPower = difficultLevel == hard ? 3 : 2
+	setLanguage(playerInfo.currentLanguage)
+}
+
+function getCookie(name) {
+	var matches = document.cookie.match(new RegExp(
+		"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+	));
+	return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function setCookie(name, value, options) {
+	options = options || {};
+	var expires = options.expires;
+	if (typeof expires == "number" && expires) {
+		var d = new Date();
+		d.setTime(d.getTime() + expires * 1000);
+		expires = options.expires = d;
+	}
+	if (expires && expires.toUTCString) {
+		options.expires = expires.toUTCString();
+	}
+	value = encodeURIComponent(value);
+	var updatedCookie = name + "=" + value;
+	for (var propName in options) {
+		updatedCookie += "; " + propName;
+		var propValue = options[propName];
+		if (propValue !== true) {
+			updatedCookie += "=" + propValue;
+		}
+	}
+	document.cookie = updatedCookie;
+}
+
+function deleteCookie(name) {
+	setCookie(name, "", {
+		expires: -1
+	})
+}
+
+function loadGame() {
+	if (vkInited) { //load from vk.com
+		VK.api('storage.get', {key: 'playerInfo', user_id: current_id}, function(data) {
+			console.log(data, data.response)
+			if (data.response != '') {
+				textToPlayerInfo(data.response);
+			}
+		})
+	} else {
+		if (supports_html5_storage) {//HTML5 local storage
+			var text = localStorage.getItem("playerInfo");
+			textToPlayerInfo(text);
+		} else {//cookies
+			var text = getCookie("playerInfo");
+			textToPlayerInfo(text);
+		}
+	}
+}
+
+function saveGame() {
+	playerInfo.cellSize = cellSize
+	var text = JSON.stringify(playerInfo)
+	if (vkInited) { //save to vk.com
 		VK.api('storage.set', {key: 'playerInfo', value: text, user_id: current_id}, function() {})
 	} else {
-		//TODO: save to local storage!
+		if (supports_html5_storage) //HTML5 local storage
+			localStorage.setItem("playerInfo", text);
+		else {//cookies
+			setCookie("playerInfo", text, {expires: new Date( new Date().getTime() + 60*1000*60*24*365 )});
+		}
 	}
 }
 
 function tellFriends() {
 	if (vkInited) {
 		VK.api('wall.post', {owner_id: current_id, from_group: '1', message: translations[playerInfo.currentLanguage].shareText, attachments: 'photo9921766_388085077', version: '5.37'}, function() {})
-	}	
+	}
 }

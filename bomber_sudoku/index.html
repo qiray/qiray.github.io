@@ -128,6 +128,10 @@ document.write('</table>')
 		</tr>
 	</table>
 </div>
+<div id = 'translationsDiv' style = "display: block; position: absolute; top: 5px; right: 5px; cursor: pointer">
+	<img src="images/translations/en.gif" width = "32" onclick = "setLanguage('en')" alt = "English">
+	<img src="images/translations/ru.gif" width = "32" onclick = "setLanguage('ru')" alt = "Русский">
+</div>
 <input type = "button" id = 'tellFriendsButton' style = "display: block; position: absolute; bottom: 5px; right: 5px; width: 165px; height: 37px;" value = "Share" onclick = "tellFriends()">
 <script type="text/javascript">
 	VK.init(function() {
@@ -140,11 +144,12 @@ document.write('</table>')
 			}
 		}
 		console.log('success, user_id = ' + current_id)
-		if (current_id == 0)
+		if (current_id == 0) {
 			vkInited = 0
-		else
+			document.getElementById('tellFriendsButton').style.display = 'none'
+		} else
 			vkInited = 1
-		loadFormVK()
+		loadGame()
 
 	}, function() {
 		console.log('fail')

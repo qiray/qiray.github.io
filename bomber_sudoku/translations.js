@@ -4,7 +4,7 @@ var languages = {
 	rus : 'ru',
 }
 
-function setLanguage(lang) { //TODO: add translation button
+function setLanguage(lang) {
 	for (var i in languages)
 		if (languages[i] == lang) { //change current language
 			playerInfo.currentLanguage = lang;
@@ -19,6 +19,7 @@ function setLanguage(lang) { //TODO: add translation button
 			getElement('aboutButton').value = translations[playerInfo.currentLanguage].about;
 			getElement('tellFriendsButton').value = translations[playerInfo.currentLanguage].share;
 			
+			saveGame();
 			return;
 		}
 }

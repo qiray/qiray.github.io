@@ -112,7 +112,7 @@ function showPopup() {
 
 function hidePopup() {
 	if (settingsMenuActive)
-		saveToVK()
+		saveGame()
 	getElement('popupOverlay').style.display = 'none'
 	getElement('popup').style.display = 'none'
 	getElement('info').style.display = 'none'

@@ -223,7 +223,7 @@ function victory() {
 				playerInfo.bestTime.hard = gameTimer
 			break
 	}
-	saveToVK()
+	saveGame()
 }
 
 function redraw() {
