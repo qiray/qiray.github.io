@@ -148,6 +148,7 @@ function startNewGame() {
 	init_game()
 	getElement('mainMenu').style.display = 'none'
 	getElement('tellFriendsButton').style.display = 'none'
+	getElement('translationsDiv').style.display = 'none'
 }
 
 function showAchievements() {
@@ -238,7 +239,9 @@ function showMainMenu() {
 			bombs[i].destroy()
 	getElement('all').style.display = 'none'
 	getElement('mainMenu').style.display = 'block'
-	getElement('tellFriendsButton').style.display = 'block'
+	if (vkInited)
+		getElement('tellFriendsButton').style.display = 'block'
+	getElement('translationsDiv').style.display = 'block'
 	getElement('info').onclick = function() { return }
 }
 
