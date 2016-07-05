@@ -32,10 +32,16 @@ Node.prototype.getNextNode = function() {
 }
 
 var nodes = {}, words = {};
+var firstWords = {}, lastWords = {};
 
 function randomProperty(obj) {
     var keys = Object.keys(obj)
     return obj[keys[ keys.length * Math.random() << 0]][0];
+}
+
+function randomKey(obj) {
+    var keys = Object.keys(obj)
+    return keys[keys.length * Math.random() << 0];
 }
 
 function initGenerator() {
@@ -44,11 +50,19 @@ function initGenerator() {
 	//longtext = longtext.replace(/[,:;]/g, ''); //init words array
 	var tmp = longtext.split(' ');
 	var len = tmp.length - 1;
+	firstWords[tmp[0]] = 1;
 	for (var i = 0; i < len; i++) {
 		if (!words[tmp[i]])
 			words[tmp[i]] = [];
 		words[tmp[i]].push(tmp[i + 1]);
-	} //TODO: correct sentences
+		if (tmp[i].length > 0 && 
+			tmp[i][tmp[i].length - 1].search("[.?!]") != -1 && 
+			(i == len - 1 || (tmp[i + 1].length > 0 && tmp[i + 1][0] == tmp[i + 1][0].toUpperCase()))) {
+			lastWords[tmp[i]] = 1;
+			if (i != len - 1)
+				firstWords[tmp[i + 1]] = 1;
+		}
+	}
 }
 
 function generateTitle(theme) {
@@ -60,21 +74,21 @@ function generateTitle(theme) {
 	}
 	text = text.replace('%theme', theme);
 	text = text.replace(' :', ':');
-	text = '<p>' + text.replace(/\n([ \t]*\n)+/g, '</p><p>') + '</p>';	
+	text = '<p>' + text.replace(/\n([ \t]*\n)+/g, '</p><p>') + '</p>';
 	return text;
 }
 
-function generateSentence() { //TODO: use
+function generateSentence() { //TODO: correct sentences
 	var result = "";
 	while (true) {
-		var word = randomProperty(words);
+		var word = randomKey(firstWords);
 		result = word;
 		var count = 1;
 		while (true) {
 			word = words[word][getRandomInt(0, words[word].length - 1)];
 			result += ' ' + word;
 			count++;
-			if (word.search(/[.!?]/) != -1 || count > 20)
+			if (word in lastWords || count > 20)
 				break;
 		}
 		if (count > 6 && count <= 20)
