@@ -1,0 +1,11 @@
+
+.gameTable {
+	border: 1px solid black;
+}
+
+.mainGameTd {
+	width: 90px;
+	height: 90px;
+	border: 1px solid black;
+	text-align: center;
+}
