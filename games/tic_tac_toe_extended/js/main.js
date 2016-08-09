@@ -4,99 +4,140 @@ var signs = {
 	o : {img : 'o', val : 10}
 }
 
-var modes = {
-	mode1player : 1,
-	mode2players : 2,
-	modeNetwork : 3 //TODO: maybe
+var playerTypes = {
+	human : 1,
+	computer : 2,
+	remote : 3 //TODO: maybe
+}
+
+var gameStatuses = {
+	run : 1,
+	stop : 2,
+	minigame : 3
 }
 
 var game = new Game();
 
+function Player(name, sign, type) {
+	this.name = name;
+	this.sign = sign;
+	this.type = type;
+}
+
 function Game() {
 	this.mainGameField = new Array(9);
-	this.mode = modes.mode1player; //default
-	this.player1Sign = signs.x;
-	this.player2Sign = signs.o;
-	this.currentPlayerSign = this.player1Sign; //default
+	this.player1 = new Player('Player 1', signs.x, playerTypes.human); //default values
+	this.player2 = new Player('Player 2', signs.o, playerTypes.computer);
+	this.currentPlayer = this.player1;
+	this.status = gameStatuses.run;
+	this.currentRound = 0;
 }
 
 Game.prototype.init = function() {
 	createMainField();
+	this.clearField();
+}
+
+Game.prototype.clearField = function() {
 	for (var i = 0; i < 9; i++) {
 		this.mainGameField[i] = 0;
 		elm('maintd' + i).innerHTML = '';
 	}
 }
 
+Game.prototype.newGame = function() { //TODO: names, stats, achievements
+	this.clearField();
+	this.player1.sign = signs.x;
+	this.player2.sign = signs.o;
+	this.status = gameStatuses.run;
+	this.currentRound = 0;
+}
+
+Game.prototype.newRound = function() {
+	this.clearField();
+	if (++this.currentRound &1)
+		this.currentPlayer = this.player2;
+	this.status = gameStatuses.run;
+	if (this.currentPlayer.type == playerTypes.computer)
+		this.mainGameField = this.AI(1, this.mainGameField); //first computer move
+}
+
+Game.prototype.anotherPlayer = function(player) {
+	return player == this.player1 ? this.player2 : this.player1;
+}
+
 Game.prototype.switchPlayer = function() {
-	this.currentPlayerSign = this.currentPlayerSign == this.player1Sign ? this.player2Sign : this.player1Sign;
+	this.currentPlayer = this.anotherPlayer(this.currentPlayer);
 }
 
 Game.prototype.handleMainTdClick = function(id) {
-	if (this.mainGameField[id] == 0) {
-		this.mainGameField[id] = this.currentPlayerSign.val;
-		elm('maintd' + id).innerHTML = this.currentPlayerSign.img;
-		this.checkGameStatus();
-		if (this.mode == modes.mode1player)
+	if (this.status == gameStatuses.run && this.currentPlayer.type == playerTypes.human && this.mainGameField[id] == 0) {
+		this.mainGameField[id] = this.currentPlayer.sign.val;
+		elm('maintd' + id).innerHTML = this.currentPlayer.sign.img;
+		this.checkGameStatus(this.currentPlayer);
+		var anotherPlayer = this.anotherPlayer(this.currentPlayer)
+		this.switchPlayer();
+		if (anotherPlayer.type == playerTypes.computer) {
 			this.mainGameField = this.AI(1, this.mainGameField);
-		else if (this.mode == modes.mode2players)
+			this.checkGameStatus(anotherPlayer);
 			this.switchPlayer();
+		}
 	}
 }
 
-Game.prototype.checkGameStatus = function() {
-	var diag1 = 0, diag2 = 0;
+Game.prototype.checkGameStatus = function(player) {
+	var sums = [0, 0, 0, 0, 0, 0, 0, 0];
 	for (var i = 0; i < 3; i++) {
-		diag1 += this.mainGameField[i + 3*i];
-		diag2 += this.mainGameField[i + 3*(3 - 1 - i)];
-		var sum1 = 0, sum2 = 0;
+		sums[6] += this.mainGameField[i + 3*i];
+		sums[7] += this.mainGameField[i + 3*(3 - 1 - i)];
 		for (var j = 0; j < 3; j++) {
-			sum1 += this.mainGameField[i*3 + j];
-			sum2 += this.mainGameField[i + j*3];
+			sums[i] += this.mainGameField[i*3 + j];
+			sums[i + 3] += this.mainGameField[i + j*3];
 		}
-		if (sum1 == 3*this.currentPlayerSign.val || sum2 == 3*this.currentPlayerSign.val) {
-			alert('Player ' + (this.currentPlayerSign.val == this.player1Sign.val ? '1' : '2') + ' win');
+	}
+	for (var i = 0; i < 8; i++)
+		if (sums[i] == 3*player.sign.val) {
+			alert(player.name + ' win!');
+			this.status = gameStatuses.stop;
 			break;
 		}
-	}
-	if (diag1 == 3*this.currentPlayerSign.val || diag2 == 3*this.currentPlayerSign.val) {
-		alert('!Player 1 win');
-	}
 }
 
-Game.prototype.calcCost = function(field) { //TODO: make it work!
+Game.prototype.calcCost = function(field) {
 	var result = 0;
-	var val = this.currentPlayerSign.val == signs.x.val ? signs.x.val : signs.o.val;
-	var diag1 = 0, diag2 = 0;
+	var val = this.anotherPlayer(this.currentPlayer).sign.val;
+	var sums = [0, 0, 0, 0, 0, 0, 0, 0];
 	for (var i = 0; i < 3; i++) {
-		diag1 += field[i + 3*i];
-		diag2 += field[i + 3*(3 - 1 - i)];
-		var sum1 = 0, sum2 = 0;
+		sums[6] += field[i + 3*i];
+		sums[7] += field[i + 3*(3 - 1 - i)];
 		for (var j = 0; j < 3; j++) {
-			sum1 += field[i*3 + j];
-			sum2 += field[i + j*3];
-		}
-		if (sum1 == 2*val || sum2 == 2*val) {
-			return 10;
+			sums[i] += field[i*3 + j];
+			sums[i + 3] += field[i + j*3];
 		}
 	}
-	if (diag1 == 2*val || diag2 == 2*val) {
-		return 10;
+	for (var i = 0; i < 8; i++) {
+		if (sums[i] == 3*this.currentPlayer.sign.val)
+			return 1000; //victory
+		if (sums[i] == 2*val)
+			result -= 1000; //defeat
+		if (sums[i] == 2*this.currentPlayer.sign.val)
+			result += 50;
 	}
-	return 1;
+	return result;
 }
 
-Game.prototype.AI = function(depth, inputField) { //TODO: make AI work!
-	if (depth-- <= 0)
+Game.prototype.AI = function(depth, inputField) {
+	if (depth-- <= 0 || this.status == gameStatuses.stop)
 		return inputField;
-	this.switchPlayer();
 	var field = inputField.slice(0);
 	var costs = new Array(9);
 	for (var i = 0; i < 9; i++) {
 		if (field[i] == 0) {
 			var tmpField = field.slice(0); //copy field
-			field[i] = this.currentPlayerSign.val; //make a move
-			field = this.AI(depth, field); //TODO: add depth
+			field[i] = this.currentPlayer.sign.val; //make a move
+			this.switchPlayer();
+			field = this.AI(depth, field); //TODO: test depth
+			this.switchPlayer();
 			costs[i] = this.calcCost(field);
 			field = tmpField;//reset copy
 		}
@@ -107,14 +148,12 @@ Game.prototype.AI = function(depth, inputField) { //TODO: make AI work!
 			max = costs[i];
 			index = i;
 		}
-	if (index < 0)
+	if (index < 0) //field is already filled
 		console.log("EPIC FAIL! Wrong index!");
 	else {
-		field[index] = this.currentPlayerSign.val;
-		elm('maintd' + index).innerHTML = this.currentPlayerSign.img;
+		field[index] = this.currentPlayer.sign.val;
+		elm('maintd' + index).innerHTML = this.currentPlayer.sign.img;
 	}
-	this.checkGameStatus();
-	this.switchPlayer();
 	return field;
 }
 
