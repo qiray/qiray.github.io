@@ -23,7 +23,7 @@ if (!window.console) { //old IE fix
 function getDialogs() {
 	if (vkInited) {
 		VK.api('messages.getDialogs', 
-			{count: settings.count, offset: settings.offset, version: APIVersion}, 
+			{count: settings.count, offset: settings.offset, version: APIVersion, test_mode : 1}, 
 			function(data) {
 				console.log(data, data.response)
 				
