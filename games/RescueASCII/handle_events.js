@@ -68,12 +68,12 @@ function handleClick(event) {
 			var obj = document.getElementById('towerButton' + i)
 			obj.style.lineHeight = '1'
 			obj.style.fontSize = '100%'
-			obj.innerHTML = translations[currentLanguage].locked 
+			obj.innerHTML = 'Locked'
 			obj.removeAttribute('onclick')
 			obj = document.getElementById('towerInfo' + i)
 			obj.style.lineHeight = '1'
 			obj.style.fontSize = '100%'
-			obj.innerHTML = translations[currentLanguage].locked
+			obj.innerHTML = 'Locked'
 			obj.removeAttribute('onclick')
 			continue
 		}
@@ -84,11 +84,11 @@ function handleClick(event) {
 		obj.setAttribute('onclick', 'createTower(' + i + ', globalIndex)')
 		obj = document.getElementById('towerInfo' + i)
 		obj.setAttribute('onclick', 'createTower(' + i + ', globalIndex)')
-		obj.innerHTML = towerTypes[i - 1].name + '\n' + translations[currentLanguage].cost + ': ' + 
+		obj.innerHTML = towerTypes[i - 1].name + '\nCost: ' + 
 			Math.round(towerTypes[i - 1].cost*player.upgradeCoeffs.towerCost.mul + player.upgradeCoeffs.towerCost.add) + 
-			'\n' + translations[currentLanguage].range + ': ' + Math.round((towerTypes[i - 1].range*player.upgradeCoeffs.towerRange.mul + player.upgradeCoeffs.towerRange.add)*100)/100 + 
-			'\n' + translations[currentLanguage].damage + ': ' + Math.round(towerTypes[i - 1].damage*player.upgradeCoeffs.towerDamage.mul + player.upgradeCoeffs.towerDamage.add) + 
-			'\n' + translations[currentLanguage].attackSpeed + Math.round((towerTypes[i - 1].attackSpeed*player.upgradeCoeffs.towerAttackSpeed.mul + player.upgradeCoeffs.towerAttackSpeed.add)*100)/100
+			'\nRange: ' + Math.round((towerTypes[i - 1].range*player.upgradeCoeffs.towerRange.mul + player.upgradeCoeffs.towerRange.add)*100)/100 + '\nDamage: ' + 
+			Math.round(towerTypes[i - 1].damage*player.upgradeCoeffs.towerDamage.mul + player.upgradeCoeffs.towerDamage.add) + 
+			'\nAttack speed: ' + Math.round((towerTypes[i - 1].attackSpeed*player.upgradeCoeffs.towerAttackSpeed.mul + player.upgradeCoeffs.towerAttackSpeed.add)*100)/100
 	} 
 	var menu = document.getElementById('buildMenu')
 	bigPopupSize()

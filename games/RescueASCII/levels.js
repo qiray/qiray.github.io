@@ -338,7 +338,7 @@ var levelTexts = [
 
 function loadLevel() {
 	for (var i = 0; i < squareMapSize; i++) {
-		displayedMap[i] = levels[currentLevel][i]
+		displayedMap[i] = levels[currentLevel][i]			
 		buildMap[i] = displayedMap[i] == youCanBuildHere ? availableToBuild : cantBuild
 	}
 	drawMap()
@@ -379,8 +379,8 @@ function clearLevel() {
 function startLevel(number) {
 	if (player.currentLevel < number)
 		return
-	document.getElementById('globalStatusBar').innerHTML = translations[currentLanguage].defenseStarted + battles[number].name + '"'
-	document.getElementById('levelStatusBar').innerHTML = translations[currentLanguage].letTheFightBegin
+	document.getElementById('globalStatusBar').innerHTML = 'Started defence: "' + battles[number].name + '"'
+	document.getElementById('levelStatusBar').innerHTML = 'Let the fight begin!'
 	currentLevel = number
 	money = Math.floor(startMoney[number]*player.upgradeCoeffs.money.mul + player.upgradeCoeffs.money.add)
 	loadLevel()

@@ -12,7 +12,7 @@ function firstEmptySlot(array) {
 			break
 		}
 	if (flag)
-		index = array.length
+		index = array.length	
 	return index
 }
 
@@ -33,7 +33,7 @@ function moveEnemy(i) {
 					var nextDiff = way[enemies[i].index + 1] - way[enemies[i].index]
 					if (nextDiff == mapSize || nextDiff == -mapSize)
 						enemies[i].x += Math.random()*cellSize/4 - cellSize/8
-				}
+				}				
 			}
 			break
 		case -1: //moving left
@@ -47,7 +47,7 @@ function moveEnemy(i) {
 					var nextDiff = way[enemies[i].index + 1] - way[enemies[i].index]
 					if (nextDiff == mapSize || nextDiff == -mapSize)
 						enemies[i].x += Math.random()*cellSize/4 - cellSize/8
-				}
+				}				
 			}
 			break
 		case mapSize: //moving down
@@ -69,7 +69,7 @@ function moveEnemy(i) {
 					var nextDiff = way[enemies[i].index + 1] - way[enemies[i].index]
 					if (nextDiff == 1 || nextDiff == -1)
 						enemies[i].y += Math.random()*cellSize/4 - cellSize/8
-				}
+				}				
 			}
 			break
 	}
@@ -92,7 +92,7 @@ function createEnemy(id, index) {
 		enemies[enemyIndex].direction = 1
 	if (tempPlayer.knownEnemies.indexOf(id) == -1) {//for descriptions
 		tempPlayer.knownEnemies.push(id)
-		document.getElementById('levelStatusBar').innerHTML = translations[currentLanguage].newEnemy + enemyTypes[id - 1].name
+		document.getElementById('levelStatusBar').innerHTML = 'New enemy: ' + enemyTypes[id - 1].name
 	}
 }
 
@@ -117,7 +117,7 @@ function updateTower(index) {
 			element.style.width = towers[i].range*cellSize*2
 			element.style.height = element.style.width
 			element.style.left = canvas.offsetLeft + drawShift + towers[i].x - towers[i].range*cellSize
-			element.style.top = canvas.offsetTop + drawShift + towers[i].y - towers[i].range*cellSize
+			element.style.top = canvas.offsetTop + drawShift + towers[i].y - towers[i].range*cellSize			
 			tempPlayer.statistics.upgradedTowers++
 			return
 		}
@@ -139,19 +139,17 @@ function towerMenu(index) {
 	for (i = 0; i < towers.length; i++) //get tower number in towers array
 		if (towers[i] != undefined && towers[i].index == index)
 			break
-	document.getElementById('towerMenuLabel').innerHTML = towers[i].name + ' ' + translations[currentLanguage].level + ' ' + towers[i].level + '<br>' +
-		translations[currentLanguage].range + ': ' + Math.round(towers[i].range*100)/100 + ' ' + 
-		translations[currentLanguage].damage + ': ' + Math.round(towers[i].damage) + ' ' + translations[currentLanguage].attackSpeed + Math.round(towers[i].attackSpeed*100)/100
-	document.getElementById('towerRangeLabel').innerHTML = translations[currentLanguage].ShowHideRange + ' (' + Math.round(towers[i].range*100)/100 + ')'
+	document.getElementById('towerMenuLabel').innerHTML = towers[i].name + ' level ' + towers[i].level + '<br>' +
+		'Range: ' + Math.round(towers[i].range*100)/100 + ' damage: ' + Math.round(towers[i].damage) + ' attack speed: ' + Math.round(towers[i].attackSpeed*100)/100
+	document.getElementById('towerRangeLabel').innerHTML = 'Show/hide range (' + Math.round(towers[i].range*100)/100 + ')'
 	if (towers[i].level < tempPlayer.maxTowerLevel) {
-		document.getElementById('towerUpdateLabel').innerHTML = translations[currentLanguage].upgradeTower + '<br>' + translations[currentLanguage].cost + ':' + Math.round(towers[i].cost*costUpgradeCoef) +
-			'<br>' + translations[currentLanguage].range + ': ' + Math.round(towers[i].range *rangeUpgradeCoef*100)/100 + 
-			'<br>' + translations[currentLanguage].damage + ': ' + Math.round(towers[i].damage*damageUpgradeCoef*100)/100 + 
-			'<br>' + translations[currentLanguage].attackSpeed + Math.round(towers[i].attackSpeed*attackSpeedUpgradeCoef*100)/100
+		document.getElementById('towerUpdateLabel').innerHTML = 'Upgrade tower<br>Cost:' + Math.round(towers[i].cost*costUpgradeCoef) +
+			'<br>Range: ' + Math.round(towers[i].range *rangeUpgradeCoef*100)/100 + '<br>Damage: ' + Math.round(towers[i].damage*damageUpgradeCoef*100)/100 + 
+			'<br>Attack speed: ' + Math.round(towers[i].attackSpeed*attackSpeedUpgradeCoef*100)/100
 	} else {
-		document.getElementById('towerUpdateLabel').innerHTML = translations[currentLanguage].notAvailable
+		document.getElementById('towerUpdateLabel').innerHTML = 'Not available'
 	}
-	document.getElementById('towerSellLabel').innerHTML = translations[currentLanguage].sellTower + Math.round(towers[i].cost*0.5) + translations[currentLanguage].getMoney
+	document.getElementById('towerSellLabel').innerHTML = 'Sell tower:<br>get ' + Math.round(towers[i].cost*0.5) + ' money'
 	document.getElementById('setTargetting').selectedIndex = towers[i].targetting - 1
 	///////////////////
 	var menu = document.getElementById('towerMenu')
@@ -165,6 +163,7 @@ function towerMenu(index) {
 function createTower(tower, index) {
 	if (tower > towerTypes.length || money < Math.round(towerTypes[tower - 1].cost*player.upgradeCoeffs.towerCost.mul + player.upgradeCoeffs.towerCost.add)) //can't create
 		return
+	//document.getElementById('td' + index).style.opacity = '0' //make invisible cell behind the tower
 	towers.push(clone(towerTypes[tower - 1]))
 	towers[towers.length - 1].index = index
 	towers[towers.length - 1].x = index%mapSize*cellSize
@@ -233,7 +232,7 @@ function isTargetBetter(index, enemyIndex, currentTarget) {
 		case expensiveEnemy:
 			return enemies[currentTarget].cost < enemies[enemyIndex].cost
 		case randomEnemy:
-			return Math.random() > 0.5
+			return Math.random() > 0.5			
 	}
 }
 

@@ -127,7 +127,7 @@ function checkAchievements(player_t) {
 	for (var i = 0; i < achievements.length; i++) {
 		if (player_t.achievements.indexOf(achievements[i].id) == -1 && achievements[i].condition()) { //new achievement
 			player_t.achievements.push(achievements[i].id)
-			var str = '<div style = "text-align: center"><h1>' + translations[currentLanguage].newAchievement + '</h1>' + '<h2 style = "text-align: center">' 
+			var str = '<div style = "text-align: center"><h1>New achievement!</h1>' + '<h2 style = "text-align: center">' 
 				+ achievements[i].name + '</h2>' + achievements[i].description + '\n\n' + 
 				"<input style = 'width: 20em;  height: 2em;' type = 'button' value = 'OK' onclick = 'this.parentNode.parentNode.style.display = \"none\"' ></div>"
 			popupInLevel(str)
@@ -194,10 +194,14 @@ function popupInLevel(str) {
 
 function lose() {
 	stopGame = 2
-	var str = '<div style = "text-align: center"><h1>' + translations[currentLanguage].youLose + '</h1>' + 
+	var str = '<div style = "text-align: center"><h1>You lose!</h1>' + 
 		"<input style = 'width: 20em;  height: 2em;' type = 'button' value = 'OK' onclick = 'this.parentNode.parentNode.style.display = \"none\"; globalLocalMap(1)' ></div>"
 	popupInLevel(str)
-	document.getElementById('globalStatusBar').innerHTML = translations[currentLanguage].defenseOf + battles[currentLevel].name + translations[currentLanguage].defenseFailed
+	document.getElementById('globalStatusBar').innerHTML = 'Defence of "' + battles[currentLevel].name + '" failed.'
+	if (kongregate) { //kongregate statistics
+		kongregate.stats.submit("killedEnemies", tempPlayer.statistics.killedEnemies - player.statistics.killedEnemies) //add
+		kongregate.stats.submit("builtTowers", tempPlayer.statistics.builtTowers - player.statistics.builtTowers) //add
+	}
 	player = cloneAll(tempPlayer)
 	player.statistics.loses++
 }
@@ -205,10 +209,15 @@ function lose() {
 function win() {
 	stopGame = 1
 	lives = maxPassed - passed //for achievements
-	var str = '<div style = "text-align: center"><h1>' + translations[currentLanguage].youWin + '</h1>' + translations[currentLanguage].youEarned + Math.round(Math.pow(levelMoneyCoef, currentLevel)*lives) + '<br>' +
+	var str = '<div style = "text-align: center"><h1>You win!</h1>' + 'You earned: ' + Math.round(Math.pow(levelMoneyCoef, currentLevel)*lives) + ' gold<br>' +
 		"<input style = 'width: 20em;  height: 2em;' type = 'button' value = 'OK' onclick = 'this.parentNode.parentNode.style.display = \"none\"; globalLocalMap(1)' ></div>"
 	popupInLevel(str)
-	document.getElementById('globalStatusBar').innerHTML = translations[currentLanguage].defenseOf + battles[currentLevel].name + translations[currentLanguage].defenseCompleted
+	document.getElementById('globalStatusBar').innerHTML = 'Defence of "' + battles[currentLevel].name + '" completed.'
+	if (kongregate) { //kongregate statistics
+		kongregate.stats.submit("wins", 1) //add
+		kongregate.stats.submit("killedEnemies", tempPlayer.statistics.killedEnemies - player.statistics.killedEnemies) //add
+		kongregate.stats.submit("builtTowers", tempPlayer.statistics.builtTowers - player.statistics.builtTowers) //add
+	}
 	player = cloneAll(tempPlayer)
 	if (currentLevel >= player.currentLevel) {
 		document.getElementById('battle' + currentLevel).style.backgroundColor = '#007700'

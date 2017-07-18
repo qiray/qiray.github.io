@@ -62,10 +62,10 @@ function showInfo() {
 	document.getElementById('lives').innerHTML = maxPassed - passed
 	var nextWaveInfo = document.getElementById('nextWave')
 	if (currentWave == waves[currentLevel].length) {
-		nextWaveInfo.innerHTML = translations[currentLanguage].lastWave
+		nextWaveInfo.innerHTML = 'Last wave!'
 		return
 	}
-	document.getElementById('startWave').value = translations[currentLanguage].startWave + ' (' + Math.round(waveStartTact/8) + ')'
+	document.getElementById('startWave').value = 'Start wave (' + Math.round(waveStartTact/8) + ')'
 	var nextWaveString = waves[currentLevel][currentWave].split(' ')
 	nextWaveInfo.innerHTML = ''
 	for (var i = 0; i < nextWaveString.length; i += 2)
@@ -163,7 +163,7 @@ function gameTact() { //game logic
 	var time2ms= time2.getTime(time2)
 	var timeDiff = time2ms - time1ms
 	if (tact%250 == 0)
-		console.log('time diff = ' + timeDiff)
+		console.log('timeDiff = ' + timeDiff)
 	if (timeDiff < tactTime - delay)
 		pauseDiff = tactTime - delay - timeDiff
 	else
@@ -203,9 +203,21 @@ function setSpeed(speed) {
 function pauseFunc() {
 	if (stopGame == 5) { //continue
 		stopGame = 0
-		document.getElementById('pauseText').innerHTML = translations[currentLanguage].pauseText
+		document.getElementById('pauseText').innerHTML = 'pause'
 	} else {
 		stopGame = 5
-		document.getElementById('pauseText').innerHTML = translations[currentLanguage].continueText
+		document.getElementById('pauseText').innerHTML = 'continue'
 	}
+}
+
+//Kongregate:
+
+var kongregate
+kongregateAPI.loadAPI(onComplete)
+
+// Callback function
+function onComplete(){
+	console.log('Kongregate')
+	// Set the global kongregate API object
+	kongregate = kongregateAPI.getAPI()
 }

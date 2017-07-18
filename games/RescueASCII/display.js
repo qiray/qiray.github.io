@@ -59,7 +59,7 @@ function globalLocalMap(watch) { //switch global/local map
 			player.currentStory--
 		globalMapVisible = 1
 		stopGame = 3
-		document.getElementById('pauseText').innerHTML = translations[currentLanguage].pauseText
+		document.getElementById('pauseText').innerHTML = 'pause'
 		clearLevel()
 		tempPlayer = cloneAll(newPlayer)
 		document.getElementById('level').style.display = 'none'
@@ -75,7 +75,7 @@ function globalLocalMap(watch) { //switch global/local map
 		stopGame = 0
 		tempPlayer = cloneAll(player)
 		var levelDiv = document.getElementById('level')
-		levelDiv.style.display = 'inline-block'
+		levelDiv.style.display = 'inline-block'	
 		var tmp = (levelDiv.parentNode.parentNode.clientWidth - levelDiv.clientWidth)/2
 		levelDiv.style.left = tmp > 0 ? tmp : 0
 	} else if (watch == 3) { //show main menu
@@ -83,7 +83,7 @@ function globalLocalMap(watch) { //switch global/local map
 		document.getElementById('level').style.display = 'none'
 		document.getElementById('global').style.display = 'none'
 		var menu = document.getElementById('mainMenu')
-		menu.style.display = 'inline-block'
+		menu.style.display = 'inline-block'	
 		var tmp = (menu.parentNode.parentNode.clientWidth - menu.clientWidth)/2
 		menu.style.left = tmp > 0 ? tmp : 0
 	}
@@ -117,11 +117,11 @@ function initGlobalMap() {
 		else
 			tmp.style.opacity = '0.2'
 		tmp.id = 'battle' + i
-		tmp.innerHTML = '<div style = "display:table-cell; vertical-align: middle;" id = "battleText' + i + '">' + battles[i].name + '</div>'
+		tmp.innerHTML = '<div style = "display:table-cell; vertical-align: middle;">' + battles[i].name + '</div>'
 		tmp.setAttribute('onclick', 'startLevel(' + i + ')')
 		tmp.setAttribute('onmouseenter', "showBattle(" + i + ")") //show this
 		tmp.setAttribute('onmouseleave', "showBattle(" + (-1) + ")") //hide
-		globalMap.appendChild(tmp)
+		globalMap.appendChild(tmp)		
 	}
 }
 
@@ -135,20 +135,20 @@ function changeDifficulty() {
 	switch (player.difficulty) {
 		case normal:
 			player.difficulty = hard //hard
-			document.getElementById('difficulty').innerHTML = translations[currentLanguage].difficulty.hard
+			document.getElementById('difficulty').innerHTML = 'Difficulty: hard'
 			break
 		case hard:
 			player.difficulty = ultra //ultra
-			document.getElementById('difficulty').innerHTML = translations[currentLanguage].difficulty.ultra
-			break
+			document.getElementById('difficulty').innerHTML = 'Difficulty: ultra'
+			break	
 		case ultra:
 			player.difficulty = easy //easy
-			document.getElementById('difficulty').innerHTML = translations[currentLanguage].difficulty.easy
+			document.getElementById('difficulty').innerHTML = 'Difficulty: easy'
 			break
 		case easy:
 			player.difficulty = normal //normal
-			document.getElementById('difficulty').innerHTML = translations[currentLanguage].difficulty.normal
-			break
+			document.getElementById('difficulty').innerHTML = 'Difficulty: normal'
+			break			
 	}
 }
 
@@ -179,9 +179,9 @@ function showDescriptions() {
 		if (player.unlockedTowers.indexOf(i + 1) == -1)
 			continue
 		table += "<tr align = 'center'><td style = 'white-space: pre; line-height: " + towerTypes[i].lineHeight + "' height = '150' width = '150'>" + towerTypes[i].img + 
-			"</td><td style = 'white-space: pre-wrap' height = '150' width = '150'>" + towerTypes[i].name + ':\n' + translations[currentLanguage].cost + ': ' + 
-			Math.round(towerTypes[i].cost*player.upgradeCoeffs.towerCost.mul + player.upgradeCoeffs.towerCost.add) + '\n' + translations[currentLanguage].damage
-			': ' + Math.round(towerTypes[i].damage*player.upgradeCoeffs.towerDamage.mul + player.upgradeCoeffs.towerDamage.add) + '\n' + translations[currentLanguage].range + ': ' + 
+			"</td><td style = 'white-space: pre-wrap' height = '150' width = '150'>" + towerTypes[i].name + ':\n' + 'Cost: ' + 
+			Math.round(towerTypes[i].cost*player.upgradeCoeffs.towerCost.mul + player.upgradeCoeffs.towerCost.add) + '\n' + 
+			'Damage: ' + Math.round(towerTypes[i].damage*player.upgradeCoeffs.towerDamage.mul + player.upgradeCoeffs.towerDamage.add) + '\n' + 'Range: ' + 
 			Math.round((towerTypes[i].range*player.upgradeCoeffs.towerRange.mul + player.upgradeCoeffs.towerRange.add)*100)/100 + '\n' + towerTypes[i].description + '</td></tr>'
 	}
 	table += "</table><h2 style = 'text-align: center'>Enemies</h2><table border = '1' align = 'center'>"
@@ -189,18 +189,16 @@ function showDescriptions() {
 		if (player.knownEnemies.indexOf(i + 1) == -1)
 			continue
 		table += "<tr align = 'center'><td style = 'white-space: pre; line-height: " + enemyTypes[i].lineHeight + "' height = '150' width = '150'>" + enemyTypes[i].img + 
-			"</td><td style = 'white-space: pre-wrap' height = '150' width = '150'>" + enemyTypes[i].name + ':\n' + translations[currentLanguage].speed + ': ' + enemyTypes[i].speed + '\n' + 
-			translations[currentLanguage].health + ': ' + enemyTypes[i].health + '\n' + enemyTypes[i].description + '</td></tr>'
+			"</td><td style = 'white-space: pre-wrap' height = '150' width = '150'>" + enemyTypes[i].name + ':\n' + 'Speed: ' + enemyTypes[i].speed + '\n' + 
+			'Health: ' + enemyTypes[i].health + '\n' + enemyTypes[i].description + '</td></tr>'
 	}
 	table += "</table>"
 	showDescWindow(table)
 }
 
 function showUgrades() {
-	var table = "<h2 style = 'text-align: center'>" + translations[currentLanguage].upgrades + "</h2><h3 style = 'text-align: center'>" + translations[currentLanguage].yourMoney + player.money + "</h3><table border = '1' align = 'center'>"
-	table += "<tr align = 'center'><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].name + 
-		"</td><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].description + 
-		"</td><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].cost + "</td></tr>"
+	var table = "<h2 style = 'text-align: center'>Upgrades</h2><h3 style = 'text-align: center'>Your money: " + player.money + "</h3><table border = '1' align = 'center'>"
+	table += "<tr align = 'center'><td style = 'white-space: pre-wrap;'>Name</td><td style = 'white-space: pre-wrap;'>Description</td><td style = 'white-space: pre-wrap;'>Cost</td></tr>"
 	for (var i = 0; i < upgrades.length; i++) {
 		if (player.upgrades.indexOf(i) == -1 && upgrades[i].unlock())
 			table += "<tr align = 'center' onclick = 'buyUpgrade(" + i + ")'><td style = 'white-space: pre-wrap;'>" + upgrades[i].name + 
@@ -212,22 +210,22 @@ function showUgrades() {
 }
 
 function showPlayerInfo() {
-	var str = '<h2 style = "text-align: center">' + translations[currentLanguage].statistics + '</h2><table border = "1" align = "center"' +
-		"<tr><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].killedEnemies + "</td><td style = 'white-space: pre-wrap;'>" + player.statistics.killedEnemies + "</td></tr>" + 
-		"<tr><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].builtTowers + "</td><td style = 'white-space: pre-wrap;'>" + player.statistics.builtTowers + "</td></tr>" + 
-		"<tr><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].upgradedTowers + "</td><td style = 'white-space: pre-wrap;'>" + player.statistics.upgradedTowers + "</td></tr>" + 
-		"<tr><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].earnedMoney + "</td><td style = 'white-space: pre-wrap;'>" + Math.floor(player.statistics.money) + "</td></tr>" + 
-		"<tr><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].wins + "</td><td style = 'white-space: pre-wrap;'>" + player.statistics.wins + "</td></tr>" + 
-		"<tr><td style = 'white-space: pre-wrap;'>" + translations[currentLanguage].loses + "</td><td style = 'white-space: pre-wrap;'>" + player.statistics.loses + "</td></tr>" + 
+	var str = '<h2 style = "text-align: center">Statistics</h2><table border = "1" align = "center"' +
+		"<tr><td style = 'white-space: pre-wrap;'>Killed enemies</td><td style = 'white-space: pre-wrap;'>" + player.statistics.killedEnemies + "</td></tr>" + 
+		"<tr><td style = 'white-space: pre-wrap;'>Built towers</td><td style = 'white-space: pre-wrap;'>" + player.statistics.builtTowers + "</td></tr>" + 
+		"<tr><td style = 'white-space: pre-wrap;'>Upgraded towers</td><td style = 'white-space: pre-wrap;'>" + player.statistics.upgradedTowers + "</td></tr>" + 
+		"<tr><td style = 'white-space: pre-wrap;'>Earned money</td><td style = 'white-space: pre-wrap;'>" + Math.floor(player.statistics.money) + "</td></tr>" + 		
+		"<tr><td style = 'white-space: pre-wrap;'>Wins</td><td style = 'white-space: pre-wrap;'>" + player.statistics.wins + "</td></tr>" + 
+		"<tr><td style = 'white-space: pre-wrap;'>Loses</td><td style = 'white-space: pre-wrap;'>" + player.statistics.loses + "</td></tr>" + 
 		'</table>'
 	if (player.achievements.length > 0) {
-		str += '<h2 style = "text-align: center">' + translations[currentLanguage].achievementsText + '(' + player.achievements.length + '/' + achievements.length + ')</h2><table border = "1" align = "center"'
+		str += '<h2 style = "text-align: center">Achievements (' + player.achievements.length + '/' + achievements.length + ')</h2><table border = "1" align = "center"'
 		for (var i = 0; i < player.achievements.length; i++)
 			str += "<tr align = 'center'><td align = 'center' style = 'white-space: pre-wrap;'>" + achievements[player.achievements[i]].name + "</td><td align = 'center' style = 'white-space: pre-wrap;'>" +  achievements[player.achievements[i]].description + "</td></tr>"
 		str += '</table>'
 	}
 	if (player.upgrades.length > 0) {
-		str += '<h2 style = "text-align: center">' + translations[currentLanguage].upgrades + '(' + player.upgrades.length + '/' + upgrades.length + ')</h2><table border = "1" align = "center"'
+		str += '<h2 style = "text-align: center">Upgrades (' + player.upgrades.length + '/' + upgrades.length + ')</h2><table border = "1" align = "center"'
 		for (var i = 0; i < player.upgrades.length; i++)
 			str += "<tr align = 'center'><td align = 'center' style = 'white-space: pre-wrap;'>" + upgrades[player.upgrades[i]].name + "</td><td align = 'center' style = 'white-space: pre-wrap;'>" +  upgrades[player.upgrades[i]].description + "</td></tr>"
 		str += '</table>'
@@ -238,9 +236,12 @@ function showPlayerInfo() {
 
 function about() {
 	var str = '<h3 style="text-align: center">Rescue ASCII ' + version + '</h3>' + 
-		'<div style = "width: 640; padding: 10px"><h3 style="text-align: center">' + translations[currentLanguage].about.author + '</h3>' + translations[currentLanguage].about.authorInfo + 
-		'<h3 style="text-align: center">' + translations[currentLanguage].about.game + '</h3>' + translations[currentLanguage].about.gameInfo + 
-		'<h3 style="text-align: center">' + translations[currentLanguage].about.specialThanks + '</h3>' + translations[currentLanguage].about.specialThanksInfo +
+		'<div style = "width: 640; padding: 10px"><h3 style="text-align: center">Author</h3>Idea, ascii art, source code and the game itself by Yaroslav Zotov.' + 
+		'Contact me at zotovyaa@mail.ru with any questions and suggestions.' + 
+		'<h3 style="text-align: center">The game</h3>It is absolutely free, the source code and the game itself can be downloaded here:' +
+		' <a href = "https://sourceforge.net/projects/asciidefence/" target = "_blank">https://sourceforge.net/projects/asciidefence/</a>' + 
+		'<br>Do you like this game? Try also <a href = "http://www.kongregate.com/games/qiray/2nd-power" target = "_blank">"2nd power"</a>.' + 
+		'<h3 style="text-align: center">Special thanks</h3>aniwey - author of candybox 2 (<a href = "http://candybox2.net" target = "_blank">http://candybox2.net</a>) for very good game :-)' +
 		'</div>'
 	str += '<br>' + buttonText + '<br>'
 	showDescWindow(str)
