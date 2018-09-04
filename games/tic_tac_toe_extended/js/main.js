@@ -31,6 +31,7 @@ function Game() {
 	this.currentPlayer = this.player1;
 	this.status = gameStatuses.run;
 	this.currentRound = 0;
+	this.searchDepth = 2;
 }
 
 Game.prototype.init = function() {
@@ -57,9 +58,13 @@ Game.prototype.newRound = function() {
 	this.clearField();
 	if (++this.currentRound &1)
 		this.currentPlayer = this.player2;
+	else
+		this.currentPlayer = this.player1;
 	this.status = gameStatuses.run;
-	if (this.currentPlayer.type == playerTypes.computer)
-		this.mainGameField = this.AI(1, this.mainGameField); //first computer move
+	if (this.currentPlayer.type == playerTypes.computer) {
+		this.mainGameField = this.AI(this.searchDepth, this.mainGameField); //first computer move
+		this.switchPlayer();
+	}
 }
 
 Game.prototype.anotherPlayer = function(player) {
@@ -78,7 +83,7 @@ Game.prototype.handleMainTdClick = function(id) {
 		var anotherPlayer = this.anotherPlayer(this.currentPlayer)
 		this.switchPlayer();
 		if (anotherPlayer.type == playerTypes.computer) {
-			this.mainGameField = this.AI(1, this.mainGameField);
+			this.mainGameField = this.AI(this.searchDepth, this.mainGameField);
 			this.checkGameStatus(anotherPlayer);
 			this.switchPlayer();
 		}
