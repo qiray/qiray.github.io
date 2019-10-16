@@ -14,20 +14,20 @@ var playerInfo = {
 	difficultLevel: trivial,
 	currentLanguage: 'en',
 	achievements: []
-}
+};
 
-var achievementsImages = []
+var achievementsImages = [];
 
 function checkBombermanDestroyed() {
 	if (bomberman.status & statuses.surrender) {
-		var sum = 0
+		var sum = 0;
 		for (var i = 0; i < 81; i++) 
 			if (walls[i]) 
-				sum++ 
+				sum++;
 		if (sum <= 25)
-			return true
+			return true;
 	} else 
-		return false
+		return false;
 }
 
 var achievements = [
@@ -45,14 +45,14 @@ var achievements = [
 	{id: 11, img: 'images/achievements/sniper.png', name: function() { return translations[playerInfo.currentLanguage].sniper }, description: function() { return translations[playerInfo.currentLanguage].completeNoErrors }, condition: function() { return wrongDigits == 0 && remainingCells == 0 } },
 	{id: 12, img: 'images/achievements/noBomb.png', name: function() { return translations[playerInfo.currentLanguage].nobombs }, description: function() { return translations[playerInfo.currentLanguage].completeNoBombs }, condition: function() { return bombPlantedFlag == 0 && remainingCells == 0 } },
 	{id: 13, img: 'images/achievements/SierpinskiTriangle.png', name: function() { return translations[playerInfo.currentLanguage].recursion }, description: function() { return translations[playerInfo.currentLanguage].allAchievements }, condition: function() {return playerInfo.achievements.length == achievements.length - 1} }
-]
+];
 
 function checkAchievements() {
 	if (getElement('info').style.display != 'none')
-		return
+		return;
 	for (var i = 0; i < achievements.length; i++)
 		if (playerInfo.achievements.indexOf(i) == -1 && achievements[i].condition()) {
-			playerInfo.achievements.push(i) 
+			playerInfo.achievements.push(i);
 			var text = '<h2>' + translations[playerInfo.currentLanguage].newAchievement + '</h2>' +
 			'<table width = "280" style = "margin: 10px">' +
 				'<tr align = "center">' + 
@@ -132,7 +132,7 @@ function loadGame() {
 			}
 		})
 	} else {
-		if (supports_html5_storage) {//HTML5 local storage
+		if (supports_html5_storage()) {//HTML5 local storage
 			var text = localStorage.getItem("playerInfo");
 			textToPlayerInfo(text);
 		} else {//cookies
@@ -148,7 +148,7 @@ function saveGame() {
 	if (vkInited) { //save to vk.com
 		VK.api('storage.set', {key: 'playerInfo', value: text, user_id: current_id}, function() {})
 	} else {
-		if (supports_html5_storage) //HTML5 local storage
+		if (supports_html5_storage()) //HTML5 local storage
 			localStorage.setItem("playerInfo", text);
 		else {//cookies
 			setCookie("playerInfo", text, {expires: new Date( new Date().getTime() + 60*1000*60*24*365 )});
